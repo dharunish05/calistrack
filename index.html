@@ -254,6 +254,13 @@
       </div>
       <div class="day-pills" id="day-pills"></div>
       <div id="day-schedule-list"></div>
+      <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);">
+        <label for="add-to-day-select">Add Exercise to <span id="edit-day-label">Selected Day</span></label>
+        <div class="row">
+          <select id="add-to-day-select" style="margin-bottom:0;"></select>
+          <button type="button" class="small" onclick="addExerciseToSelectedDay()">+ Add</button>
+        </div>
+      </div>
     </div>
 
     <!-- Active Set Logger -->
@@ -569,7 +576,6 @@
     settings: { restDuration: 90, reminderTime: '' }
   };
 
-  // Ensure newer fields exist if upgrading from earlier CalisTrack version
   if (!state.exercises || !state.exercises.length) state.exercises = DEFAULT_EXERCISES;
   if (!state.schedule) state.schedule = DEFAULT_SCHEDULE;
   if (!state.logs) state.logs = [];
@@ -704,6 +710,43 @@
     renderDaySchedule();
   }
 
+  function populateDayAddSelect() {
+    const sel = document.getElementById('add-to-day-select');
+    const dayObj = state.schedule[selectedDay] || { items: [] };
+    const currentItems = new Set(dayObj.items || []);
+    document.getElementById('edit-day-label').innerText = selectedDay;
+
+    const available = state.exercises.filter(ex => !currentItems.has(ex.id));
+    const listToShow = available.length ? available : state.exercises;
+    sel.innerHTML = listToShow
+      .map(ex => `<option value="${ex.id}">${ex.name} (${ex.category})</option>`)
+      .join('');
+  }
+
+  function addExerciseToSelectedDay() {
+    const exId = document.getElementById('add-to-day-select').value;
+    if (!exId) return;
+    if (!state.schedule[selectedDay]) {
+      state.schedule[selectedDay] = { focus: 'Custom Session', items: [] };
+    }
+    if (!Array.isArray(state.schedule[selectedDay].items)) {
+      state.schedule[selectedDay].items = [];
+    }
+    if (!state.schedule[selectedDay].items.includes(exId)) {
+      state.schedule[selectedDay].items.push(exId);
+      saveState();
+      renderDaySchedule();
+    }
+  }
+
+  function removeExerciseFromSelectedDay(exId) {
+    const dayObj = state.schedule[selectedDay];
+    if (!dayObj || !Array.isArray(dayObj.items)) return;
+    dayObj.items = dayObj.items.filter(id => id !== exId);
+    saveState();
+    renderDaySchedule();
+  }
+
   function renderDaySchedule() {
     const todayKey = getTodayKey();
     const todayDate = getTodayDateStr();
@@ -716,33 +759,37 @@
 
     const listEl = document.getElementById('day-schedule-list');
     if (!dayObj.items.length) {
-      listEl.innerHTML = `<p class="muted" style="margin:6px 0 0 0;">Rest & mobility day—light stretching, walks, or joint decompression.</p>`;
-      return;
-    }
-
-    listEl.innerHTML = dayObj.items.map(exId => {
-      const ex = getExerciseById(exId);
-      if (!ex) return '';
-      const isDone = completedSet.has(exId);
-      const displayName = getActiveExerciseLabel(ex);
-      return `
-        <div class="sched-item">
-          <div class="sched-left" onclick="focusExerciseInLogger('${ex.id}')">
-            <input
-              type="checkbox"
-              class="big-check"
-              ${isDone ? 'checked' : ''}
-              onclick="event.stopPropagation(); toggleScheduleItem('${ex.id}')"
-            />
-            <div>
-              <div class="${isDone ? 'done-text' : ''}" style="font-weight:700;">${displayName}</div>
-              <div class="muted">${ex.category} · Tap to load logger</div>
+      listEl.innerHTML = `<p class="muted" style="margin:6px 0 0 0;">No exercises scheduled for ${selectedDay} yet—add one below or take a rest & mobility day.</p>`;
+    } else {
+      listEl.innerHTML = dayObj.items.map(exId => {
+        const ex = getExerciseById(exId);
+        if (!ex) return '';
+        const isDone = completedSet.has(exId);
+        const displayName = getActiveExerciseLabel(ex);
+        return `
+          <div class="sched-item">
+            <div class="sched-left" onclick="focusExerciseInLogger('${ex.id}')">
+              <input
+                type="checkbox"
+                class="big-check"
+                ${isDone ? 'checked' : ''}
+                onclick="event.stopPropagation(); toggleScheduleItem('${ex.id}')"
+              />
+              <div>
+                <div class="${isDone ? 'done-text' : ''}" style="font-weight:700;">${displayName}</div>
+                <div class="muted">${ex.category} · Tap to load logger</div>
+              </div>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="small secondary" onclick="focusExerciseInLogger('${ex.id}')">Log</button>
+              <button type="button" class="small danger" onclick="removeExerciseFromSelectedDay('${ex.id}')">X</button>
             </div>
           </div>
-          <button type="button" class="small secondary" onclick="focusExerciseInLogger('${ex.id}')">Log</button>
-        </div>
-      `;
-    }).join('');
+        `;
+      }).join('');
+    }
+
+    populateDayAddSelect();
   }
 
   function toggleScheduleItem(exId) {
@@ -875,6 +922,8 @@
     const btn = document.getElementById('hold-timer-btn');
     btn.innerText = 'Hands-Free Hold Timer (3s Beep + 5s Cues)';
     btn.className = 'secondary';
+    btn.style.background = '';
+    btn.style.color = '';
   }
 
   function toggleHoldTimer() {
@@ -1024,6 +1073,7 @@
     saveState();
     renderWorkoutExerciseSelect(id);
     renderLibrary();
+    populateDayAddSelect();
   }
 
   function renderLibrary() {
@@ -1186,7 +1236,9 @@
     const now = new Date();
     const hm = now.toTimeString().slice(0, 5);
     if (hm === state.settings.reminderTime && now.getSeconds() === 0 && ('Notification' in window) && Notification.permission === 'granted') {
-      new Notification('CalisTrack', { body: `Time for ${getTodayKey()} (${DEFAULT_SCHEDULE[getTodayKey()].focus})!` });
+      const todayKey = getTodayKey();
+      const focus = (state.schedule[todayKey] || {}).focus || 'Workout';
+      new Notification('CalisTrack', { body: `Time for ${todayKey} (${focus})!` });
     }
   }, 1000);
 
