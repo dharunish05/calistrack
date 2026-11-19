@@ -906,6 +906,7 @@
       renderSkillChart();
       renderAllMuscleAreaCharts();
       renderFullHistory();
+      updateProgressOverview();
     }
   }
 
@@ -1124,6 +1125,7 @@
     }
 
     syncCounterDefaults(ex);
+    renderPreviousPerformance();
   }
 
   function syncCounterDefaults(ex) {
@@ -1260,6 +1262,8 @@
       displayName: getActiveExerciseLabel(ex),
       reps: currentReps,
       seconds: currentSeconds,
+      weightKg: Number(document.getElementById('set-weight')?.value)||0,
+      rpe: document.getElementById('set-rpe')?.value ? Number(document.getElementById('set-rpe').value) : null,
       date: getTodayDateStr(),
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
@@ -1267,6 +1271,8 @@
     state.logs.unshift(entry);
     saveState();
     renderTodayLogs();
+    renderHomePlan();
+    renderPreviousPerformance();
     startRestTimer();
   }
 
@@ -1367,9 +1373,8 @@
 
   function renderLibrary() {
     const el = document.getElementById('exercise-library-list');
-    const items = selectedLibGroup === 'All'
-      ? state.exercises
-      : state.exercises.filter(ex => normalizeCategory(ex.category) === selectedLibGroup);
+    const items = state.exercises.filter(ex => (selectedLibGroup === 'All' || normalizeCategory(ex.category) === selectedLibGroup) && (!exerciseSearchTerm || (ex.name+' '+normalizeCategory(ex.category)).toLowerCase().includes(exerciseSearchTerm)));
+    const countEl=document.getElementById('exercise-count'); if(countEl)countEl.textContent=items.length+' / '+state.exercises.length;
 
     if (!items.length) {
       el.innerHTML = `<p class="muted" style="margin:0;">No matching exercises. Try another search or category.</p>`;
@@ -1779,6 +1784,9 @@
     renderLibFilterPills();
     renderLibrary();
     renderTodayLogs();
+    renderHomePlan();
+    updateDashboardStats();
+    renderPreviousPerformance();
   }
 
   initUI();
