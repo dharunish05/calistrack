@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#0f172a" />
+  <meta name="theme-color" content="#0d0f0e" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <link rel="manifest" href="./manifest.json" />
   <title>CalisTrack — Personal Calisthenics</title>
@@ -311,11 +311,83 @@
     }
     @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto!important; transition:none!important; } }
 
+
+    /* CalisTrack — Lyfta-inspired product redesign (original brand/assets) */
+    :root{--bg:#0d0f0e;--card:#171a18;--card-2:#202421;--text:#f4f6f4;--muted:#9aa39c;--accent:#b7f36b;--accent-dark:#83b83e;--success:#b7f36b;--warn:#f2c66d;--danger:#ed7777;--border:#303631;--surface:#111412;--radius:18px}
+    html{background:var(--bg);scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);padding:0 0 calc(82px + env(safe-area-inset-bottom));font-size:14px;line-height:1.45}
+    #app-header{height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 max(18px,calc((100vw - 980px)/2));background:rgba(13,15,14,.94);border-bottom:1px solid #242a25;position:sticky;top:0;z-index:30;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);font-size:1rem;letter-spacing:0}
+    #app-header:before{display:none}
+    .brand-lockup{display:flex;align-items:center;gap:9px;color:#f5f7f5;text-decoration:none;font-size:1.05rem;font-weight:850;letter-spacing:-.04em}
+    .brand-mark{display:grid;place-items:center;width:29px;height:29px;border-radius:9px;background:var(--accent);color:#141910;font-weight:950;font-size:1rem}
+    .brand-light{color:var(--accent)}
+    .header-actions{display:flex;align-items:center;gap:13px}.header-date{font-size:.72rem;color:var(--muted);font-weight:650}
+    .avatar-button{width:34px;height:34px;min-height:34px;padding:0;margin:0;border-radius:50%;background:#303a31;color:var(--accent);border:1px solid #485246;font-weight:800}
+    .container{max-width:980px;margin:0 auto;padding:19px 16px 34px}
+    .tab{animation:tabIn .22s ease both}.hidden{display:none!important}
+    @keyframes tabIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+    .card{background:var(--card);border:1px solid #292f2b;border-radius:var(--radius);padding:18px;margin:0 0 14px;box-shadow:0 5px 18px rgba(0,0,0,.11)}
+    h1,h2,h3{color:var(--text);letter-spacing:-.035em}h1{font-size:1.75rem;line-height:1.12;margin:4px 0 7px;font-weight:850}h2{font-size:1.08rem;margin:0;font-weight:780}h3{font-size:.96rem;margin:0 0 9px;font-weight:750}
+    p{margin-top:7px}.muted{color:var(--muted);font-size:.82rem;line-height:1.5}label{display:block;color:#aeb7b0;font-size:.75rem;font-weight:650;margin:0 0 6px}
+    .eyebrow{font-size:.65rem;color:var(--accent);font-weight:850;letter-spacing:.14em;text-transform:uppercase;margin-bottom:5px}
+    .page-intro{padding:10px 3px 16px}.page-intro p{margin:0}
+    .section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}.section-head>div{min-width:0}
+    .text-action{width:auto;min-height:32px;padding:4px 0;margin:0;background:transparent;color:var(--accent);font-size:.78rem;border:0;white-space:nowrap}
+    .count-pill,.plan-chip,.live-tag{display:inline-flex;align-items:center;border-radius:999px;padding:5px 10px;background:rgba(183,243,107,.1);border:1px solid rgba(183,243,107,.2);color:var(--accent);font-size:.7rem;font-weight:750}
+    button{width:auto;min-height:44px;padding:11px 15px;border-radius:12px;background:var(--accent);color:#151b10;border:0;font-size:.84rem;font-weight:800;cursor:pointer;transition:transform .14s ease,filter .14s ease;margin:0}
+    button:active{transform:scale(.97)}button:hover{filter:brightness(1.06)}
+    button.secondary{background:#303832;color:#e8eee9;border:1px solid #414a43}button.success{background:var(--accent);color:#141a10}button.danger{background:#713b3b;color:#fff}button.small{min-height:35px;padding:7px 11px;font-size:.74rem;border-radius:9px}
+    select,input:not([type=checkbox]),textarea{width:100%;min-height:46px;background:#101310;border:1px solid #343b35;color:var(--text);border-radius:11px;padding:11px 12px;font-size:.88rem;margin:0 0 11px;outline:none}
+    select:focus,input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(183,243,107,.09)}
+    input[type=checkbox]{accent-color:var(--accent)}
+    .row{display:flex;align-items:center;gap:10px}.row>*{min-width:0;flex:1}
+    .dashboard-hero{padding:22px 20px 18px;margin:0 0 14px;border-radius:22px;background:radial-gradient(circle at 95% 4%,rgba(183,243,107,.13),transparent 34%),linear-gradient(145deg,#202821,#151a16 74%);border:1px solid #384438;position:relative;overflow:hidden}
+    .dashboard-hero:after{content:"";position:absolute;width:170px;height:170px;border:1px solid rgba(183,243,107,.08);border-radius:50%;right:-85px;bottom:-110px;box-shadow:0 0 0 22px rgba(183,243,107,.025),0 0 0 44px rgba(183,243,107,.018);pointer-events:none}
+    .dashboard-kicker{font-size:.65rem;color:#b5c4b4;font-weight:850;letter-spacing:.15em}
+    .dashboard-title{font-size:clamp(1.75rem,6vw,2.35rem);font-weight:900;letter-spacing:-.065em;line-height:1.05;margin:12px 0 8px;max-width:420px}
+    .dashboard-subtitle{font-size:.84rem;color:#a8b4aa;margin:0 0 18px}
+    .dashboard-cta,.primary-cta{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-width:160px;background:var(--accent);color:#131910;padding:12px 18px}
+    .dashboard-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}
+    .dashboard-stat{background:rgba(7,10,8,.3);border:1px solid rgba(190,219,190,.12);border-radius:13px;padding:11px 10px}
+    .dashboard-stat strong{display:block;color:#f4f7f4;font-size:1.35rem;line-height:1.1;font-weight:850;font-variant-numeric:tabular-nums}
+    .dashboard-stat span{display:block;color:#a2aea4;font-size:.68rem;margin-top:5px}
+    .week-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-top:15px}
+    .week-day{text-align:center;color:#a3aea5;font-size:.65rem}.week-dot{width:28px;height:28px;margin:0 auto 5px;border-radius:50%;display:grid;place-items:center;background:#303832;color:#9ca69e;font-size:.68rem;font-weight:800}.week-dot.done{background:var(--accent);color:#182010}
+    .session-status-row{display:flex;align-items:center;gap:8px;margin-top:16px;color:#c4cec5;font-size:.73rem}.session-live-dot{width:7px;height:7px;background:#7f8b80;border-radius:50%}.session-live-dot.active{background:var(--accent);box-shadow:0 0 0 4px rgba(183,243,107,.1)}.session-finish{margin-left:auto;background:#313b32;color:var(--accent);min-height:29px;padding:5px 10px;font-size:.7rem}
+    .home-plan-card{padding:17px}.home-plan-meta{display:flex;align-items:center;gap:9px;margin-bottom:11px}.home-plan-list{display:grid;gap:7px}.home-plan-row{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:11px;background:#202622}.home-plan-index{width:25px;height:25px;display:grid;place-items:center;background:#303b32;border-radius:8px;color:var(--accent);font-size:.7rem;font-weight:800;flex:0 0 auto}.home-plan-row strong{font-size:.8rem}.home-plan-row .muted{font-size:.69rem}.home-plan-row .plan-done{margin-left:auto;color:var(--accent)}
+    .quick-start-card{background:linear-gradient(140deg,#1b211c,#171a18)}.quick-start-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:#2d392d;color:var(--accent);font-size:1.2rem}
+    .day-pills{display:flex;gap:7px;overflow-x:auto;padding:2px 1px 9px;margin:0 0 11px;scrollbar-width:thin}.day-pill{width:auto;flex:0 0 auto;min-height:36px;padding:8px 13px;margin:0;border-radius:999px;background:#202622;color:#a9b2aa;border:1px solid #333c35;font-size:.75rem}.day-pill.active{background:var(--accent);color:#172010;border-color:var(--accent)}
+    .sched-item{display:flex;align-items:center;justify-content:space-between;gap:9px;padding:11px 10px;border-radius:12px;background:#202622;border:1px solid #303a32;margin-bottom:7px}.sched-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0;cursor:pointer}.sched-left>div{min-width:0}.sched-left>div>div:first-child{font-size:.81rem}.sched-item .muted{font-size:.68rem}.big-check{width:19px;height:19px;min-height:19px;margin:0;flex:0 0 19px}.done-text{text-decoration:line-through;color:var(--muted)}
+    .tier-box,.counter-box,.group-chart-box,.previous-performance{background:#101411;border:1px solid #303a32;border-radius:13px;padding:12px;margin:0 0 12px}.tier-controls{display:flex;gap:8px;align-items:center}.tier-btn{width:44px;min-height:44px;flex:0 0 44px;font-size:1.2rem;padding:5px}.tier-select{margin:0;flex:1}
+    .counter-box{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:9px}.counter-btn{width:45px;height:45px;min-height:45px;flex:0 0 45px;font-size:1.3rem;padding:0;background:#2b342d;color:var(--accent);border:1px solid #3d4a3e}.counter-center{text-align:center;min-width:52px}.counter-val{font-size:1.8rem;line-height:1.05;font-weight:900;letter-spacing:-.05em;font-variant-numeric:tabular-nums}.counter-center .muted{font-size:.67rem}
+    .set-extra-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}.previous-performance{display:flex;flex-direction:column;gap:4px;padding:11px 12px}.previous-performance strong{font-size:.8rem}.previous-performance .eyebrow{margin:0}.live-tag{font-size:.62rem;letter-spacing:.08em}
+    #log-set-btn{width:100%;min-height:49px;font-size:.9rem}.log-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #303631}.log-item:last-child{border-bottom:0}.log-item strong{font-size:.8rem}.log-item .muted{font-size:.68rem}
+    .badge{display:inline-block;padding:3px 8px;border-radius:999px;background:rgba(183,243,107,.1);color:var(--accent);font-size:.67rem;font-weight:750;margin-left:6px}
+    .pr-grid{display:grid;grid-template-columns:1fr;gap:7px}.pr-card{background:#202622;border:1px solid #303a32;border-radius:12px;padding:12px;display:flex;justify-content:space-between;gap:10px;align-items:center}.pr-card strong{font-size:.78rem}.pr-val{color:var(--accent);font-size:.76rem;font-weight:850;text-align:right}
+    .progress-overview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:15px}.metric-tile{background:#202622;border:1px solid #303a32;border-radius:13px;padding:12px 10px}.metric-tile span{display:block;color:var(--muted);font-size:.66rem}.metric-tile strong{display:block;font-size:1.35rem;letter-spacing:-.04em;margin-top:5px}
+    .group-chart-box{padding:14px}.group-chart-box h3{font-size:.82rem}
+    .search-input{margin-bottom:10px!important}
+    .nav{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:space-around;gap:2px;padding:7px 7px calc(7px + env(safe-area-inset-bottom));background:rgba(17,20,18,.96);border-top:1px solid #303731;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+    .nav button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:auto;min-height:50px;padding:4px 2px;margin:0;border:0;border-radius:10px;background:transparent;color:#879188;font-size:.62rem;font-weight:700}
+    .nav button.active{color:var(--accent);background:rgba(183,243,107,.075);border:0}.nav-icon{font-size:1.15rem;line-height:1}
+    #rest-banner{position:sticky;top:62px;z-index:25;background:#283a27;color:var(--accent);border:1px solid #506744;border-radius:14px;padding:10px 12px;margin-bottom:12px}
+    #rest-banner button{min-height:33px;padding:6px 10px}
+    .warmup-item{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid #303731;cursor:pointer;font-size:.8rem}.warmup-item:last-child{border:0}
+    .tier-legend{color:var(--muted);font-size:.73rem;line-height:1.5;margin-top:8px}
+    .group-chart-box canvas{max-width:100%}
+    #tab-settings .card,#tab-exercises .card,#tab-prs .card{min-width:0}
+    @media(min-width:760px){body{padding-bottom:24px}.container{padding:24px 22px 40px}.nav{position:sticky;top:62px;bottom:auto;max-width:940px;margin:0 auto 12px;border:1px solid #303731;border-radius:14px;padding:6px;box-shadow:0 8px 22px rgba(0,0,0,.18)}.nav button{flex-direction:row;gap:8px;min-height:42px;font-size:.76rem}.nav-icon{font-size:1rem}#tab-workout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:0 14px;align-items:start}#tab-workout>.dashboard-hero,#tab-workout>.home-plan-card{grid-column:1/-1}#tab-workout>.card{min-width:0}#tab-routines,#tab-exercises,#tab-prs,#tab-settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px;align-items:start}#tab-routines>.page-intro,#tab-exercises>.page-intro,#tab-prs>.page-intro,#tab-settings>.page-intro,#tab-prs>.progress-overview{grid-column:1/-1}#tab-prs>.card:last-child{grid-column:1/-1}}
+    @media(max-width:420px){.container{padding:13px 11px 28px}.card{padding:15px;border-radius:16px}.dashboard-hero{padding:19px 16px}.dashboard-stats{gap:6px}.dashboard-stat{padding:10px 8px}.dashboard-stat strong{font-size:1.2rem}.set-extra-fields{gap:8px}.counter-btn{width:42px;flex-basis:42px;height:44px;min-height:44px}.nav button{font-size:.6rem}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
   </style>
 </head>
 <body>
 
-<header id="app-header">CalisTrack</header>
+<header id="app-header">
+  <a class="brand-lockup" href="#" onclick="switchTab('workout',document.querySelector('[data-tab=workout]'));return false;" aria-label="CalisTrack home"><span class="brand-mark">C</span><span>calis<span class="brand-light">track</span></span></a>
+  <div class="header-actions"><span class="header-date" id="header-date"></span><button class="avatar-button" type="button" onclick="switchTab('settings',document.querySelector('[data-tab=settings]'))" aria-label="Open profile">D</button></div>
+</header>
 
 <div class="container">
   <div id="rest-banner">
@@ -329,10 +401,11 @@
   <!-- TAB 1: WORKOUT DASHBOARD -->
   <div id="tab-workout" class="tab">
     <section class="dashboard-hero" aria-label="Workout overview">
-      <div class="dashboard-kicker" id="dashboard-date">YOUR TRAINING OVERVIEW</div>
-      <div class="dashboard-title">Ready to get stronger?</div>
-      <p class="dashboard-subtitle" id="dashboard-focus">Show up, put in the work, and build your next milestone.</p>
+      <div class="dashboard-kicker" id="dashboard-date">YOUR TRAINING SPACE</div>
+      <div class="dashboard-title">Make every set count.</div>
+      <p class="dashboard-subtitle" id="dashboard-focus">Your plan. Your pace. Your progress.</p>
       <button type="button" class="dashboard-cta" onclick="document.getElementById('workout-exercise').scrollIntoView({behavior:'smooth',block:'center'});">Start workout <span aria-hidden="true">→</span></button>
+      <div class="session-status-row"><span class="session-live-dot"></span><span id="session-status">No active workout</span><button type="button" class="session-finish" id="finish-workout-btn" onclick="finishWorkout()" hidden>Finish</button></div>
       <div class="dashboard-stats">
         <div class="dashboard-stat"><strong id="dash-today-sets">0</strong><span>Sets today</span></div>
         <div class="dashboard-stat"><strong id="dash-total-sessions">0</strong><span>Training days</span></div>
@@ -341,6 +414,86 @@
       <div class="week-strip" id="dashboard-week" aria-label="Weekly training activity"></div>
     </section>
 
+    <section class="card home-plan-card">
+      <div class="section-head">
+        <div><div class="eyebrow">YOUR PLAN</div><h2 id="home-plan-title">Today's workout</h2></div>
+        <button class="text-action" type="button" onclick="switchTab('routines',document.querySelector('[data-tab=routines]'))">View plan <span>›</span></button>
+      </div>
+      <div class="home-plan-meta"><span class="plan-chip" id="home-plan-focus">Training day</span><span class="muted" id="home-plan-count">0 exercises</span></div>
+      <div id="home-plan-list" class="home-plan-list"></div>
+    </section>
+    <section class="card quick-start-card">
+      <div class="section-head"><div><div class="eyebrow">READY WHEN YOU ARE</div><h2>Start training</h2></div><span class="quick-start-icon">↗</span></div>
+      <p class="muted">Log your sets, track your holds and build on your previous performance.</p>
+      <button type="button" class="primary-cta" onclick="beginWorkout();document.getElementById('workout-exercise').scrollIntoView({behavior:'smooth',block:'center'});">Start workout <span>→</span></button>
+    </section>
+    <!-- Active Set Logger -->
+    <div class="card">
+      <div class="section-head"><div><div class="eyebrow">ACTIVE SESSION</div><h2>Log your set</h2></div><span class="live-tag">LIVE</span></div>
+      <label for="workout-exercise">Exercise / Progression</label>
+      <select id="workout-exercise" onchange="onExerciseChange()"></select>
+
+      <!-- Skill Progression Tier Selector (shown for progression trees) -->
+      <div id="progression-tier-box" class="tier-box hidden">
+        <label for="progression-tier-select">Progression Tier</label>
+        <div class="tier-controls">
+          <button type="button" class="secondary tier-btn" onclick="stepProgressionTier(-1)">-</button>
+          <select id="progression-tier-select" class="tier-select" onchange="onTierSelectChange()"></select>
+          <button type="button" class="secondary tier-btn" onclick="stepProgressionTier(1)">+</button>
+        </div>
+        <div id="progression-mode-note" class="muted" style="margin-top:6px;"></div>
+      </div>
+
+      <div class="previous-performance" id="previous-performance"><span class="eyebrow">LAST PERFORMANCE</span><strong>No previous sets yet</strong></div>
+      <!-- Dual Mode Controls: Reps & Seconds -->
+      <div class="row">
+        <div>
+          <label for="rep-count">Reps (Dynamic)</label>
+          <div class="counter-box">
+            <button type="button" class="secondary counter-btn" onclick="adjustReps(-1)">-</button>
+            <div class="counter-center">
+              <div id="rep-count" class="counter-val">10</div>
+              <div class="muted">reps</div>
+            </div>
+            <button type="button" class="secondary counter-btn" onclick="adjustReps(1)">+</button>
+          </div>
+        </div>
+
+        <div>
+          <label for="time-count">Hold Time (Isometric)</label>
+          <div class="counter-box">
+            <button type="button" class="secondary counter-btn" onclick="adjustSeconds(-5)">-5</button>
+            <div class="counter-center">
+              <div id="time-count" class="counter-val">20</div>
+              <div class="muted">sec</div>
+            </div>
+            <button type="button" class="secondary counter-btn" onclick="adjustSeconds(5)">+5</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="set-extra-fields">
+        <div><label for="set-weight">Added weight (kg)</label><input type="number" id="set-weight" min="0" step="0.5" inputmode="decimal" placeholder="0" /></div>
+        <div><label for="set-rpe">Effort (RPE)</label><select id="set-rpe"><option value="">Not set</option><option value="6">6 – Easy</option><option value="7">7 – Moderate</option><option value="8">8 – Hard</option><option value="9">9 – Very hard</option><option value="10">10 – Max effort</option></select></div>
+      </div>
+      <button type="button" id="hold-timer-btn" class="secondary" onclick="toggleHoldTimer()">
+        Hands-Free Hold Timer (3s Beep + 5s Cues)
+      </button>
+      <button type="button" id="log-set-btn" class="success" onclick="logSet()">
+        Log set & start rest
+      </button>
+    </div>
+
+    <!-- Today's Session Logs -->
+    <div class="card">
+      <h3>Today's Logged Sets</h3>
+      <div id="today-logs"><p class="muted">No sets logged today yet.</p></div>
+    </div>
+  </div>
+
+  <!-- TAB: ROUTINES -->
+  <div id="tab-routines" class="tab hidden">
+    <div class="page-intro"><div class="eyebrow">PLAN YOUR TRAINING</div><h1>Your routines</h1><p class="muted">Organise your week and prepare for every session.</p></div>
     <!-- Quick 3-Minute Warm-Up Checklist -->
     <div class="card">
       <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
@@ -379,63 +532,7 @@
       </div>
     </div>
 
-    <!-- Active Set Logger -->
-    <div class="card">
-      <h2>Log Set</h2>
-      <label for="workout-exercise">Exercise / Progression</label>
-      <select id="workout-exercise" onchange="onExerciseChange()"></select>
 
-      <!-- Skill Progression Tier Selector (shown for progression trees) -->
-      <div id="progression-tier-box" class="tier-box hidden">
-        <label for="progression-tier-select">Progression Tier</label>
-        <div class="tier-controls">
-          <button type="button" class="secondary tier-btn" onclick="stepProgressionTier(-1)">-</button>
-          <select id="progression-tier-select" class="tier-select" onchange="onTierSelectChange()"></select>
-          <button type="button" class="secondary tier-btn" onclick="stepProgressionTier(1)">+</button>
-        </div>
-        <div id="progression-mode-note" class="muted" style="margin-top:6px;"></div>
-      </div>
-
-      <!-- Dual Mode Controls: Reps & Seconds -->
-      <div class="row">
-        <div>
-          <label for="rep-count">Reps (Dynamic)</label>
-          <div class="counter-box">
-            <button type="button" class="secondary counter-btn" onclick="adjustReps(-1)">-</button>
-            <div class="counter-center">
-              <div id="rep-count" class="counter-val">10</div>
-              <div class="muted">reps</div>
-            </div>
-            <button type="button" class="secondary counter-btn" onclick="adjustReps(1)">+</button>
-          </div>
-        </div>
-
-        <div>
-          <label for="time-count">Hold Time (Isometric)</label>
-          <div class="counter-box">
-            <button type="button" class="secondary counter-btn" onclick="adjustSeconds(-5)">-5</button>
-            <div class="counter-center">
-              <div id="time-count" class="counter-val">20</div>
-              <div class="muted">sec</div>
-            </div>
-            <button type="button" class="secondary counter-btn" onclick="adjustSeconds(5)">+5</button>
-          </div>
-        </div>
-      </div>
-
-      <button type="button" id="hold-timer-btn" class="secondary" onclick="toggleHoldTimer()">
-        Hands-Free Hold Timer (3s Beep + 5s Cues)
-      </button>
-      <button type="button" id="log-set-btn" class="success" onclick="logSet()">
-        Complete Set & Start Rest Timer
-      </button>
-    </div>
-
-    <!-- Today's Session Logs -->
-    <div class="card">
-      <h3>Today's Logged Sets</h3>
-      <div id="today-logs"><p class="muted">No sets logged today yet.</p></div>
-    </div>
   </div>
 
   <!-- TAB 2: EXERCISES & PROGRESSIONS (Push / Pull / Legs / Core) -->
@@ -466,7 +563,8 @@
     </div>
 
     <div class="card">
-      <h3>Library (Push · Pull · Legs · Core)</h3>
+      <div class="section-head"><div><div class="eyebrow">MOVEMENT DATABASE</div><h2>Exercise library</h2></div><span class="count-pill" id="exercise-count">0</span></div>
+      <input type="search" id="exercise-search" class="search-input" placeholder="Search exercises..." oninput="setExerciseSearch(this.value)" />
       <div class="day-pills" id="lib-filter-pills"></div>
       <div id="exercise-library-list"></div>
     </div>
@@ -475,7 +573,13 @@
   <!-- TAB 3: PRs, SKILL PROGRESSION & CHARTS -->
   <div id="tab-prs" class="tab hidden">
     <div class="card">
-      <h2>Personal Records (All-Time PRs)</h2>
+      <div class="page-intro"><div class="eyebrow">YOUR TRAINING DATA</div><h1>Progress</h1><p class="muted">Every rep and every hold adds up.</p></div>
+      <div class="progress-overview" id="progress-overview">
+        <div class="metric-tile"><span>Total sets</span><strong id="progress-total-sets">0</strong></div>
+        <div class="metric-tile"><span>Training days</span><strong id="progress-training-days">0</strong></div>
+        <div class="metric-tile"><span>Exercises logged</span><strong id="progress-exercises">0</strong></div>
+      </div>
+      <div class="section-head"><div><div class="eyebrow">PERSONAL BESTS</div><h2>Personal records</h2></div></div>
       <div id="prs-list" class="pr-grid"></div>
     </div>
 
@@ -523,6 +627,7 @@
 
   <!-- TAB 4: SETTINGS & BACKUP -->
   <div id="tab-settings" class="tab hidden">
+    <div class="page-intro"><div class="eyebrow">YOUR ACCOUNT</div><h1>Profile & settings</h1><p class="muted">Manage your training preferences and backup.</p></div>
     <div class="card">
       <h2>Rest Timer & Audio Cues</h2>
       <label for="rest-setting">Default Rest Between Sets (seconds)</label>
@@ -548,12 +653,13 @@
   </div>
 </div>
 
-<div class="nav">
-  <button type="button" class="active" onclick="switchTab('workout', this)">Workout</button>
-  <button type="button" onclick="switchTab('exercises', this)">Library</button>
-  <button type="button" onclick="switchTab('prs', this)">Progress</button>
-  <button type="button" onclick="switchTab('settings', this)">Settings</button>
-</div>
+<nav class="nav" aria-label="Main navigation">
+  <button type="button" data-tab="workout" class="active" onclick="switchTab('workout',this)"><span class="nav-icon">⌂</span><span>Home</span></button>
+  <button type="button" data-tab="routines" onclick="switchTab('routines',this)"><span class="nav-icon">▦</span><span>Routines</span></button>
+  <button type="button" data-tab="exercises" onclick="switchTab('exercises',this)"><span class="nav-icon">▤</span><span>Exercises</span></button>
+  <button type="button" data-tab="prs" onclick="switchTab('prs',this)"><span class="nav-icon">⌁</span><span>Progress</span></button>
+  <button type="button" data-tab="settings" onclick="switchTab('settings',this)"><span class="nav-icon">◉</span><span>Profile</span></button>
+</nav>
 
 <script>
   const STORAGE_KEY = 'calisTrackData';
@@ -732,6 +838,7 @@
 
   let selectedDay = getTodayKey();
   let selectedLibGroup = 'All';
+  let exerciseSearchTerm = '';
   let currentReps = 10;
   let currentSeconds = 20;
   let restInterval = null;
@@ -740,6 +847,9 @@
   let audioCtx = null;
   let skillChartInstance = null;
   const areaChartInstances = {};
+
+  if (!Array.isArray(state.workoutSessions)) state.workoutSessions = [];
+  if (!state.settings) state.settings = { restDuration: 90, reminderTime: '' };
 
   function saveState() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -782,6 +892,9 @@
     document.getElementById('tab-' + tabName).classList.remove('hidden');
     document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
+    else { const navBtn=document.querySelector('.nav button[data-tab='+tabName+']'); if(navBtn) navBtn.classList.add('active'); }
+    if(tabName==='workout') { renderHomePlan(); updateDashboardStats(); }
+    if(tabName==='routines') { renderDayPills(); renderDaySchedule(); renderWarmup(); }
 
     if (tabName === 'exercises') {
       renderLibFilterPills();
@@ -1194,11 +1307,14 @@
     const parts = [];
     if (l.reps > 0) parts.push(`${l.reps} reps`);
     if (l.seconds > 0) parts.push(`${l.seconds}s hold`);
-    return parts.join(' + ') || '0';
+    if(l.weightKg>0)parts.push(l.weightKg+' kg');
+    if(l.rpe)parts.push('RPE '+l.rpe);
+    return parts.join(' · ') || '0';
   }
 
   function renderTodayLogs() {
     const today = getTodayDateStr();
+    updateDashboardStats();
     const todayLogs = state.logs.filter(l => l.date === today);
     const el = document.getElementById('today-logs');
     if (!todayLogs.length) {
@@ -1225,6 +1341,8 @@
       return `<button type="button" class="day-pill ${active}" onclick="selectLibGroup('${g}')">${g}</button>`;
     }).join('');
   }
+
+  function setExerciseSearch(value) { exerciseSearchTerm=String(value||'').trim().toLowerCase(); renderLibrary(); }
 
   function selectLibGroup(group) {
     selectedLibGroup = group;
@@ -1277,7 +1395,7 @@
   }
 
   function switchToWorkoutWith(exId) {
-    const workoutBtn = document.querySelector('.nav button');
+    const workoutBtn = document.querySelector('.nav button[data-tab=workout]');
     switchTab('workout', workoutBtn);
     focusExerciseInLogger(exId);
   }
@@ -1555,9 +1673,60 @@
       .catch(err => console.log('SW registration skipped:', err));
   }
 
+  function renderHomePlan() {
+    const todayKey=getTodayKey(), day=(state.schedule[todayKey]||{focus:'Rest day',items:[]});
+    const title=document.getElementById('home-plan-title'), focus=document.getElementById('home-plan-focus'), count=document.getElementById('home-plan-count'), list=document.getElementById('home-plan-list');
+    if(!title||!list)return;
+    title.textContent=todayKey+" routine";
+    focus.textContent=day.focus||'Training day';
+    count.textContent=(day.items||[]).length+' exercises';
+    const loggedToday=new Set(state.logs.filter(l=>l.date===getTodayDateStr()).map(l=>l.exerciseId));
+    list.innerHTML=(day.items||[]).slice(0,4).map((id,i)=>{
+      const ex=getExerciseById(id); if(!ex)return '';
+      return '<div class="home-plan-row"><span class="home-plan-index">'+(i+1)+'</span><div style="min-width:0;flex:1"><strong>'+getActiveExerciseLabel(ex)+'</strong><div class="muted">'+normalizeCategory(ex.category)+(ex.tiers?' · Skill progression':'')+'</div></div>'+(loggedToday.has(id)?'<span class="plan-done">✓</span>':'')+'</div>';
+    }).join('') || '<p class="muted">Rest day. Take time for mobility and recovery.</p>';
+  }
+
+  function beginWorkout() {
+    if(!state.activeWorkout) state.activeWorkout={date:getTodayDateStr(),startedAt:Date.now(),day:getTodayKey()};
+    saveState();
+    updateDashboardStats();
+    const logger=document.getElementById('workout-exercise');
+    if(logger) logger.focus({preventScroll:true});
+  }
+
+  function finishWorkout() {
+    if(!state.activeWorkout) return;
+    const started=state.activeWorkout.startedAt||Date.now();
+    const date=state.activeWorkout.date||getTodayDateStr();
+    const count=state.logs.filter(l=>l.date===date && l.id>=started).length;
+    if(!confirm('Finish this workout? '+count+' sets logged.')) return;
+    state.workoutSessions.unshift({id:Date.now(),date,day:state.activeWorkout.day,startedAt:started,finishedAt:Date.now(),sets:count});
+    state.activeWorkout=null;
+    saveState();
+    updateDashboardStats();
+    alert('Workout saved. Great work!');
+  }
+
+  function renderPreviousPerformance() {
+    const exId=document.getElementById('workout-exercise')?.value;
+    const el=document.getElementById('previous-performance');
+    if(!el)return;
+    const prev=state.logs.find(l=>l.exerciseId===exId);
+    el.innerHTML='<span class="eyebrow">LAST PERFORMANCE</span><strong>'+(prev?formatSetSummary(prev)+' · '+(prev.date||''):'No previous sets yet')+'</strong>';
+  }
+
+  function updateProgressOverview() {
+    const put=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+    put('progress-total-sets',state.logs.length);
+    put('progress-training-days',new Set(state.logs.map(l=>l.date)).size);
+    put('progress-exercises',new Set(state.logs.map(l=>l.exerciseId)).size);
+  }
+
   function updateDashboardStats() {
     const now = new Date();
     const today = getTodayDateStr();
+    const headerDate=document.getElementById('header-date'); if(headerDate)headerDate.textContent=now.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
     const todayLogs = state.logs.filter(l => l.date === today);
     const trainingDates = [...new Set(state.logs.map(l => l.date).filter(Boolean))].sort().reverse();
     const sessionCount = trainingDates.length;
@@ -1579,6 +1748,11 @@
     if(setEl) setEl.textContent=todayLogs.length;
     if(totalEl) totalEl.textContent=sessionCount;
     if(streakEl) streakEl.textContent=streak;
+    const status=document.getElementById('session-status'), finish=document.getElementById('finish-workout-btn'), dot=document.querySelector('.session-live-dot');
+    if(status)status.textContent=state.activeWorkout?'Workout in progress · '+Math.max(1,Math.floor((Date.now()-state.activeWorkout.startedAt)/60000))+' min':'No active workout';
+    if(finish)finish.hidden=!state.activeWorkout;
+    if(dot)dot.classList.toggle('active',!!state.activeWorkout);
+    updateProgressOverview();
     const weekEl=document.getElementById('dashboard-week');
     if(weekEl) {
       const mondayOffset=(now.getDay()+6)%7;
