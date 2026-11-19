@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <link rel="manifest" href="./manifest.json" />
+  <title>CalisTrack — Personal Calisthenics</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --card-2: #0b1220;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-dark: #0284c7;
+      --success: #22c55e;
+      --warn: #eab308;
+      --danger: #ef4444;
+      --border: #334155;
+    }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 88px; }
+    header {
+      background: var(--card);
+      padding: 14px 16px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 1.2rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .container { max-width: 640px; margin: auto; padding: 14px; }
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.12);
+    }
+    h2, h3 { margin: 0 0 10px 0; font-size: 1.08rem; }
+    .muted { color: var(--muted); font-size: 0.88rem; }
+    label { display: block; color: var(--muted); font-size: 0.82rem; margin-bottom: 5px; }
+    select, input, button {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--card-2);
+      color: var(--text);
+      font-size: 1rem;
+      margin-bottom: 10px;
+      min-height: 48px;
+    }
+    button {
+      background: var(--accent);
+      color: #06121e;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.12s ease, opacity 0.15s ease;
+    }
+    button:active { transform: scale(0.98); }
+    button.secondary { background: #334155; color: var(--text); }
+    button.success { background: var(--success); color: #052e16; }
+    button.danger { background: var(--danger); color: #ffffff; }
+    button.small { width: auto; min-height: 40px; padding: 8px 12px; font-size: 0.88rem; margin-bottom: 0; }
+
+    .row { display: flex; gap: 10px; align-items: center; }
+    .row > * { flex: 1; }
+    .day-pills { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 12px; }
+    .day-pill {
+      flex: 0 0 auto;
+      width: auto;
+      min-height: 40px;
+      padding: 8px 12px;
+      margin-bottom: 0;
+      border-radius: 999px;
+      background: var(--card-2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+    .day-pill.active { background: var(--accent); color: #06121e; border-color: var(--accent); }
+
+    .sched-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 10px;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+    .sched-left { display: flex; align-items: center; gap: 12px; flex: 1; cursor: pointer; }
+    .big-check { width: 24px; height: 24px; min-height: 24px; margin: 0; accent-color: var(--success); cursor: pointer; flex: 0 0 24px; }
+    .done-text { text-decoration: line-through; color: var(--muted); }
+
+    .tier-box {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 12px;
+    }
+    .tier-controls { display: flex; gap: 8px; align-items: center; }
+    .tier-btn { width: 52px; min-height: 52px; font-size: 1.4rem; margin: 0; flex: 0 0 52px; }
+    .tier-select { margin: 0; flex: 1; }
+
+    .counter-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+    }
+    .counter-btn { width: 58px; height: 58px; min-height: 58px; font-size: 1.5rem; margin: 0; flex: 0 0 58px; }
+    .counter-center { text-align: center; }
+    .counter-val { font-size: 2rem; font-weight: 800; line-height: 1.1; }
+
+    .warmup-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+      cursor: pointer;
+    }
+    .warmup-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .log-item {
+      border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+      padding: 11px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .log-item:last-child { border-bottom: none; }
+    .badge {
+      display: inline-block;
+      font-size: 0.74rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #334155;
+      color: var(--accent);
+      margin-left: 6px;
+      font-weight: 600;
+    }
+    .pr-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+    .pr-card {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .pr-val { font-weight: 800; color: var(--success); font-size: 1.05rem; }
+
+    #rest-banner {
+      background: linear-gradient(135deg, var(--accent-dark), #0369a1);
+      color: #ffffff;
+      padding: 12px 14px;
+      border-radius: 12px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card);
+      display: flex;
+      border-top: 1px solid var(--border);
+      z-index: 20;
+    }
+    .nav button {
+      flex: 1;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 0;
+      margin: 0;
+      padding: 14px 4px;
+      min-height: 56px;
+      font-size: 0.85rem;
+      border-top: 3px solid transparent;
+    }
+    .nav button.active {
+      color: var(--accent);
+      border-top-color: var(--accent);
+      background: rgba(56, 189, 248, 0.06);
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<header id="app-header">CalisTrack</header>
+
+<div class="container">
+  <div id="rest-banner">
+    <div>Rest Timer: <span id="rest-time">60</span>s</div>
+    <div style="display:flex; gap:8px;">
+      <button class="small secondary" onclick="addRestTime(15)">+15s</button>
+      <button class="small" onclick="stopRest()">Skip</button>
+    </div>
+  </div>
+
+  <!-- TAB 1: WORKOUT DASHBOARD -->
+  <div id="tab-workout" class="tab">
+    <!-- Quick 3-Minute Warm-Up Checklist -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+        <h2 style="margin:0;">3-Min Warm-Up Checklist</h2>
+        <button class="small secondary" onclick="resetWarmup()">Reset</button>
+      </div>
+      <p class="muted" style="margin:4px 0 8px 0;">~60s each before loading joints or straight-arm holds.</p>
+      <label class="warmup-item">
+        <input type="checkbox" class="big-check warmup-cb" data-idx="0" onchange="saveWarmup()" />
+        <span><strong>Wrist Circles</strong> — 60s both directions, seated or standing</span>
+      </label>
+      <label class="warmup-item">
+        <input type="checkbox" class="big-check warmup-cb" data-idx="1" onchange="saveWarmup()" />
+        <span><strong>Palm Pulses</strong> — 60s gentle lean & lift with fingers forward/back</span>
+      </label>
+      <label class="warmup-item">
+        <input type="checkbox" class="big-check warmup-cb" data-idx="2" onchange="saveWarmup()" />
+        <span><strong>Scapular Shrugs</strong> — 60s protract/retract & depress shoulders</span>
+      </label>
+    </div>
+
+    <!-- Today's Workout Schedule -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:8px;">
+        <h2 id="schedule-heading" style="margin:0;">Today's Workout</h2>
+        <span id="schedule-focus" class="muted"></span>
+      </div>
+      <div class="day-pills" id="day-pills"></div>
+      <div id="day-schedule-list"></div>
+    </div>
+
+    <!-- Active Set Logger -->
+    <div class="card">
+      <h2>Log Set</h2>
+      <label for="workout-exercise">Exercise / Progression</label>
+      <select id="workout-exercise" onchange="onExerciseChange()"></select>
+
+      <!-- Skill Progression Tier Selector (shown for progression trees) -->
+      <div id="progression-tier-box" class="tier-box hidden">
+        <label for="progression-tier-select">Progression Tier</label>
+        <div class="tier-controls">
+          <button type="button" class="secondary tier-btn" onclick="stepProgressionTier(-1)">-</button>
+          <select id="progression-tier-select" class="tier-select" onchange="onTierSelectChange()"></select>
+          <button type="button" class="secondary tier-btn" onclick="stepProgressionTier(1)">+</button>
+        </div>
+        <div id="progression-mode-note" class="muted" style="margin-top:6px;"></div>
+      </div>
+
+      <!-- Dual Mode Controls: Reps & Seconds -->
+      <div class="row">
+        <div>
+          <label for="rep-count">Reps (Dynamic)</label>
+          <div class="counter-box">
+            <button type="button" class="secondary counter-btn" onclick="adjustReps(-1)">-</button>
+            <div class="counter-center">
+              <div id="rep-count" class="counter-val">10</div>
+              <div class="muted">reps</div>
+            </div>
+            <button type="button" class="secondary counter-btn" onclick="adjustReps(1)">+</button>
+          </div>
+        </div>
+
+        <div>
+          <label for="time-count">Hold Time (Isometric)</label>
+          <div class="counter-box">
+            <button type="button" class="secondary counter-btn" onclick="adjustSeconds(-5)">-5</button>
+            <div class="counter-center">
+              <div id="time-count" class="counter-val">20</div>
+              <div class="muted">sec</div>
+            </div>
+            <button type="button" class="secondary counter-btn" onclick="adjustSeconds(5)">+5</button>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" id="hold-timer-btn" class="secondary" onclick="toggleHoldTimer()">
+        Hands-Free Hold Timer (3s Beep + 5s Cues)
+      </button>
+      <button type="button" id="log-set-btn" class="success" onclick="logSet()">
+        Complete Set & Start Rest Timer
+      </button>
+    </div>
+
+    <!-- Today's Session Logs -->
+    <div class="card">
+      <h3>Today's Logged Sets</h3>
+      <div id="today-logs"><p class="muted">No sets logged today yet.</p></div>
+    </div>
+  </div>
+
+  <!-- TAB 2: EXERCISES & PROGRESSIONS -->
+  <div id="tab-exercises" class="tab hidden">
+    <div class="card">
+      <h2>Add Custom Exercise</h2>
+      <input type="text" id="new-ex-name" placeholder="Exercise name (e.g., Pike Handstand Pushups)" />
+      <div class="row">
+        <div>
+          <label for="new-ex-cat">Category</label>
+          <select id="new-ex-cat">
+            <option value="Push">Push</option>
+            <option value="Pull">Pull</option>
+            <option value="Legs">Legs</option>
+            <option value="Core">Core</option>
+            <option value="Skill">Skill</option>
+          </select>
+        </div>
+        <div>
+          <label for="new-ex-metric">Primary Metric</label>
+          <select id="new-ex-metric">
+            <option value="reps">Reps</option>
+            <option value="time">Seconds (Hold)</option>
+            <option value="both">Both (Reps & Sec)</option>
+          </select>
+        </div>
+      </div>
+      <button type="button" onclick="addCustomExercise()">Add Exercise</button>
+    </div>
+
+    <div class="card">
+      <h3>Progression Trees & Library</h3>
+      <div id="exercise-library-list"></div>
+    </div>
+  </div>
+
+  <!-- TAB 3: PRs & HISTORY -->
+  <div id="tab-prs" class="tab hidden">
+    <div class="card">
+      <h2>Personal Records (All-Time PRs)</h2>
+      <div id="prs-list" class="pr-grid"></div>
+    </div>
+
+    <div class="card">
+      <h2>Progress Chart</h2>
+      <label for="chart-exercise">Exercise</label>
+      <select id="chart-exercise" onchange="renderChart()"></select>
+      <label for="chart-metric">Metric</label>
+      <select id="chart-metric" onchange="renderChart()">
+        <option value="maxReps">Max Reps (Single Set)</option>
+        <option value="totalReps">Total Reps (Per Day)</option>
+        <option value="maxSec">Max Hold Time (Seconds)</option>
+      </select>
+      <canvas id="progressChart" height="210"></canvas>
+    </div>
+
+    <div class="card">
+      <h3>Workout History</h3>
+      <div id="full-history"></div>
+    </div>
+  </div>
+
+  <!-- TAB 4: SETTINGS & BACKUP -->
+  <div id="tab-settings" class="tab hidden">
+    <div class="card">
+      <h2>Rest Timer & Audio Cues</h2>
+      <label for="rest-setting">Default Rest Between Sets (seconds)</label>
+      <input type="number" id="rest-setting" value="90" min="10" max="600" onchange="saveSettings()" />
+      <button type="button" class="secondary" onclick="testAudioCue()">Test Hands-Free Audio Beeps</button>
+    </div>
+
+    <div class="card">
+      <h2>Daily Workout Reminder</h2>
+      <p class="muted">Enable notifications for your daily training window.</p>
+      <input type="time" id="reminder-time" value="18:00" />
+      <button type="button" onclick="scheduleReminder()">Save & Enable Reminder</button>
+      <p id="reminder-status" class="muted" style="color:var(--success);"></p>
+    </div>
+
+    <div class="card">
+      <h2>Local Backup & Reset</h2>
+      <p class="muted">Data is stored offline in localStorage on this device.</p>
+      <button type="button" class="secondary" onclick="exportData()">Export Backup (JSON)</button>
+      <input type="file" id="import-file" accept=".json" onchange="importData(event)" />
+      <button type="button" class="danger" onclick="resetToDefaults()">Reset Pre-Loaded Exercises & Schedule (Keeps Logs)</button>
+    </div>
+  </div>
+</div>
+
+<div class="nav">
+  <button type="button" class="active" onclick="switchTab('workout', this)">Workout</button>
+  <button type="button" onclick="switchTab('exercises', this)">Library</button>
+  <button type="button" onclick="switchTab('prs', this)">PRs</button>
+  <button type="button" onclick="switchTab('settings', this)">Settings</button>
+</div>
+
+<script>
+  const STORAGE_KEY = 'calisTrackData';
+
+  const DEFAULT_EXERCISES = [
+    // 6 Progression Trees
+    {
+      id: 'prog_planche',
+      name: 'Planche Progression',
+      category: 'Push',
+      metric: 'time',
+      currentTier: 0,
+      tiers: [
+        { label: 'Planche Lean', metric: 'time' },
+        { label: 'Frog Stand', metric: 'time' },
+        { label: 'Tuck Planche', metric: 'time' },
+        { label: 'Advanced Tuck Planche', metric: 'time' },
+        { label: 'Straddle Planche', metric: 'time' },
+        { label: 'Full Planche', metric: 'time' }
+      ]
+    },
+    {
+      id: 'prog_finger_pushup',
+      name: 'Finger Pushup Progression',
+      category: 'Push',
+      metric: 'reps',
+      currentTier: 0,
+      tiers: [
+        { label: 'Wall Finger Pushups', metric: 'reps' },
+        { label: 'Incline 5-Finger Pushups', metric: 'reps' },
+        { label: 'Knee 5-Finger Pushups', metric: 'reps' },
+        { label: 'Full 5-Finger Pushups', metric: 'reps' },
+        { label: '4-Finger Pushups', metric: 'reps' },
+        { label: '3-Finger Pushups', metric: 'reps' },
+        { label: '2-Finger Pushups', metric: 'reps' }
+      ]
+    },
+    {
+      id: 'prog_pistol_squat',
+      name: 'Pistol Squat Progression',
+      category: 'Legs',
+      metric: 'reps',
+      currentTier: 0,
+      tiers: [
+        { label: 'Assisted Pistol Squat', metric: 'reps' },
+        { label: 'Box/Chair Pistol Squat', metric: 'reps' },
+        { label: 'Counterweight Pistol Squat', metric: 'reps' },
+        { label: 'Elevated Heel Pistol Squat', metric: 'reps' },
+        { label: 'Full Bodyweight Pistol Squat', metric: 'reps' }
+      ]
+    },
+    {
+      id: 'prog_deadhang',
+      name: 'Deadhang Progression',
+      category: 'Pull',
+      metric: 'time',
+      currentTier: 0,
+      tiers: [
+        { label: 'Passive Two-Arm Hang', metric: 'time' },
+        { label: 'Active Scapular Hang', metric: 'time' },
+        { label: 'Towel/Thick-Grip Hang', metric: 'time' },
+        { label: 'Single-Arm Assisted Hang', metric: 'time' },
+        { label: 'Full Single-Arm Deadhang', metric: 'time' }
+      ]
+    },
+    {
+      id: 'prog_pullup',
+      name: 'Pullup Progression',
+      category: 'Pull',
+      metric: 'reps',
+      currentTier: 0,
+      tiers: [
+        { label: 'Scapular Pulls', metric: 'reps' },
+        { label: 'Negative Pullups', metric: 'reps' },
+        { label: 'Band-Assisted Pullups', metric: 'reps' },
+        { label: 'Full Strict Pullups', metric: 'reps' },
+        { label: 'Chest-to-Bar Pullups', metric: 'reps' },
+        { label: 'L-Sit Pullups', metric: 'reps' }
+      ]
+    },
+    {
+      id: 'prog_dragon_flag',
+      name: 'Dragon Flag Progression',
+      category: 'Core',
+      metric: 'both',
+      currentTier: 0,
+      tiers: [
+        { label: 'Lying Leg Raises', metric: 'reps' },
+        { label: 'Tuck Dragon Flag (Hold/Reps)', metric: 'both' },
+        { label: 'Single-Leg Dragon Flag', metric: 'both' },
+        { label: 'Straddle Dragon Flag', metric: 'both' },
+        { label: 'Dragon Flag Negatives (Slow Eccentric)', metric: 'reps' },
+        { label: 'Full Dragon Flag', metric: 'both' }
+      ]
+    },
+
+    // Supporting Home Exercises
+    { id: 'ex_pike_pushups', name: 'Pike Pushups', category: 'Push', metric: 'reps' },
+    { id: 'ex_pseudo_planche_pushups', name: 'Pseudo-Planche Pushups', category: 'Push', metric: 'reps' },
+    { id: 'ex_diamond_pushups', name: 'Diamond Pushups', category: 'Push', metric: 'reps' },
+    { id: 'ex_dips', name: 'Chair/Bar Dips', category: 'Push', metric: 'reps' },
+    { id: 'ex_australian_rows', name: 'Australian Rows', category: 'Pull', metric: 'reps' },
+    { id: 'ex_archer_rows', name: 'Archer Rows', category: 'Pull', metric: 'reps' },
+    { id: 'ex_hanging_leg_raises', name: 'Hanging Leg Raises', category: 'Core', metric: 'reps' },
+    { id: 'ex_bulgarian_split_squats', name: 'Bulgarian Split Squats', category: 'Legs', metric: 'reps' },
+    { id: 'ex_nordic_hamstring_curls', name: 'Nordic Hamstring Curls', category: 'Legs', metric: 'reps' },
+    { id: 'ex_hollow_body_holds', name: 'Hollow Body Holds', category: 'Core', metric: 'time' },
+    { id: 'ex_lsit_holds', name: 'L-Sit Holds', category: 'Core', metric: 'time' }
+  ];
+
+  const DEFAULT_SCHEDULE = {
+    Monday: {
+      focus: 'Push A',
+      items: ['prog_planche', 'prog_finger_pushup', 'ex_pike_pushups', 'ex_hollow_body_holds']
+    },
+    Tuesday: {
+      focus: 'Pull A',
+      items: ['prog_deadhang', 'prog_pullup', 'ex_australian_rows', 'ex_hanging_leg_raises']
+    },
+    Wednesday: {
+      focus: 'Legs & Core',
+      items: ['prog_pistol_squat', 'ex_bulgarian_split_squats', 'ex_lsit_holds']
+    },
+    Thursday: {
+      focus: 'Push B',
+      items: ['prog_planche', 'ex_pseudo_planche_pushups', 'ex_diamond_pushups', 'ex_dips']
+    },
+    Friday: {
+      focus: 'Pull B',
+      items: ['prog_deadhang', 'prog_pullup', 'ex_archer_rows', 'prog_dragon_flag']
+    },
+    Saturday: {
+      focus: 'Legs & Conditioning',
+      items: ['prog_pistol_squat', 'ex_nordic_hamstring_curls', 'ex_hollow_body_holds']
+    },
+    Sunday: {
+      focus: 'Rest & Mobility Day',
+      items: []
+    }
+  };
+
+  const DAYS_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+  function getTodayKey() {
+    const jsDay = new Date().getDay(); // 0 = Sun, 1 = Mon...
+    return DAYS_ORDER[(jsDay + 6) % 7];
+  }
+
+  function getTodayDateStr() {
+    return new Date().toISOString().split('T')[0];
+  }
+
+  let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+    exercises: DEFAULT_EXERCISES,
+    schedule: DEFAULT_SCHEDULE,
+    logs: [],
+    completedByDate: {},
+    warmupByDate: {},
+    settings: { restDuration: 90, reminderTime: '' }
+  };
+
+  // Ensure newer fields exist if upgrading from earlier CalisTrack version
+  if (!state.exercises || !state.exercises.length) state.exercises = DEFAULT_EXERCISES;
+  if (!state.schedule) state.schedule = DEFAULT_SCHEDULE;
+  if (!state.logs) state.logs = [];
+  if (!state.completedByDate) state.completedByDate = {};
+  if (!state.warmupByDate) state.warmupByDate = {};
+  if (!state.settings) state.settings = { restDuration: 90, reminderTime: '' };
+
+  let selectedDay = getTodayKey();
+  let currentReps = 10;
+  let currentSeconds = 20;
+  let restInterval = null;
+  let holdTimerState = 'idle'; // 'idle' | 'prep' | 'holding'
+  let holdInterval = null;
+  let audioCtx = null;
+  let chartInstance = null;
+
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  // Hands-Free Audio Engine (Web Audio API)
+  function playBeep(freq = 660, durationSec = 0.14, type = 'sine') {
+    try {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) audioCtx = new AudioContextClass();
+      }
+      if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + durationSec);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + durationSec);
+    } catch (e) {
+      // Ignore audio restrictions if blocked
+    }
+  }
+
+  function testAudioCue() {
+    playBeep(520, 0.12);
+    setTimeout(() => playBeep(520, 0.12), 250);
+    setTimeout(() => playBeep(880, 0.25), 500);
+  }
+
+  // Navigation
+  function switchTab(tabName, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.add('hidden'));
+    document.getElementById('tab-' + tabName).classList.remove('hidden');
+    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    if (tabName === 'exercises') renderLibrary();
+    if (tabName === 'prs') {
+      renderPRs();
+      populateChartSelects();
+      renderChart();
+      renderFullHistory();
+    }
+  }
+
+  // Warm-up Checklist
+  function renderWarmup() {
+    const today = getTodayDateStr();
+    const saved = state.warmupByDate[today] || [false, false, false];
+    document.querySelectorAll('.warmup-cb').forEach(cb => {
+      const idx = Number(cb.dataset.idx);
+      cb.checked = Boolean(saved[idx]);
+    });
+  }
+
+  function saveWarmup() {
+    const today = getTodayDateStr();
+    const arr = [false, false, false];
+    document.querySelectorAll('.warmup-cb').forEach(cb => {
+      arr[Number(cb.dataset.idx)] = cb.checked;
+    });
+    state.warmupByDate[today] = arr;
+    saveState();
+  }
+
+  function resetWarmup() {
+    const today = getTodayDateStr();
+    state.warmupByDate[today] = [false, false, false];
+    saveState();
+    renderWarmup();
+  }
+
+  // Exercise Helpers
+  function getExerciseById(id) {
+    return state.exercises.find(e => e.id === id);
+  }
+
+  function getActiveExerciseLabel(ex) {
+    if (!ex) return '';
+    if (Array.isArray(ex.tiers) && ex.tiers.length) {
+      const idx = Math.max(0, Math.min(ex.tiers.length - 1, ex.currentTier || 0));
+      return `${ex.name}: ${ex.tiers[idx].label}`;
+    }
+    return ex.name;
+  }
+
+  function getActiveMetricType(ex) {
+    if (!ex) return 'reps';
+    if (Array.isArray(ex.tiers) && ex.tiers.length) {
+      const idx = Math.max(0, Math.min(ex.tiers.length - 1, ex.currentTier || 0));
+      return ex.tiers[idx].metric || ex.metric || 'time';
+    }
+    return ex.metric || 'reps';
+  }
+
+  // Schedule & Day Dashboard
+  function renderDayPills() {
+    const todayKey = getTodayKey();
+    const pillsEl = document.getElementById('day-pills');
+    pillsEl.innerHTML = DAYS_ORDER.map(day => {
+      const activeClass = day === selectedDay ? 'active' : '';
+      const label = day === todayKey ? `${day.slice(0, 3)} (Today)` : day.slice(0, 3);
+      return `<button type="button" class="day-pill ${activeClass}" onclick="selectDay('${day}')">${label}</button>`;
+    }).join('');
+  }
+
+  function selectDay(day) {
+    selectedDay = day;
+    renderDayPills();
+    renderDaySchedule();
+  }
+
+  function renderDaySchedule() {
+    const todayKey = getTodayKey();
+    const todayDate = getTodayDateStr();
+    const dayObj = state.schedule[selectedDay] || { focus: '', items: [] };
+    const completedSet = new Set(state.completedByDate[`${todayDate}_${selectedDay}`] || []);
+
+    document.getElementById('schedule-heading').innerText =
+      selectedDay === todayKey ? `Today's Workout (${selectedDay})` : `${selectedDay} Routine`;
+    document.getElementById('schedule-focus').innerText = dayObj.focus || '';
+
+    const listEl = document.getElementById('day-schedule-list');
+    if (!dayObj.items.length) {
+      listEl.innerHTML = `<p class="muted" style="margin:6px 0 0 0;">Rest & mobility day—light stretching, walks, or joint decompression.</p>`;
+      return;
+    }
+
+    listEl.innerHTML = dayObj.items.map(exId => {
+      const ex = getExerciseById(exId);
+      if (!ex) return '';
+      const isDone = completedSet.has(exId);
+      const displayName = getActiveExerciseLabel(ex);
+      return `
+        <div class="sched-item">
+          <div class="sched-left" onclick="focusExerciseInLogger('${ex.id}')">
+            <input
+              type="checkbox"
+              class="big-check"
+              ${isDone ? 'checked' : ''}
+              onclick="event.stopPropagation(); toggleScheduleItem('${ex.id}')"
+            />
+            <div>
+              <div class="${isDone ? 'done-text' : ''}" style="font-weight:700;">${displayName}</div>
+              <div class="muted">${ex.category} · Tap to load logger</div>
+            </div>
+          </div>
+          <button type="button" class="small secondary" onclick="focusExerciseInLogger('${ex.id}')">Log</button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function toggleScheduleItem(exId) {
+    const todayDate = getTodayDateStr();
+    const key = `${todayDate}_${selectedDay}`;
+    const arr = state.completedByDate[key] || [];
+    const idx = arr.indexOf(exId);
+    if (idx >= 0) arr.splice(idx, 1);
+    else arr.push(exId);
+    state.completedByDate[key] = arr;
+    saveState();
+    renderDaySchedule();
+  }
+
+  function focusExerciseInLogger(exId) {
+    const sel = document.getElementById('workout-exercise');
+    if ([...sel.options].some(o => o.value === exId)) {
+      sel.value = exId;
+      onExerciseChange();
+      sel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  // Exercise Dropdown & Progression Tier Selector
+  function renderWorkoutExerciseSelect(preferredId = null) {
+    const sel = document.getElementById('workout-exercise');
+    const prevVal = preferredId || sel.value;
+    sel.innerHTML = state.exercises.map(ex => {
+      const suffix = Array.isArray(ex.tiers) ? ` [${ex.tiers[(ex.currentTier || 0)].label}]` : '';
+      return `<option value="${ex.id}">${ex.name}${suffix}</option>`;
+    }).join('');
+
+    if (prevVal && [...sel.options].some(o => o.value === prevVal)) {
+      sel.value = prevVal;
+    } else {
+      const todayItems = (state.schedule[getTodayKey()] || {}).items || [];
+      const firstToday = todayItems.find(id => [...sel.options].some(o => o.value === id));
+      if (firstToday) sel.value = firstToday;
+    }
+    onExerciseChange();
+  }
+
+  function onExerciseChange() {
+    const exId = document.getElementById('workout-exercise').value;
+    const ex = getExerciseById(exId);
+    const tierBox = document.getElementById('progression-tier-box');
+    const tierSelect = document.getElementById('progression-tier-select');
+    const noteEl = document.getElementById('progression-mode-note');
+
+    if (!ex) return;
+
+    if (Array.isArray(ex.tiers) && ex.tiers.length) {
+      tierBox.classList.remove('hidden');
+      const curIdx = Math.max(0, Math.min(ex.tiers.length - 1, ex.currentTier || 0));
+      tierSelect.innerHTML = ex.tiers.map((t, i) => `<option value="${i}">Tier ${i + 1}/${ex.tiers.length}: ${t.label}</option>`).join('');
+      tierSelect.value = String(curIdx);
+
+      const mode = getActiveMetricType(ex);
+      noteEl.innerText = mode === 'both'
+        ? 'Supports logging both reps and hold seconds for this progression tier.'
+        : mode === 'time'
+          ? 'Time-focused progression tier (seconds) — reps also available if needed.'
+          : 'Rep-focused progression tier — hold seconds also available if needed.';
+    } else {
+      tierBox.classList.add('hidden');
+    }
+
+    syncCounterDefaults(ex);
+  }
+
+  function syncCounterDefaults(ex) {
+    const mode = getActiveMetricType(ex);
+    if (mode === 'time') {
+      currentSeconds = 20;
+      currentReps = 0;
+    } else if (mode === 'both') {
+      currentReps = 6;
+      currentSeconds = 15;
+    } else {
+      currentReps = 10;
+      currentSeconds = 0;
+    }
+    updateCounterDisplays();
+  }
+
+  function stepProgressionTier(delta) {
+    const exId = document.getElementById('workout-exercise').value;
+    const ex = getExerciseById(exId);
+    if (!ex || !Array.isArray(ex.tiers)) return;
+    const nextIdx = Math.max(0, Math.min(ex.tiers.length - 1, (ex.currentTier || 0) + delta));
+    ex.currentTier = nextIdx;
+    saveState();
+    renderWorkoutExerciseSelect(ex.id);
+    renderDaySchedule();
+    renderLibrary();
+  }
+
+  function onTierSelectChange() {
+    const exId = document.getElementById('workout-exercise').value;
+    const ex = getExerciseById(exId);
+    const idx = Number(document.getElementById('progression-tier-select').value);
+    if (!ex || !Array.isArray(ex.tiers)) return;
+    ex.currentTier = idx;
+    saveState();
+    renderWorkoutExerciseSelect(ex.id);
+    renderDaySchedule();
+    renderLibrary();
+  }
+
+  function adjustReps(delta) {
+    currentReps = Math.max(0, currentReps + delta);
+    updateCounterDisplays();
+  }
+
+  function adjustSeconds(delta) {
+    currentSeconds = Math.max(0, currentSeconds + delta);
+    updateCounterDisplays();
+  }
+
+  function updateCounterDisplays() {
+    document.getElementById('rep-count').innerText = currentReps;
+    document.getElementById('time-count').innerText = currentSeconds;
+  }
+
+  // Hands-Free Hold Timer: 3s Countdown Beep + 5s Interval Audio Cues
+  function stopHoldTimer() {
+    clearInterval(holdInterval);
+    holdInterval = null;
+    holdTimerState = 'idle';
+    const btn = document.getElementById('hold-timer-btn');
+    btn.innerText = 'Hands-Free Hold Timer (3s Beep + 5s Cues)';
+    btn.className = 'secondary';
+  }
+
+  function toggleHoldTimer() {
+    const btn = document.getElementById('hold-timer-btn');
+    if (holdTimerState !== 'idle') {
+      if (holdTimerState === 'holding') {
+        playBeep(740, 0.2);
+      }
+      stopHoldTimer();
+      return;
+    }
+
+    let prepLeft = 3;
+    holdTimerState = 'prep';
+    btn.style.background = 'var(--warn)';
+    btn.style.color = '#0f172a';
+    btn.innerText = `Get Ready: ${prepLeft}s...`;
+    playBeep(587, 0.14);
+
+    holdInterval = setInterval(() => {
+      if (holdTimerState === 'prep') {
+        prepLeft--;
+        if (prepLeft > 0) {
+          btn.innerText = `Get Ready: ${prepLeft}s...`;
+          playBeep(587, 0.14);
+        } else {
+          holdTimerState = 'holding';
+          currentSeconds = 0;
+          updateCounterDisplays();
+          btn.style.background = 'var(--success)';
+          btn.style.color = '#052e16';
+          btn.innerText = 'HOLDING (5s Audio Cues) — Tap to Stop';
+          playBeep(880, 0.25);
+        }
+      } else if (holdTimerState === 'holding') {
+        currentSeconds++;
+        updateCounterDisplays();
+        if (currentSeconds > 0 && currentSeconds % 5 === 0) {
+          playBeep(784, 0.15);
+        }
+      }
+    }, 1000);
+  }
+
+  // Log Set & Rest Timer
+  function logSet() {
+    if (holdTimerState !== 'idle') {
+      stopHoldTimer();
+    }
+    const exId = document.getElementById('workout-exercise').value;
+    const ex = getExerciseById(exId);
+    if (!ex) return;
+
+    if (currentReps <= 0 && currentSeconds <= 0) {
+      alert('Set reps or hold seconds greater than 0 before logging.');
+      return;
+    }
+
+    const tierObj = Array.isArray(ex.tiers) ? ex.tiers[ex.currentTier || 0] : null;
+    const entry = {
+      id: Date.now(),
+      exerciseId: ex.id,
+      exerciseName: ex.name,
+      tierLabel: tierObj ? tierObj.label : null,
+      displayName: getActiveExerciseLabel(ex),
+      reps: currentReps,
+      seconds: currentSeconds,
+      date: getTodayDateStr(),
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+
+    state.logs.unshift(entry);
+    saveState();
+    renderTodayLogs();
+    startRestTimer();
+  }
+
+  function startRestTimer() {
+    clearInterval(restInterval);
+    let left = Number(state.settings.restDuration) || 90;
+    const banner = document.getElementById('rest-banner');
+    const display = document.getElementById('rest-time');
+    banner.style.display = 'flex';
+    display.innerText = left;
+
+    restInterval = setInterval(() => {
+      left--;
+      display.innerText = left;
+      if (left > 0 && left <= 3) {
+        playBeep(660, 0.12);
+      }
+      if (left <= 0) {
+        stopRest();
+        playBeep(987, 0.35);
+      }
+    }, 1000);
+  }
+
+  function addRestTime(sec) {
+    const display = document.getElementById('rest-time');
+    const cur = Number(display.innerText) || 0;
+    display.innerText = cur + sec;
+  }
+
+  function stopRest() {
+    clearInterval(restInterval);
+    restInterval = null;
+    document.getElementById('rest-banner').style.display = 'none';
+  }
+
+  function formatSetSummary(l) {
+    const parts = [];
+    if (l.reps > 0) parts.push(`${l.reps} reps`);
+    if (l.seconds > 0) parts.push(`${l.seconds}s hold`);
+    return parts.join(' + ') || '0';
+  }
+
+  function renderTodayLogs() {
+    const today = getTodayDateStr();
+    const todayLogs = state.logs.filter(l => l.date === today);
+    const el = document.getElementById('today-logs');
+    if (!todayLogs.length) {
+      el.innerHTML = `<p class="muted" style="margin:0;">No sets logged today yet.</p>`;
+      return;
+    }
+    el.innerHTML = todayLogs.map(l => `
+      <div class="log-item">
+        <div>
+          <strong>${l.displayName || l.name}</strong>
+          <div class="muted">${formatSetSummary(l)} · ${l.timestamp}</div>
+        </div>
+        <button type="button" class="danger small" onclick="deleteLog(${l.id})">Delete</button>
+      </div>
+    `).join('');
+  }
+
+  // Library & Custom Exercises
+  function addCustomExercise() {
+    const name = document.getElementById('new-ex-name').value.trim();
+    const category = document.getElementById('new-ex-cat').value;
+    const metric = document.getElementById('new-ex-metric').value;
+    if (!name) return;
+
+    const id = 'custom_' + Date.now();
+    state.exercises.push({ id, name, category, metric });
+    document.getElementById('new-ex-name').value = '';
+    saveState();
+    renderWorkoutExerciseSelect(id);
+    renderLibrary();
+  }
+
+  function renderLibrary() {
+    const el = document.getElementById('exercise-library-list');
+    el.innerHTML = state.exercises.map(ex => {
+      const isProg = Array.isArray(ex.tiers) && ex.tiers.length;
+      const tierInfo = isProg
+        ? `<div class="muted" style="margin-top:4px;">Active: <strong>${ex.tiers[ex.currentTier || 0].label}</strong> (${ex.tiers.length} tiers)</div>`
+        : `<div class="muted" style="margin-top:4px;">Metric: ${ex.metric}</div>`;
+      return `
+        <div class="log-item">
+          <div>
+            <strong>${ex.name}</strong><span class="badge">${ex.category}</span>
+            ${tierInfo}
+          </div>
+          <button type="button" class="small secondary" onclick="switchToWorkoutWith('${ex.id}')">Select</button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function switchToWorkoutWith(exId) {
+    const workoutBtn = document.querySelector('.nav button');
+    switchTab('workout', workoutBtn);
+    focusExerciseInLogger(exId);
+  }
+
+  // Personal Bests (PRs), Progress Chart & History
+  function computePRs() {
+    const map = {};
+    state.logs.forEach(l => {
+      const key = l.exerciseId || l.displayName || l.name;
+      if (!map[key]) {
+        map[key] = {
+          name: l.exerciseName || l.displayName || l.name,
+          maxReps: 0,
+          maxSec: 0
+        };
+      }
+      if ((l.reps || 0) > map[key].maxReps) map[key].maxReps = l.reps || 0;
+      if ((l.seconds || 0) > map[key].maxSec) map[key].maxSec = l.seconds || 0;
+    });
+    return Object.values(map);
+  }
+
+  function renderPRs() {
+    const prs = computePRs().filter(p => p.maxReps > 0 || p.maxSec > 0);
+    const el = document.getElementById('prs-list');
+    if (!prs.length) {
+      el.innerHTML = `<p class="muted" style="margin:0;">Log sets to unlock Personal Records.</p>`;
+      return;
+    }
+    el.innerHTML = prs.map(p => {
+      const badges = [];
+      if (p.maxSec > 0) badges.push(`Max Hold: ${p.maxSec}s`);
+      if (p.maxReps > 0) badges.push(`Max Reps: ${p.maxReps}`);
+      return `
+        <div class="pr-card">
+          <strong>${p.name}</strong>
+          <span class="pr-val">${badges.join(' · ')}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function populateChartSelects() {
+    const sel = document.getElementById('chart-exercise');
+    const prev = sel.value;
+    sel.innerHTML = state.exercises.map(ex => `<option value="${ex.id}">${ex.name}</option>`).join('');
+    if (prev && [...sel.options].some(o => o.value === prev)) sel.value = prev;
+  }
+
+  function renderChart() {
+    const exId = document.getElementById('chart-exercise').value;
+    const metric = document.getElementById('chart-metric').value;
+    const filtered = state.logs.filter(l => l.exerciseId === exId);
+
+    const byDate = {};
+    filtered.forEach(l => {
+      if (!byDate[l.date]) byDate[l.date] = { maxReps: 0, totalReps: 0, maxSec: 0 };
+      byDate[l.date].maxReps = Math.max(byDate[l.date].maxReps, l.reps || 0);
+      byDate[l.date].totalReps += (l.reps || 0);
+      byDate[l.date].maxSec = Math.max(byDate[l.date].maxSec, l.seconds || 0);
+    });
+
+    const dates = Object.keys(byDate).sort();
+    const values = dates.map(d => byDate[d][metric]);
+
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    if (chartInstance) chartInstance.destroy();
+    chartInstance = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: dates,
+        datasets: [{
+          label: metric === 'maxSec' ? 'Max Hold (s)' : metric === 'totalReps' ? 'Total Reps' : 'Max Reps',
+          data: values,
+          borderColor: '#38bdf8',
+          backgroundColor: 'rgba(56, 189, 248, 0.2)',
+          tension: 0.25,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+  }
+
+  function renderFullHistory() {
+    const el = document.getElementById('full-history');
+    if (!state.logs.length) {
+      el.innerHTML = `<p class="muted" style="margin:0;">No history logged yet.</p>`;
+      return;
+    }
+    el.innerHTML = state.logs.slice(0, 60).map(l => `
+      <div class="log-item">
+        <div>
+          <strong>${l.displayName || l.name}</strong>
+          <div class="muted">${formatSetSummary(l)} · ${l.date} ${l.timestamp || ''}</div>
+        </div>
+        <button type="button" class="danger small" onclick="deleteLog(${l.id})">X</button>
+      </div>
+    `).join('');
+  }
+
+  function deleteLog(id) {
+    state.logs = state.logs.filter(l => l.id !== id);
+    saveState();
+    renderTodayLogs();
+    renderPRs();
+    renderChart();
+    renderFullHistory();
+  }
+
+  // Settings, Reminder & Backup
+  function saveSettings() {
+    const val = Number(document.getElementById('rest-setting').value);
+    state.settings.restDuration = val > 0 ? val : 90;
+    saveState();
+  }
+
+  function scheduleReminder() {
+    if (!('Notification' in window)) {
+      alert('Notifications are not supported in this browser.');
+      return;
+    }
+    Notification.requestPermission().then(perm => {
+      if (perm === 'granted') {
+        state.settings.reminderTime = document.getElementById('reminder-time').value;
+        saveState();
+        document.getElementById('reminder-status').innerText = `Reminder active for ${state.settings.reminderTime} daily.`;
+      }
+    });
+  }
+
+  setInterval(() => {
+    if (!state.settings.reminderTime) return;
+    const now = new Date();
+    const hm = now.toTimeString().slice(0, 5);
+    if (hm === state.settings.reminderTime && now.getSeconds() === 0 && ('Notification' in window) && Notification.permission === 'granted') {
+      new Notification('CalisTrack', { body: `Time for ${getTodayKey()} (${DEFAULT_SCHEDULE[getTodayKey()].focus})!` });
+    }
+  }, 1000);
+
+  function exportData() {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `calistrack-backup-${getTodayDateStr()}.json`;
+    a.click();
+  }
+
+  function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const imported = JSON.parse(e.target.result);
+        state = Object.assign({}, state, imported);
+        saveState();
+        initUI();
+        alert('Backup restored.');
+      } catch (err) {
+        alert('Invalid JSON backup file.');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function resetToDefaults() {
+    state.exercises = DEFAULT_EXERCISES;
+    state.schedule = DEFAULT_SCHEDULE;
+    saveState();
+    initUI();
+    alert('Exercises and weekly schedule reset to defaults (your logs are preserved).');
+  }
+
+  // Service Worker Registration
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log('Offline mode ready'))
+      .catch(err => console.log('SW registration skipped:', err));
+  }
+
+  function initUI() {
+    document.getElementById('rest-setting').value = state.settings.restDuration || 90;
+    if (state.settings.reminderTime) {
+      document.getElementById('reminder-time').value = state.settings.reminderTime;
+      document.getElementById('reminder-status').innerText = `Reminder active for ${state.settings.reminderTime} daily.`;
+    }
+    renderWarmup();
+    renderDayPills();
+    renderDaySchedule();
+    renderWorkoutExerciseSelect();
+    renderTodayLogs();
+  }
+
+  initUI();
+</script>
+</body>
+</html>
