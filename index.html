@@ -427,9 +427,10 @@
   
 .session-summary{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #303632;border-radius:13px;margin:15px 0 18px;overflow:hidden}.session-summary>div{text-align:center;padding:12px 5px;background:#101211}.session-summary>div+div{border-left:1px solid #303632}.session-summary span{display:block;color:#a0a7a2;font-size:.72rem;margin-bottom:6px}.session-summary strong{font-size:1.08rem;font-weight:800}#session-duration{color:#28b8ef}
 .session-exercises-card{padding:0;background:transparent;border:0}#session-exercises-list{display:flex;flex-direction:column;gap:16px}.lyfta-exercise{background:#101211;border:1px solid #292f2b;border-radius:14px;padding:14px 11px}.lyfta-exercise-head{display:flex;align-items:center;gap:11px;margin-bottom:10px}.lyfta-exercise-icon{width:42px;height:48px;border-radius:8px;background:#282d29;display:grid;place-items:center;color:#b8f36b;font-weight:900;flex:0 0 42px}.lyfta-exercise-title{min-width:0;flex:1}.lyfta-exercise-title strong{display:block;font-size:.98rem}.lyfta-exercise-title small{display:block;color:#9ba39d;margin-top:3px}.lyfta-more{border:0;background:transparent;color:#27a9df;font-size:1.2rem;padding:8px}.lyfta-notes{width:100%;background:transparent;border:0;border-bottom:1px solid #292f2b;border-radius:0;padding:9px 2px;color:#eee;margin:0 0 9px;font-size:.82rem}.lyfta-rest{display:inline-flex;align-items:center;gap:7px;color:#28b8ef;background:transparent;border:0;padding:7px 2px;margin:0 0 12px;font-weight:700}
-.set-grid-head,.set-grid-row{display:grid;grid-template-columns:.55fr 1.2fr .85fr .75fr 34px;gap:5px;align-items:center;text-align:center}.set-grid-head{font-size:.68rem;color:#9ba39d;padding:5px 0 8px}.set-grid-row{padding:8px 3px;border-radius:8px;background:#202321;margin:3px 0}.set-grid-row.completed{background:#12390b}.set-grid-row.completed .set-num{color:#28b8ef}.set-num{color:#28b8ef;font-weight:800}.set-previous{font-size:.69rem;color:#aeb5b0;white-space:nowrap}.set-grid-row input{min-width:0;width:100%;height:38px;padding:4px 3px;text-align:center;font-weight:800;font-size:.9rem;background:#151816;border:1px solid #353c37;border-radius:7px;color:#f4f5f4;margin:0}.set-grid-row.completed input{background:transparent;border-color:transparent;color:#fff}.set-check{width:32px;height:32px;min-height:32px;border:0;border-radius:50%;background:#3a3d42;color:#fff;font-size:1rem;padding:0;display:grid;place-items:center}.set-grid-row.completed .set-check{background:#55d500;color:#102400}.lyfta-add-set{width:100%;border:0;border-radius:28px;background:#292b2d;color:#fff;padding:13px;margin-top:10px;font-weight:800}#tab-session .session-exercises-card>.section-head{display:none}#tab-session .workout-page-intro{padding-bottom:2px}
+.set-grid-head,.set-grid-row{display:grid;grid-template-columns:.55fr 1.2fr .85fr .75fr 34px;gap:5px;align-items:center;text-align:center}.set-grid-head{font-size:.68rem;color:#9ba39d;padding:5px 0 8px}.set-grid-row{padding:8px 3px;border-radius:8px;background:#202321;margin:3px 0}.set-grid-row.completed{background:#12390b}.set-grid-row.completed .set-num{color:#28b8ef}.set-num{color:#28b8ef;font-weight:800}.set-previous{font-size:.69rem;color:#aeb5b0;white-space:nowrap}.set-grid-row input{min-width:0;width:100%;height:38px;padding:4px 3px;text-align:center;font-weight:800;font-size:.9rem;background:#151816;border:1px solid #353c37;border-radius:7px;color:#f4f5f4;margin:0}.set-grid-row.completed input{background:transparent;border-color:transparent;color:#fff}.set-grid-row.completed.editing{background:#263b23}.set-grid-row.completed.editing input{background:#151816;border:1px solid #6c9256;color:#fff}.set-check{width:32px;height:32px;min-height:32px;border:0;border-radius:50%;background:#3a3d42;color:#fff;font-size:1rem;padding:0;display:grid;place-items:center}.set-grid-row.completed .set-check{background:#55d500;color:#102400}.lyfta-add-set{width:100%;border:0;border-radius:28px;background:#292b2d;color:#fff;padding:13px;margin-top:10px;font-weight:800}#tab-session .session-exercises-card>.section-head{display:none}#tab-session .workout-page-intro{padding-bottom:2px}
 @media(max-width:380px){.set-grid-head,.set-grid-row{grid-template-columns:.48fr 1.05fr .78fr .68fr 30px;gap:3px}.set-previous{font-size:.62rem}.set-grid-row input{font-size:.82rem}}
 
+.lyfta-exercise-head{position:relative}.exercise-menu{position:absolute;right:0;top:38px;z-index:30;min-width:180px;padding:6px;background:#252a27;border:1px solid #485149;border-radius:12px;box-shadow:0 12px 28px rgba(0,0,0,.45)}.exercise-menu button{display:block;width:100%;text-align:left;background:transparent;border:0;color:#f4f5f4;padding:11px 12px;border-radius:8px;font-size:.82rem}.exercise-menu button:active{background:#384237}.set-grid-row.completed.editing .set-check{background:#737b73;color:#fff}
 </style>
 </head>
 <body>
@@ -1720,6 +1721,7 @@
 
 
   const sessionSetDrafts = {};
+  const sessionSetEdits = {};
   let sessionClockInterval = null;
   function getExerciseSessionLogs(exId) {
     if(!state.activeWorkout)return [];
@@ -1753,7 +1755,54 @@
     const entry={id:Date.now(),workoutId:Number(state.activeWorkout.startedAt),exerciseId:ex.id,exerciseName:ex.name,category:normalizeCategory(ex.category),tierIndex:tierIdx!==null?tierIdx+1:null,tierLabel:tierObj?tierObj.label:null,displayName:getActiveExerciseLabel(ex),reps,seconds:0,weightKg:weight,rpe:null,setType:'Normal',notes:'',date:state.activeWorkout.date,timestamp:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})};
     state.logs.unshift(entry);drafts.splice(index,1);saveState();renderSessionPlan();renderTodayLogs();updateDashboardStats();startRestTimer();
   }
+  function toggleCompletedSet(exId,logId) {
+    const log=state.logs.find(l=>Number(l.id)===Number(logId)&&l.exerciseId===exId);if(!log)return;
+    if(sessionSetEdits[logId]) {
+      const edit=sessionSetEdits[logId],reps=Number(edit.reps),weight=Number(edit.weight)||0;
+      if(!Number.isFinite(reps)||reps<1){alert('Enter at least 1 rep before saving.');return;}
+      log.reps=reps;log.weightKg=weight;log.timestamp=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      delete sessionSetEdits[logId];saveState();renderTodayLogs();updateDashboardStats();renderSessionPlan();return;
+    }
+    sessionSetEdits[logId]={weight:Number(log.weightKg)||0,reps:Number(log.reps)||0};renderSessionPlan();
+  }
+  function updateCompletedSetDraft(logId,field,value) { if(sessionSetEdits[logId])sessionSetEdits[logId][field]=value; }
+  function deleteCompletedSet(logId) {
+    if(!confirm('Delete this completed set?'))return;
+    state.logs=state.logs.filter(l=>Number(l.id)!==Number(logId));delete sessionSetEdits[logId];
+    saveState();renderSessionPlan();renderTodayLogs();renderPRs();renderFullHistory();updateDashboardStats();
+  }
+  function handleExerciseMenu(action,exId) {
+    if(action==='add'){addExerciseSet(exId);return;}
+    const dayPlan=state.schedule[getTodayKey()]||(state.schedule[getTodayKey()]={focus:'Workout',items:[]});
+    if(action==='delete') {
+      if(!confirm('Remove this exercise from today’s workout? Your logged history will be kept.'))return;
+      dayPlan.items=dayPlan.items.filter(id=>id!==exId);delete sessionSetDrafts[exId];
+      saveState();renderSessionPlan();renderHomePlan();return;
+    }
+    if(action==='replace') {
+      const choices=state.exercises.filter(ex=>ex.id!==exId);if(!choices.length){alert('No other exercises are available.');return;}
+      const listing=choices.map((ex,i)=>(i+1)+'. '+ex.name).join('\n');
+      const answer=prompt('Replace with which exercise? Enter its number:\n'+listing);if(answer===null)return;
+      const chosen=choices[Number(answer)-1];if(!chosen){alert('Please enter a valid exercise number.');return;}
+      dayPlan.items=dayPlan.items.map(id=>id===exId?chosen.id:id);delete sessionSetDrafts[exId];
+      saveState();renderSessionPlan();renderHomePlan();
+    }
+  }
+
   function updateExerciseNotes(exId,value) { state.exerciseNotes[exId]=value; saveState(); }
+  function openExerciseMenu(exId) {
+    const menu=document.getElementById('exercise-menu-'+exId);
+    if(!menu)return;
+    document.querySelectorAll('.exercise-menu').forEach(el=>{if(el!==menu)el.classList.add('hidden');});
+    menu.classList.toggle('hidden');
+  }
+  function closeExerciseMenu(exId) {
+    document.getElementById('exercise-menu-'+exId)?.classList.add('hidden');
+  }
+  function chooseExerciseMenuAction(action,exId) {
+    closeExerciseMenu(exId);
+    handleExerciseMenu(action,exId);
+  }
   function renderSessionPlan() {
     const day=getTodayKey(),plan=(state.schedule[day]||{focus:'Workout',items:[]}).items||[],host=document.getElementById('session-exercises-list');if(!host)return;
     const title=document.getElementById('session-title'),subtitle=document.getElementById('session-subtitle'),count=document.getElementById('session-exercise-count');
@@ -1762,9 +1811,12 @@
     host.innerHTML=plan.map((id,i)=>{
       const ex=getExerciseById(id);if(!ex)return '';
       const logs=getExerciseSessionLogs(id),prev=getPreviousExerciseLogs(id),drafts=sessionSetDrafts[id]||[],note=state.exerciseNotes[id]||'',previousFor=n=>prev[n-1]?(Number(prev[n-1].weightKg||0)+' kg × '+(prev[n-1].reps||0)):'—';
-      const rows=logs.map((l,j)=>'<div class="set-grid-row completed"><span class="set-num">'+(j+1)+'</span><span class="set-previous">'+previousFor(j+1)+'</span><input aria-label="Completed weight" value="'+(l.weightKg||0)+'" readonly><input aria-label="Completed reps" value="'+(l.reps||0)+'" readonly><button class="set-check" type="button" aria-label="Set completed">✓</button></div>').join('');
+      const rows=logs.map((l,j)=>{
+        const edit=sessionSetEdits[l.id],editing=!!edit;
+        return '<div class="set-grid-row completed '+(editing?'editing':'')+'"><span class="set-num">'+(j+1)+'</span><span class="set-previous">'+previousFor(j+1)+'</span><input type="number" min="0" step="0.5" inputmode="decimal" aria-label="Weight in kilograms" value="'+(editing?edit.weight:(l.weightKg||0))+'" '+(editing?'onchange="updateCompletedSetDraft(\''+l.id+'\',\'weight\',this.value)"':'readonly')+'><input type="number" min="1" step="1" inputmode="numeric" aria-label="Reps" value="'+(editing?edit.reps:(l.reps||0))+'" '+(editing?'onchange="updateCompletedSetDraft(\''+l.id+'\',\'reps\',this.value)"':'readonly')+'><button class="set-check" type="button" onclick="toggleCompletedSet(\''+id+'\',\''+l.id+'\')" aria-label="'+(editing?'Save set':'Edit completed set')+'">✓</button></div>';
+      }).join('');
       const draftRows=drafts.map((d,j)=>'<div class="set-grid-row"><span class="set-num">'+(logs.length+j+1)+'</span><span class="set-previous">'+previousFor(logs.length+j+1)+'</span><input type="number" min="0" step="0.5" inputmode="decimal" aria-label="Weight in kilograms" value="'+d.weight+'" onchange="updateSetDraft(\''+id+'\','+j+',\'weight\',this.value)"><input type="number" min="1" step="1" inputmode="numeric" aria-label="Reps" value="'+d.reps+'" onchange="updateSetDraft(\''+id+'\','+j+',\'reps\',this.value)"><button class="set-check" type="button" onclick="completeExerciseSet(\''+id+'\','+j+')" aria-label="Complete set">✓</button></div>').join('');
-      return '<article class="lyfta-exercise"><div class="lyfta-exercise-head"><div class="lyfta-exercise-icon">'+(i+1)+'</div><div class="lyfta-exercise-title"><strong>'+getActiveExerciseLabel(ex)+'</strong><small>'+logs.length+' sets completed</small></div><button class="lyfta-more" type="button" onclick="startExerciseFromSession(\''+id+'\')" aria-label="Select exercise">•••</button></div><input class="lyfta-notes" type="text" placeholder="Add notes..." value="'+note.replace(/"/g,'&quot;')+'" oninput="updateExerciseNotes(\''+id+'\',this.value)"><button class="lyfta-rest" type="button" onclick="startRestTimer()">◷ &nbsp; '+Math.round((Number(state.settings.restDuration)||90)/60)+' min rest</button><div class="set-grid-head"><span>Set</span><span>Previous</span><span>KG</span><span>Reps</span><span></span></div>'+rows+draftRows+'<button class="lyfta-add-set" type="button" onclick="addExerciseSet(\''+id+'\')">Add set</button></article>';
+      return '<article class="lyfta-exercise"><div class="lyfta-exercise-head"><div class="lyfta-exercise-icon">'+(i+1)+'</div><div class="lyfta-exercise-title"><strong>'+getActiveExerciseLabel(ex)+'</strong><small>'+logs.length+' sets completed</small></div><button class="lyfta-more" type="button" onclick="openExerciseMenu(\''+id+'\')" aria-label="Exercise options">•••</button><div class="exercise-menu hidden" id="exercise-menu-'+id+'"><button type="button" data-action="add" onclick="chooseExerciseMenuAction(this.dataset.action,\''+id+'\')">＋ Add set</button><button type="button" data-action="delete" onclick="chooseExerciseMenuAction(this.dataset.action,\''+id+'\')">Delete exercise</button><button type="button" data-action="replace" onclick="chooseExerciseMenuAction(this.dataset.action,\''+id+'\')">Replace exercise</button></div></div><input class="lyfta-notes" type="text" placeholder="Add notes..." value="'+note.replace(/"/g,'&quot;')+'" oninput="updateExerciseNotes(\''+id+'\',this.value)"><button class="lyfta-rest" type="button" onclick="startRestTimer()">◷ &nbsp; '+Math.round((Number(state.settings.restDuration)||90)/60)+' min rest</button><div class="set-grid-head"><span>Set</span><span>Previous</span><span>KG</span><span>Reps</span><span></span></div>'+rows+draftRows+'<button class="lyfta-add-set" type="button" onclick="addExerciseSet(\''+id+'\')">Add set</button></article>';
     }).join('');updateSessionSummary();
   }
   function updateSessionSummary() {
