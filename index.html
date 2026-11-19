@@ -7,7 +7,6 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <link rel="manifest" href="./manifest.json" />
   <title>CalisTrack — Personal Calisthenics</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
       --bg: #0f172a;
@@ -662,32 +661,6 @@
       <select id="skill-chart-select" onchange="renderSkillChart()"></select>
       <div id="skillProgressChart" class="skill-chart"></div>
       <div id="skill-tier-legend" class="tier-legend"></div>
-    </div>
-
-    <!-- Muscle Group Area Charts (Push, Pull, Legs, Core) -->
-    <div class="card">
-      <h2>Muscle Group Area Charts</h2>
-      <p class="muted">Cumulative daily volume (Reps + Hold Seconds combined) across Push, Pull, Legs, and Core.</p>
-
-      <div class="group-chart-box">
-        <h3>Push Area</h3>
-        <canvas id="areaChartPush" height="140"></canvas>
-      </div>
-
-      <div class="group-chart-box">
-        <h3>Pull Area</h3>
-        <canvas id="areaChartPull" height="140"></canvas>
-      </div>
-
-      <div class="group-chart-box">
-        <h3>Legs Area</h3>
-        <canvas id="areaChartLegs" height="140"></canvas>
-      </div>
-
-      <div class="group-chart-box">
-        <h3>Core Area</h3>
-        <canvas id="areaChartCore" height="140"></canvas>
-      </div>
     </div>
 
     <div class="card">
