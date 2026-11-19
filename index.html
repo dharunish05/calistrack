@@ -431,6 +431,8 @@
 
 .lyfta-exercise-head{position:relative}.exercise-menu{position:absolute;right:0;top:38px;z-index:30;min-width:180px;padding:6px;background:#252a27;border:1px solid #485149;border-radius:12px;box-shadow:0 12px 28px rgba(0,0,0,.45)}.exercise-menu button{display:block;width:100%;text-align:left;background:transparent;border:0;color:#f4f5f4;padding:11px 12px;border-radius:8px;font-size:.82rem}.exercise-menu button:active{background:#384237}.set-grid-row.completed.editing .set-check{background:#737b73;color:#fff}
 .skill-chart{width:100%;min-height:170px;padding:8px 0}.workout-history-card{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;background:#111914;border:1px solid #303d34;border-radius:13px;color:#f4f6f4;padding:15px;margin:8px 0}.workout-history-card span:first-child{display:flex;flex-direction:column;gap:5px}.workout-history-card small{color:#aab5ad;font-size:.76rem}.workout-history-card>span:last-child{color:#b7f36b;white-space:nowrap;font-size:.8rem}.history-detail-head{margin:12px 0 18px}.history-exercise{background:#111914;border:1px solid #303d34;border-radius:13px;padding:13px;margin:10px 0}.history-exercise>strong{display:block;margin-bottom:12px}.history-set-head,.history-set-row{display:grid;grid-template-columns:.6fr 1fr 1.2fr;gap:8px;padding:9px 5px;font-size:.82rem}.history-set-head{color:#aab5ad;border-bottom:1px solid #344139}.history-set-row{border-bottom:1px solid #27332b}.history-set-row:last-child{border:0}
+ .library-actions{display:flex;gap:6px;align-items:center}.set-more{background:transparent;border:0;color:#aab5ad;font-weight:700;padding:4px 6px}.set-grid-row{position:relative}.set-menu{position:absolute;right:4px;top:38px;z-index:40;background:#252a27;border:1px solid #485149;border-radius:10px;padding:5px;box-shadow:0 10px 24px #0009}.set-menu button{background:transparent;border:0;color:#ff8c8c;padding:9px 12px;white-space:nowrap}
+.set-grid-row.completed{grid-template-columns:.45fr 1fr .75fr .75fr auto auto}.set-grid-head{grid-template-columns:.45fr 1fr .75fr .75fr auto auto}
 </style>
 </head>
 <body>
@@ -497,6 +499,8 @@
     <div id="legacy-set-logger" class="hidden">    <!-- Active Set Logger -->
     <div class="card">
       <div class="section-head"><div><div class="eyebrow">ACTIVE SESSION</div><h2>Log your set</h2></div><span class="live-tag">LIVE</span></div>
+      <label for="workout-exercise-search">Find exercise</label>
+      <input id="workout-exercise-search" type="search" class="search-input" placeholder="Search exercises..." oninput="filterExerciseSelect('workout-exercise-search','workout-exercise')" />
       <label for="workout-exercise">Exercise / Progression</label>
       <select id="workout-exercise" onchange="onExerciseChange()"></select>
 
@@ -594,7 +598,8 @@
       <div class="day-pills" id="day-pills"></div>
       <div id="day-schedule-list"></div>
       <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);">
-        <label for="add-to-day-select">Add Exercise to <span id="edit-day-label">Selected Day</span></label>
+        <label for="day-exercise-search">Find exercise for <span id="edit-day-label">Selected Day</span></label>
+        <input id="day-exercise-search" type="search" class="search-input" placeholder="Search exercises..." oninput="filterExerciseSelect('day-exercise-search','add-to-day-select')" />
         <div class="row">
           <select id="add-to-day-select" style="margin-bottom:0;"></select>
           <button type="button" class="small" onclick="addExerciseToSelectedDay()">+ Add</button>
@@ -657,8 +662,12 @@
     <div class="card">
       <h2>Skill Progression History</h2>
       <p class="muted">Tracks tier advancement over time (e.g., Planche Lean → Frog Stand → Tuck Planche, Pistol Squats).</p>
-      <label for="skill-chart-select">Skill Progression</label>
+      <label for="chart-exercise-search">Find exercise</label>
+      <input id="chart-exercise-search" type="search" class="search-input" placeholder="Search logged exercises..." oninput="filterChartExercises()" />
+      <label for="skill-chart-select">Exercise</label>
       <select id="skill-chart-select" onchange="renderSkillChart()"></select>
+      <label for="chart-metric-select">Progress metric</label>
+      <select id="chart-metric-select" onchange="renderSkillChart()"><option value="auto">Auto (reps / hold time)</option><option value="reps">Reps</option><option value="seconds">Hold time (seconds)</option></select>
       <div id="skillProgressChart" class="skill-chart"></div>
       <div id="skill-tier-legend" class="tier-legend"></div>
     </div>
@@ -1023,6 +1032,16 @@
     renderDaySchedule();
   }
 
+  function filterExerciseSelect(searchId,selectId) {
+    const q=(document.getElementById(searchId)?.value||'').trim().toLowerCase(),sel=document.getElementById(selectId);
+    if(!sel)return;
+    const current=sel.value;
+    const list=state.exercises.filter(ex=>(ex.name+' '+normalizeCategory(ex.category)).toLowerCase().includes(q));
+    sel.innerHTML=list.map(ex=>'<option value="'+ex.id+'">'+ex.name+' ('+normalizeCategory(ex.category)+')</option>').join('');
+    if(list.some(ex=>ex.id===current))sel.value=current;
+    if(selectId==='workout-exercise')onExerciseChange();
+  }
+
   function populateDayAddSelect() {
     const sel = document.getElementById('add-to-day-select');
     const dayObj = state.schedule[selectedDay] || { items: [] };
@@ -1031,9 +1050,9 @@
 
     const available = state.exercises.filter(ex => !currentItems.has(ex.id));
     const listToShow = available.length ? available : state.exercises;
-    sel.innerHTML = listToShow
-      .map(ex => `<option value="${ex.id}">${ex.name} (${ex.category})</option>`)
-      .join('');
+    const q=(document.getElementById('day-exercise-search')?.value||'').trim().toLowerCase();
+    const filtered=listToShow.filter(ex=>(ex.name+' '+normalizeCategory(ex.category)).toLowerCase().includes(q));
+    sel.innerHTML=filtered.map(ex=>'<option value="'+ex.id+'">'+ex.name+' ('+ex.category+')</option>').join('');
   }
 
   function addExerciseToSelectedDay() {
@@ -1131,7 +1150,9 @@
   function renderWorkoutExerciseSelect(preferredId = null) {
     const sel = document.getElementById('workout-exercise');
     const prevVal = preferredId || sel.value;
-    sel.innerHTML = state.exercises.map(ex => {
+    const q=(document.getElementById('workout-exercise-search')?.value||'').trim().toLowerCase();
+    const visible=state.exercises.filter(ex=>(ex.name+' '+normalizeCategory(ex.category)).toLowerCase().includes(q));
+    sel.innerHTML = visible.map(ex => {
       const suffix = Array.isArray(ex.tiers) ? ` [${ex.tiers[(ex.currentTier || 0)].label}]` : '';
       return `<option value="${ex.id}">${ex.name}${suffix}</option>`;
     }).join('');
@@ -1447,10 +1468,19 @@
             <strong>${ex.name}</strong><span class="badge">${cat}</span>
             ${tierInfo}
           </div>
-          <button type="button" class="small secondary" onclick="switchToWorkoutWith('${ex.id}')">Select</button>
+          <div class="library-actions"><button type="button" class="small secondary" onclick="switchToWorkoutWith('${ex.id}')">Select</button><button type="button" class="small danger" onclick="deleteExerciseFromLibrary('${ex.id}')">Delete</button></div>
         </div>
       `;
     }).join('');
+  }
+
+  function deleteExerciseFromLibrary(exId) {
+    const ex=getExerciseById(exId);if(!ex)return;
+    if(!confirm('Delete "'+ex.name+'" from your exercise library and remove it from planned routines? Existing workout history will be kept.'))return;
+    state.exercises=state.exercises.filter(item=>item.id!==exId);
+    Object.values(state.schedule).forEach(day=>{if(Array.isArray(day.items))day.items=day.items.filter(id=>id!==exId);});
+    delete sessionSetDrafts[exId];delete state.exerciseNotes[exId];
+    saveState();renderLibrary();renderWorkoutExerciseSelect();populateDayAddSelect();renderDaySchedule();renderHomePlan();populateSkillChartSelect();renderSkillChart();
   }
 
   function switchToWorkoutWith(exId) {
@@ -1497,33 +1527,36 @@
     }).join('');
   }
 
-  function populateSkillChartSelect() {
-    const sel = document.getElementById('skill-chart-select');
-    const prev = sel.value;
-    const progExercises = state.exercises.filter(ex => Array.isArray(ex.tiers) && ex.tiers.length);
-    sel.innerHTML = progExercises
-      .map(ex => `<option value="${ex.id}">${ex.name} (${normalizeCategory(ex.category)})</option>`)
-      .join('');
-    if (prev && [...sel.options].some(o => o.value === prev)) {
-      sel.value = prev;
-    }
+  function filterChartExercises() {
+    const q=(document.getElementById('chart-exercise-search')?.value||'').trim().toLowerCase();
+    const previous=document.getElementById('skill-chart-select')?.value;
+    const list=state.exercises.filter(ex=>(ex.name+' '+normalizeCategory(ex.category)).toLowerCase().includes(q)&&state.logs.some(l=>l.exerciseId===ex.id));
+    const sel=document.getElementById('skill-chart-select');if(!sel)return;
+    sel.innerHTML=list.map(ex=>'<option value="'+ex.id+'">'+ex.name+'</option>').join('');
+    if(list.some(ex=>ex.id===previous))sel.value=previous;
+    renderSkillChart();
   }
-
+  function populateSkillChartSelect() { filterChartExercises(); }
   function renderSkillChart() {
-    const select=document.getElementById('skill-chart-select'),chart=document.getElementById('skillProgressChart'),legend=document.getElementById('skill-tier-legend');
-    if(!select||!chart||!legend)return;
-    const ex=getExerciseById(select.value);
-    if(!ex||!Array.isArray(ex.tiers)||!ex.tiers.length){chart.innerHTML='<p class="muted">Choose a skill exercise to see your progression.</p>';legend.textContent='';return;}
-    legend.innerHTML='<strong>Tiers:</strong> '+ex.tiers.map((t,i)=>(i+1)+'. '+t.label).join(' → ');
-    const points=state.logs.filter(l=>l.exerciseId===ex.id&&Number(l.tierIndex)>0).sort((a,b)=>(a.date||'').localeCompare(b.date||''));
-    const data=points.length?points:[{date:getTodayDateStr(),tierIndex:(ex.currentTier||0)+1}];
-    const w=640,h=230,left=46,right=18,top=18,bottom=42,iw=w-left-right,ih=h-top-bottom;
-    const x=i=>left+(data.length===1?iw/2:i*iw/(data.length-1)),y=v=>top+ih-(Math.max(1,Math.min(ex.tiers.length,Number(v)||1)-1)/Math.max(1,ex.tiers.length-1))*ih;
-    const grid=Array.from({length:ex.tiers.length},(_,i)=>{const yy=y(i+1);return '<line x1="'+left+'" y1="'+yy+'" x2="'+(w-right)+'" y2="'+yy+'" stroke="#344139" stroke-dasharray="3 5"/><text x="'+(left-8)+'" y="'+(yy+4)+'" text-anchor="end" fill="#aab5ad" font-size="10">T'+(i+1)+'</text>';}).join('');
-    const line=data.length>1?'<polyline points="'+data.map((p,i)=>x(i)+','+y(p.tierIndex)).join(' ')+'" fill="none" stroke="#b7f36b" stroke-width="3" stroke-linecap="round"/>':'';
-    const dots=data.map((p,i)=>'<circle cx="'+x(i)+'" cy="'+y(p.tierIndex)+'" r="5" fill="#b7f36b"><title>'+p.date+' · '+(ex.tiers[p.tierIndex-1]?.label||'Tier '+p.tierIndex)+'</title></circle>').join('');
-    const labels=data.map((p,i)=>'<text x="'+x(i)+'" y="'+(h-12)+'" text-anchor="middle" fill="#aab5ad" font-size="10">'+new Date((p.date||getTodayDateStr())+'T12:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'})+'</text>').join('');
-    chart.innerHTML='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Skill progression chart" style="width:100%;height:auto">'+grid+line+dots+labels+'</svg>';
+    const sel=document.getElementById('skill-chart-select'),chart=document.getElementById('skillProgressChart'),legend=document.getElementById('skill-tier-legend'),metricSelect=document.getElementById('chart-metric-select');
+    if(!sel||!chart||!legend||!metricSelect)return;
+    const ex=getExerciseById(sel.value);
+    if(!ex){chart.innerHTML='<p class="muted">Log an exercise to see its progress here.</p>';legend.textContent='';return;}
+    const logs=state.logs.filter(l=>l.exerciseId===ex.id).sort((a,b)=>(a.date||'').localeCompare(b.date||'')||Number(a.id)-Number(b.id));
+    if(!logs.length){chart.innerHTML='<p class="muted">No logged sets for this exercise yet.</p>';legend.textContent='';return;}
+    const chosen=metricSelect.value,metric=chosen==='auto'?(logs.some(l=>Number(l.seconds)>0)||ex.metric==='time'?'seconds':'reps'):chosen;
+    const daily={};logs.forEach(l=>{const value=Number(metric==='seconds'?l.seconds:l.reps)||0;if(value>0)daily[l.date||'Unknown'] = Math.max(daily[l.date||'Unknown']||0,value);});
+    const points=Object.keys(daily).sort().map(date=>({date,value:daily[date]}));
+    const label=metric==='seconds'?'Best hold time (seconds)':'Best reps';
+    legend.textContent=ex.name+' · '+label+' · '+points.length+' logged sets';
+    if(!points.length){chart.innerHTML='<p class="muted">No '+label.toLowerCase()+' data recorded for this exercise yet.</p>';return;}
+    const w=640,h=230,left=48,right=18,top=18,bottom=42,iw=w-left-right,ih=h-top-bottom,max=Math.max(1,...points.map(p=>p.value));
+    const x=i=>left+(points.length===1?iw/2:i*iw/(points.length-1)),y=v=>top+ih-(v/max)*ih;
+    const grid=[0,.25,.5,.75,1].map(t=>{const val=Math.round(max*t),yy=y(val);return '<line x1="'+left+'" y1="'+yy+'" x2="'+(w-right)+'" y2="'+yy+'" stroke="#344139" stroke-dasharray="3 5"/><text x="'+(left-8)+'" y="'+(yy+4)+'" text-anchor="end" fill="#aab5ad" font-size="10">'+val+'</text>';}).join('');
+    const line=points.length>1?'<polyline points="'+points.map((p,i)=>x(i)+','+y(p.value)).join(' ')+'" fill="none" stroke="#b7f36b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>':'';
+    const dots=points.map((p,i)=>'<circle cx="'+x(i)+'" cy="'+y(p.value)+'" r="5" fill="#b7f36b"><title>'+p.date+': '+p.value+' '+(metric==='seconds'?'sec':'reps')+'</title></circle>').join('');
+    const labels=points.map((p,i)=>'<text x="'+x(i)+'" y="'+(h-12)+'" text-anchor="middle" fill="#aab5ad" font-size="10">'+new Date((p.date||getTodayDateStr())+'T12:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'})+'</text>').join('');
+    chart.innerHTML='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="'+ex.name+' '+label+' progress chart" style="width:100%;height:auto">'+grid+line+dots+labels+'</svg>';
   }
 
   function getLogsForWorkoutSession(session) {
@@ -1697,8 +1730,10 @@
     sessionSetEdits[logId]={weight:Number(log.weightKg)||0,reps:Number(log.reps)||0};renderSessionPlan();
   }
   function updateCompletedSetDraft(logId,field,value) { if(sessionSetEdits[logId])sessionSetEdits[logId][field]=value; }
+  function toggleSetMenu(logId) { const menu=document.getElementById('set-menu-'+logId);if(!menu)return;document.querySelectorAll('.set-menu').forEach(el=>{if(el!==menu)el.classList.add('hidden');});menu.classList.toggle('hidden'); }
   function deleteCompletedSet(logId) {
     if(!confirm('Delete this completed set?'))return;
+    document.getElementById('set-menu-'+logId)?.classList.add('hidden');
     state.logs=state.logs.filter(l=>Number(l.id)!==Number(logId));delete sessionSetEdits[logId];
     saveState();renderSessionPlan();renderTodayLogs();renderPRs();renderFullHistory();updateDashboardStats();
   }
@@ -1744,7 +1779,7 @@
       const logs=getExerciseSessionLogs(id),prev=getPreviousExerciseLogs(id),drafts=sessionSetDrafts[id]||[],note=state.exerciseNotes[id]||'',previousFor=n=>prev[n-1]?(Number(prev[n-1].weightKg||0)+' kg × '+(prev[n-1].reps||0)):'—';
       const rows=logs.map((l,j)=>{
         const edit=sessionSetEdits[l.id],editing=!!edit;
-        return '<div class="set-grid-row completed '+(editing?'editing':'')+'"><span class="set-num">'+(j+1)+'</span><span class="set-previous">'+previousFor(j+1)+'</span><input type="number" min="0" step="0.5" inputmode="decimal" aria-label="Weight in kilograms" value="'+(editing?edit.weight:(l.weightKg||0))+'" '+(editing?'onchange="updateCompletedSetDraft(\''+l.id+'\',\'weight\',this.value)"':'readonly')+'><input type="number" min="1" step="1" inputmode="numeric" aria-label="Reps" value="'+(editing?edit.reps:(l.reps||0))+'" '+(editing?'onchange="updateCompletedSetDraft(\''+l.id+'\',\'reps\',this.value)"':'readonly')+'><button class="set-check" type="button" onclick="toggleCompletedSet(\''+id+'\',\''+l.id+'\')" aria-label="'+(editing?'Save set':'Edit completed set')+'">✓</button></div>';
+        return '<div class="set-grid-row completed '+(editing?'editing':'')+'"><span class="set-num">'+(j+1)+'</span><span class="set-previous">'+previousFor(j+1)+'</span><input type="number" min="0" step="0.5" inputmode="decimal" aria-label="Weight in kilograms" value="'+(editing?edit.weight:(l.weightKg||0))+'" '+(editing?'onchange="updateCompletedSetDraft(\''+l.id+'\',\'weight\',this.value)"':'readonly')+'><input type="number" min="1" step="1" inputmode="numeric" aria-label="Reps" value="'+(editing?edit.reps:(l.reps||0))+'" '+(editing?'onchange="updateCompletedSetDraft(\''+l.id+'\',\'reps\',this.value)"':'readonly')+'><button class="set-check" type="button" onclick="toggleCompletedSet(\''+id+'\',\''+l.id+'\')" aria-label="'+(editing?'Save set':'Edit completed set')+'">✓</button><button class="set-more" type="button" onclick="toggleSetMenu(\''+l.id+'\')" aria-label="Set options">•••</button><div class="set-menu hidden" id="set-menu-'+l.id+'"><button type="button" onclick="deleteCompletedSet(\''+l.id+'\')">Delete set</button></div></div>';
       }).join('');
       const draftRows=drafts.map((d,j)=>'<div class="set-grid-row"><span class="set-num">'+(logs.length+j+1)+'</span><span class="set-previous">'+previousFor(logs.length+j+1)+'</span><input type="number" min="0" step="0.5" inputmode="decimal" aria-label="Weight in kilograms" value="'+d.weight+'" onchange="updateSetDraft(\''+id+'\','+j+',\'weight\',this.value)"><input type="number" min="1" step="1" inputmode="numeric" aria-label="Reps" value="'+d.reps+'" onchange="updateSetDraft(\''+id+'\','+j+',\'reps\',this.value)"><button class="set-check" type="button" onclick="completeExerciseSet(\''+id+'\','+j+')" aria-label="Complete set">✓</button></div>').join('');
       return '<article class="lyfta-exercise"><div class="lyfta-exercise-head"><div class="lyfta-exercise-icon">'+(i+1)+'</div><div class="lyfta-exercise-title"><strong>'+getActiveExerciseLabel(ex)+'</strong><small>'+logs.length+' sets completed</small></div><button class="lyfta-more" type="button" onclick="openExerciseMenu(\''+id+'\')" aria-label="Exercise options">•••</button><div class="exercise-menu hidden" id="exercise-menu-'+id+'"><button type="button" data-action="add" onclick="chooseExerciseMenuAction(this.dataset.action,\''+id+'\')">＋ Add set</button><button type="button" data-action="delete" onclick="chooseExerciseMenuAction(this.dataset.action,\''+id+'\')">Delete exercise</button><button type="button" data-action="replace" onclick="chooseExerciseMenuAction(this.dataset.action,\''+id+'\')">Replace exercise</button></div></div><input class="lyfta-notes" type="text" placeholder="Add notes..." value="'+note.replace(/"/g,'&quot;')+'" oninput="updateExerciseNotes(\''+id+'\',this.value)"><button class="lyfta-rest" type="button" onclick="startRestTimer()">◷ &nbsp; '+Math.round((Number(state.settings.restDuration)||90)/60)+' min rest</button><div class="set-grid-head"><span>Set</span><span>Previous</span><span>KG</span><span>Reps</span><span></span></div>'+rows+draftRows+'<button class="lyfta-add-set" type="button" onclick="addExerciseSet(\''+id+'\')">Add set</button></article>';
