@@ -1039,6 +1039,7 @@
     const list=state.exercises.filter(ex=>(ex.name+' '+normalizeCategory(ex.category)).toLowerCase().includes(q));
     sel.innerHTML=list.map(ex=>'<option value="'+ex.id+'">'+ex.name+' ('+normalizeCategory(ex.category)+')</option>').join('');
     if(list.some(ex=>ex.id===current))sel.value=current;
+    if(selectId==='workout-exercise')onExerciseChange();
   }
 
   function populateDayAddSelect() {
@@ -1544,8 +1545,9 @@
     const logs=state.logs.filter(l=>l.exerciseId===ex.id).sort((a,b)=>(a.date||'').localeCompare(b.date||'')||Number(a.id)-Number(b.id));
     if(!logs.length){chart.innerHTML='<p class="muted">No logged sets for this exercise yet.</p>';legend.textContent='';return;}
     const chosen=metricSelect.value,metric=chosen==='auto'?(logs.some(l=>Number(l.seconds)>0)||ex.metric==='time'?'seconds':'reps'):chosen;
-    const points=logs.map(l=>({date:l.date||'',value:Number(metric==='seconds'?l.seconds:l.reps)||0})).filter(p=>p.value>0);
-    const label=metric==='seconds'?'Hold time (seconds)':'Reps';
+    const daily={};logs.forEach(l=>{const value=Number(metric==='seconds'?l.seconds:l.reps)||0;if(value>0)daily[l.date||'Unknown'] = Math.max(daily[l.date||'Unknown']||0,value);});
+    const points=Object.keys(daily).sort().map(date=>({date,value:daily[date]}));
+    const label=metric==='seconds'?'Best hold time (seconds)':'Best reps';
     legend.textContent=ex.name+' · '+label+' · '+points.length+' logged sets';
     if(!points.length){chart.innerHTML='<p class="muted">No '+label.toLowerCase()+' data recorded for this exercise yet.</p>';return;}
     const w=640,h=230,left=48,right=18,top=18,bottom=42,iw=w-left-right,ih=h-top-bottom,max=Math.max(1,...points.map(p=>p.value));
