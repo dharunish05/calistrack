@@ -905,6 +905,7 @@
   if (!state.completedByDate) state.completedByDate = {};
   if (!state.warmupByDate) state.warmupByDate = {};
   if (!state.settings) state.settings = { restDuration: 90, reminderTime: '' };
+  if (!state.exerciseNotes) state.exerciseNotes = {};
 
   let selectedDay = getTodayKey();
   let selectedLibGroup = 'All';
@@ -1752,7 +1753,7 @@
     const entry={id:Date.now(),workoutId:Number(state.activeWorkout.startedAt),exerciseId:ex.id,exerciseName:ex.name,category:normalizeCategory(ex.category),tierIndex:tierIdx!==null?tierIdx+1:null,tierLabel:tierObj?tierObj.label:null,displayName:getActiveExerciseLabel(ex),reps,seconds:0,weightKg:weight,rpe:null,setType:'Normal',notes:'',date:state.activeWorkout.date,timestamp:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})};
     state.logs.unshift(entry);drafts.splice(index,1);saveState();renderSessionPlan();renderTodayLogs();updateDashboardStats();startRestTimer();
   }
-  function updateExerciseNotes(exId,value) { sessionSetDrafts['sessionNotes_'+exId]=value; }
+  function updateExerciseNotes(exId,value) { state.exerciseNotes[exId]=value; saveState(); }
   function renderSessionPlan() {
     const day=getTodayKey(),plan=(state.schedule[day]||{focus:'Workout',items:[]}).items||[],host=document.getElementById('session-exercises-list');if(!host)return;
     const title=document.getElementById('session-title'),subtitle=document.getElementById('session-subtitle'),count=document.getElementById('session-exercise-count');
@@ -1760,7 +1761,7 @@
     if(!plan.length){host.innerHTML='<p class="muted">No exercises planned for today. Add movements in Routines.</p>';updateSessionSummary();return;}
     host.innerHTML=plan.map((id,i)=>{
       const ex=getExerciseById(id);if(!ex)return '';
-      const logs=getExerciseSessionLogs(id),prev=getPreviousExerciseLogs(id),drafts=sessionSetDrafts[id]||[],note=sessionSetDrafts['sessionNotes_'+id]||'',previousFor=n=>prev[n-1]?(Number(prev[n-1].weightKg||0)+' kg × '+(prev[n-1].reps||0)):'—';
+      const logs=getExerciseSessionLogs(id),prev=getPreviousExerciseLogs(id),drafts=sessionSetDrafts[id]||[],note=state.exerciseNotes[id]||'',previousFor=n=>prev[n-1]?(Number(prev[n-1].weightKg||0)+' kg × '+(prev[n-1].reps||0)):'—';
       const rows=logs.map((l,j)=>'<div class="set-grid-row completed"><span class="set-num">'+(j+1)+'</span><span class="set-previous">'+previousFor(j+1)+'</span><input aria-label="Completed weight" value="'+(l.weightKg||0)+'" readonly><input aria-label="Completed reps" value="'+(l.reps||0)+'" readonly><button class="set-check" type="button" aria-label="Set completed">✓</button></div>').join('');
       const draftRows=drafts.map((d,j)=>'<div class="set-grid-row"><span class="set-num">'+(logs.length+j+1)+'</span><span class="set-previous">'+previousFor(logs.length+j+1)+'</span><input type="number" min="0" step="0.5" inputmode="decimal" aria-label="Weight in kilograms" value="'+d.weight+'" onchange="updateSetDraft(\''+id+'\','+j+',\'weight\',this.value)"><input type="number" min="1" step="1" inputmode="numeric" aria-label="Reps" value="'+d.reps+'" onchange="updateSetDraft(\''+id+'\','+j+',\'reps\',this.value)"><button class="set-check" type="button" onclick="completeExerciseSet(\''+id+'\','+j+')" aria-label="Complete set">✓</button></div>').join('');
       return '<article class="lyfta-exercise"><div class="lyfta-exercise-head"><div class="lyfta-exercise-icon">'+(i+1)+'</div><div class="lyfta-exercise-title"><strong>'+getActiveExerciseLabel(ex)+'</strong><small>'+logs.length+' sets completed</small></div><button class="lyfta-more" type="button" onclick="startExerciseFromSession(\''+id+'\')" aria-label="Select exercise">•••</button></div><input class="lyfta-notes" type="text" placeholder="Add notes..." value="'+note.replace(/"/g,'&quot;')+'" oninput="updateExerciseNotes(\''+id+'\',this.value)"><button class="lyfta-rest" type="button" onclick="startRestTimer()">◷ &nbsp; '+Math.round((Number(state.settings.restDuration)||90)/60)+' min rest</button><div class="set-grid-head"><span>Set</span><span>Previous</span><span>KG</span><span>Reps</span><span></span></div>'+rows+draftRows+'<button class="lyfta-add-set" type="button" onclick="addExerciseSet(\''+id+'\')">Add set</button></article>';
