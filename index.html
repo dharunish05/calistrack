@@ -380,6 +380,50 @@
     @media(max-width:420px){.container{padding:13px 11px 28px}.card{padding:15px;border-radius:16px}.dashboard-hero{padding:19px 16px}.dashboard-stats{gap:6px}.dashboard-stat{padding:10px 8px}.dashboard-stat strong{font-size:1.2rem}.set-extra-fields{gap:8px}.counter-btn{width:42px;flex-basis:42px;height:44px;min-height:44px}.nav button{font-size:.6rem}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
+  
+    /* Lyfta-inspired workout interface: original CalisTrack styling */
+    :root{--bg:#101211;--card:#1b1e1c;--card-2:#252a27;--text:#f4f5f4;--muted:#a0a7a2;--accent:#b8f36b;--accent-dark:#8fc34d;--border:#353b37}
+    body{background:#101211;color:var(--text);font-size:14px;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+    #app-header{height:58px;background:#101211;border-bottom:1px solid #292e2b}
+    .container{max-width:760px;padding:16px 14px 30px}
+    .card{background:#1b1e1c;border:1px solid #303632;border-radius:15px;padding:16px;box-shadow:none;margin-bottom:12px}
+    .dashboard-hero{background:#1d241e;border:1px solid #394438;border-radius:17px;padding:20px;margin-bottom:12px}
+    .dashboard-title{font-size:2rem;max-width:360px}
+    .dashboard-cta,.primary-cta{width:100%;max-width:none;min-height:48px;border-radius:11px}
+    .dashboard-stats{gap:7px}.dashboard-stat{background:#151916;border:1px solid #303832;border-radius:11px}
+    .dashboard-stat strong{font-size:1.25rem}.week-dot{width:28px;height:28px}
+    .page-intro{padding:6px 3px 13px}.page-intro h1{font-size:1.7rem}
+    .nav{display:flex;justify-content:space-around;background:rgba(17,19,18,.98);border-top:1px solid #333a35;padding:4px 2px env(safe-area-inset-bottom);gap:0}
+    .nav button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:58px;padding:6px 1px;background:transparent;color:#a0a7a2;border:0;border-radius:0;font-size:.64rem;font-weight:650;box-shadow:none}
+    .nav button .nav-icon{font-size:1.15rem;line-height:1.1}
+    .nav button.active{color:var(--accent);background:transparent;border:0}
+    .nav button.active .nav-icon{color:var(--accent)}
+    .nav button.active span:last-child{font-weight:850}
+    .session-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0 0;border-top:1px solid #303632}
+    .session-exercise{padding:13px 0;border-bottom:1px solid #343a35;display:flex;align-items:center;gap:12px}
+    .session-exercise:last-child{border-bottom:0;padding-bottom:0}
+    .exercise-number{width:34px;height:34px;border-radius:10px;background:#303a31;color:var(--accent);display:grid;place-items:center;font-weight:850;flex:0 0 34px}
+    .session-exercise-main{min-width:0;flex:1}.session-exercise-main strong{display:block;font-size:.9rem}
+    .session-exercise .small{flex:0 0 auto}
+    .previous-performance{background:#252b27;border:1px solid #39423b;border-radius:10px;padding:11px 12px;margin:4px 0 14px;font-size:.8rem}
+    .previous-performance strong{display:block;color:#e8eee9;font-size:.83rem;margin-top:3px}
+    .set-extra-fields{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}
+    .set-extra-fields>div{min-width:0}.set-extra-fields input,.set-extra-fields select{margin-bottom:0}
+    #hold-timer-btn,#log-set-btn{width:100%;margin-top:8px}#log-set-btn{min-height:50px;font-size:.9rem}
+    .counter-box{background:#252a27;border:1px solid #3a413c;border-radius:11px}
+    .counter-btn{width:43px;flex-basis:43px;height:45px;min-height:45px;border-radius:9px}
+    .counter-val{font-size:1.7rem}
+    .log-item{gap:9px}.log-item>div:first-child{min-width:0}.log-item strong{font-size:.86rem}
+    .sched-item{background:#252a27;border:1px solid #383f39;border-radius:11px}
+    .day-pill{background:#252a27;border-color:#3a413c}.day-pill.active{background:var(--accent);color:#171d12}
+    .count-pill,.plan-chip,.live-tag{background:rgba(184,243,107,.11);border-color:rgba(184,243,107,.23);color:var(--accent)}
+    .text-action{color:var(--accent)}.metric-tile{background:#252a27;border:1px solid #373e38;border-radius:12px}
+    .pr-card{background:#252a27;border:1px solid #373e38;border-radius:11px}
+    #rest-banner{position:sticky;top:62px;z-index:25;background:#34472f;border:1px solid #566b4b}
+    .set-index{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;background:#303a31;color:var(--accent);font-size:.7rem;margin-right:5px}
+    @media(min-width:760px){.nav{position:sticky;top:58px;max-width:760px;margin:0 auto;border:1px solid #303632;border-radius:0 0 13px 13px}.nav button{min-height:54px}.container{padding-top:20px}}
+    @media(max-width:390px){.nav button{font-size:.59rem}.set-extra-fields{grid-template-columns:1fr}.dashboard-title{font-size:1.8rem}}
+
   </style>
 </head>
 <body>
@@ -404,8 +448,8 @@
       <div class="dashboard-kicker" id="dashboard-date">YOUR TRAINING SPACE</div>
       <div class="dashboard-title">Make every set count.</div>
       <p class="dashboard-subtitle" id="dashboard-focus">Your plan. Your pace. Your progress.</p>
-      <button type="button" class="dashboard-cta" onclick="beginWorkout();document.getElementById('workout-exercise').scrollIntoView({behavior:'smooth',block:'center'});">Start workout <span aria-hidden="true">→</span></button>
-      <div class="session-status-row"><span class="session-live-dot"></span><span id="session-status">No active workout</span><button type="button" class="session-finish" id="finish-workout-btn" onclick="finishWorkout()" hidden>Finish</button></div>
+      <button type="button" class="dashboard-cta" onclick="switchTab('session',document.querySelector('[data-tab=session]'));beginWorkout();document.getElementById('workout-exercise').scrollIntoView({behavior:'smooth',block:'center'});">Start workout <span aria-hidden="true">→</span></button>
+      <div class="session-status-row"><span class="session-live-dot"></span><span id="home-session-status">No active workout</span><button type="button" class="session-finish" id="home-finish-workout-btn" onclick="finishWorkout()" hidden>Finish</button></div>
       <div class="dashboard-stats">
         <div class="dashboard-stat"><strong id="dash-today-sets">0</strong><span>Sets today</span></div>
         <div class="dashboard-stat"><strong id="dash-total-sessions">0</strong><span>Training days</span></div>
@@ -425,7 +469,22 @@
     <section class="card quick-start-card">
       <div class="section-head"><div><div class="eyebrow">READY WHEN YOU ARE</div><h2>Start training</h2></div><span class="quick-start-icon">↗</span></div>
       <p class="muted">Log your sets, track your holds and build on your previous performance.</p>
-      <button type="button" class="primary-cta" onclick="beginWorkout();document.getElementById('workout-exercise').scrollIntoView({behavior:'smooth',block:'center'});">Start workout <span>→</span></button>
+      <button type="button" class="primary-cta" onclick="switchTab('session',document.querySelector('[data-tab=session]'));beginWorkout();document.getElementById('workout-exercise').scrollIntoView({behavior:'smooth',block:'center'});">Start workout <span>→</span></button>
+    </section>
+    <section class="card home-next-card"><div class="section-head"><div><div class="eyebrow">NEXT STEP</div><h2>Ready for your next session?</h2></div></div><p class="muted">Open your workout to log sets, compare your last performance and track each exercise.</p><button type="button" class="primary-cta" onclick="switchTab('session',document.querySelector('[data-tab=session]'));beginWorkout();">Open workout <span>→</span></button></section>
+
+  </div>
+
+  <!-- TAB: ACTIVE WORKOUT -->
+  <div id="tab-session" class="tab hidden">
+    <div class="page-intro workout-page-intro">
+      <div class="eyebrow">TRAINING SESSION</div>
+      <div class="section-head"><div><h1 id="session-title">Today's workout</h1><p class="muted" id="session-subtitle">Your planned exercises, all in one place.</p></div><span class="live-tag">LIVE</span></div>
+      <div class="session-toolbar"><span id="session-status" class="muted">No active workout</span><button type="button" class="small secondary" id="finish-workout-btn" onclick="finishWorkout()" hidden>Finish workout</button></div>
+    </div>
+    <section class="card session-exercises-card">
+      <div class="section-head"><div><div class="eyebrow">TODAY'S PLAN</div><h2>Exercises</h2></div><span class="count-pill" id="session-exercise-count">0 exercises</span></div>
+      <div id="session-exercises-list"></div>
     </section>
     <!-- Active Set Logger -->
     <div class="card">
@@ -475,6 +534,8 @@
       <div class="set-extra-fields">
         <div><label for="set-weight">Added weight (kg)</label><input type="number" id="set-weight" min="0" step="0.5" inputmode="decimal" placeholder="0" /></div>
         <div><label for="set-rpe">Effort (RPE)</label><select id="set-rpe"><option value="">Not set</option><option value="6">6 – Easy</option><option value="7">7 – Moderate</option><option value="8">8 – Hard</option><option value="9">9 – Very hard</option><option value="10">10 – Max effort</option></select></div>
+        <div><label for="set-type">Set type</label><select id="set-type"><option value="Normal">Normal</option><option value="Warm-up">Warm-up</option><option value="Drop set">Drop set</option><option value="Failure">Failure</option></select></div>
+        <div><label for="set-notes">Set note</label><input type="text" id="set-notes" placeholder="Optional note" /></div>
       </div>
       <button type="button" id="hold-timer-btn" class="secondary" onclick="toggleHoldTimer()">
         Hands-Free Hold Timer (3s Beep + 5s Cues)
@@ -490,7 +551,6 @@
       <div id="today-logs"><p class="muted">No sets logged today yet.</p></div>
     </div>
   </div>
-
   <!-- TAB: ROUTINES -->
   <div id="tab-routines" class="tab hidden">
     <div class="page-intro"><div class="eyebrow">PLAN YOUR TRAINING</div><h1>Your routines</h1><p class="muted">Organise your week and prepare for every session.</p></div>
@@ -655,6 +715,7 @@
 
 <nav class="nav" aria-label="Main navigation">
   <button type="button" data-tab="workout" class="active" onclick="switchTab('workout',this)"><span class="nav-icon">⌂</span><span>Home</span></button>
+  <button type="button" data-tab="session" onclick="switchTab('session',this)"><span class="nav-icon">▣</span><span>Workout</span></button>
   <button type="button" data-tab="routines" onclick="switchTab('routines',this)"><span class="nav-icon">▦</span><span>Routines</span></button>
   <button type="button" data-tab="exercises" onclick="switchTab('exercises',this)"><span class="nav-icon">▤</span><span>Exercises</span></button>
   <button type="button" data-tab="prs" onclick="switchTab('prs',this)"><span class="nav-icon">⌁</span><span>Progress</span></button>
@@ -894,6 +955,7 @@
     if (btn) btn.classList.add('active');
     else { const navBtn=document.querySelector('.nav button[data-tab='+tabName+']'); if(navBtn) navBtn.classList.add('active'); }
     if(tabName==='workout') { renderHomePlan(); updateDashboardStats(); }
+    if(tabName==='session') { renderSessionPlan(); renderTodayLogs(); updateDashboardStats(); }
     if(tabName==='routines') { renderDayPills(); renderDaySchedule(); renderWarmup(); }
 
     if (tabName === 'exercises') {
@@ -904,7 +966,6 @@
       renderPRs();
       populateSkillChartSelect();
       renderSkillChart();
-      renderAllMuscleAreaCharts();
       renderFullHistory();
       updateProgressOverview();
     }
@@ -1072,6 +1133,7 @@
   }
 
   function focusExerciseInLogger(exId) {
+    switchTab('session', document.querySelector('[data-tab=session]'));
     const sel = document.getElementById('workout-exercise');
     if ([...sel.options].some(o => o.value === exId)) {
       sel.value = exId;
@@ -1264,15 +1326,20 @@
       seconds: currentSeconds,
       weightKg: Number(document.getElementById('set-weight')?.value)||0,
       rpe: document.getElementById('set-rpe')?.value ? Number(document.getElementById('set-rpe').value) : null,
+      setType: document.getElementById('set-type')?.value || 'Normal',
+      notes: document.getElementById('set-notes')?.value || '',
       date: getTodayDateStr(),
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
     state.logs.unshift(entry);
+    if(!state.activeWorkout) state.activeWorkout={date:getTodayDateStr(),startedAt:Date.now(),day:getTodayKey()};
+    const noteField=document.getElementById('set-notes');if(noteField)noteField.value='';
     saveState();
     renderTodayLogs();
     renderHomePlan();
     renderPreviousPerformance();
+    renderSessionPlan();
     startRestTimer();
   }
 
@@ -1315,6 +1382,8 @@
     if (l.seconds > 0) parts.push(`${l.seconds}s hold`);
     if(l.weightKg>0)parts.push(l.weightKg+' kg');
     if(l.rpe)parts.push('RPE '+l.rpe);
+    if(l.setType&&l.setType!=='Normal')parts.push(l.setType);
+    if(l.notes)parts.push(l.notes);
     return parts.join(' · ') || '0';
   }
 
@@ -1400,8 +1469,8 @@
   }
 
   function switchToWorkoutWith(exId) {
-    const workoutBtn = document.querySelector('.nav button[data-tab=workout]');
-    switchTab('workout', workoutBtn);
+    const workoutBtn = document.querySelector('.nav button[data-tab=session]');
+    switchTab('session', workoutBtn);
     focusExerciseInLogger(exId);
   }
 
@@ -1525,58 +1594,6 @@
     });
   }
 
-  function renderAllMuscleAreaCharts() {
-    const palette = {
-      Push: { stroke: '#b7f36b', fill: 'rgba(183, 243, 107, 0.20)' },
-      Pull: { stroke: '#8dcf73', fill: 'rgba(141, 207, 115, 0.18)' },
-      Legs: { stroke: '#d2e88a', fill: 'rgba(210, 232, 138, 0.18)' },
-      Core: { stroke: '#a5b98b', fill: 'rgba(165, 185, 139, 0.18)' }
-    };
-
-    const allDatesSet = new Set(state.logs.map(l => l.date));
-    if (!allDatesSet.size) allDatesSet.add(getTodayDateStr());
-    const sortedDates = [...allDatesSet].sort();
-
-    MUSCLE_GROUPS.forEach(group => {
-      const dailyTotals = {};
-      sortedDates.forEach(d => { dailyTotals[d] = 0; });
-
-      state.logs.forEach(l => {
-        const ex = getExerciseById(l.exerciseId);
-        const logGroup = normalizeCategory(l.category || (ex && ex.category));
-        if (logGroup === group) {
-          const volumeMetric = (l.reps || 0) + (l.seconds || 0);
-          dailyTotals[l.date] = (dailyTotals[l.date] || 0) + volumeMetric;
-        }
-      });
-
-      const canvasId = `areaChart${group}`;
-      const canvas = document.getElementById(canvasId);
-      if (!canvas) return;
-      if (areaChartInstances[group]) areaChartInstances[group].destroy();
-
-      areaChartInstances[group] = new Chart(canvas.getContext('2d'), {
-        type: 'line',
-        data: {
-          labels: sortedDates,
-          datasets: [{
-            label: `${group} Volume (Reps + Hold Sec)`,
-            data: sortedDates.map(d => dailyTotals[d]),
-            borderColor: palette[group].stroke,
-            backgroundColor: palette[group].fill,
-            tension: 0.3,
-            fill: true
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { display: false } },
-          scales: { y: { beginAtZero: true } }
-        }
-      });
-    });
-  }
-
   function renderFullHistory() {
     const el = document.getElementById('full-history');
     if (!state.logs.length) {
@@ -1600,7 +1617,6 @@
     renderTodayLogs();
     renderPRs();
     renderSkillChart();
-    renderAllMuscleAreaCharts();
     renderFullHistory();
   }
 
@@ -1692,6 +1708,31 @@
     }).join('') || '<p class="muted">Rest day. Take time for mobility and recovery.</p>';
   }
 
+  function renderSessionPlan() {
+    const day=getTodayKey();
+    const plan=(state.schedule[day]||{focus:'Workout',items:[]}).items||[];
+    const host=document.getElementById('session-exercises-list');
+    if(!host)return;
+    const title=document.getElementById('session-title');
+    const subtitle=document.getElementById('session-subtitle');
+    const count=document.getElementById('session-exercise-count');
+    if(title)title.textContent=day+' workout';
+    if(subtitle)subtitle.textContent=(state.schedule[day]?.focus||'Training session')+' · Tap an exercise to log your sets.';
+    if(count)count.textContent=plan.length+' exercises';
+    if(!plan.length){host.innerHTML='<p class="muted">No exercises planned for today. Add movements in Routines.</p>';return;}
+    host.innerHTML=plan.map((id,i)=>{
+      const ex=getExerciseById(id);if(!ex)return '';
+      const last=state.logs.find(l=>l.exerciseId===id);
+      return '<div class="session-exercise"><span class="exercise-number">'+(i+1)+'</span><div class="session-exercise-main"><strong>'+getActiveExerciseLabel(ex)+'</strong><div class="muted">'+normalizeCategory(ex.category)+' · '+(last?'Last: '+formatSetSummary(last):'No previous performance')+'</div></div><button type="button" class="small secondary" onclick="startExerciseFromSession(\''+id+'\')">Log sets</button></div>';
+    }).join('');
+  }
+
+  function startExerciseFromSession(exId) {
+    beginWorkout();
+    const select=document.getElementById('workout-exercise');
+    if(select&&[...select.options].some(o=>o.value===exId)){select.value=exId;onExerciseChange();}
+    if(select)select.scrollIntoView({behavior:'smooth',block:'center'});
+  }
   function beginWorkout() {
     if(!state.activeWorkout) state.activeWorkout={date:getTodayDateStr(),startedAt:Date.now(),day:getTodayKey()};
     saveState();
@@ -1753,9 +1794,11 @@
     if(setEl) setEl.textContent=todayLogs.length;
     if(totalEl) totalEl.textContent=sessionCount;
     if(streakEl) streakEl.textContent=streak;
-    const status=document.getElementById('session-status'), finish=document.getElementById('finish-workout-btn'), dot=document.querySelector('.session-live-dot');
+    const status=document.getElementById('home-session-status'), finish=document.getElementById('home-finish-workout-btn'), sessionStatus=document.getElementById('session-status'), sessionFinish=document.getElementById('finish-workout-btn'), dot=document.querySelector('.session-live-dot');
     if(status)status.textContent=state.activeWorkout?'Workout in progress · '+Math.max(1,Math.floor((Date.now()-state.activeWorkout.startedAt)/60000))+' min':'No active workout';
     if(finish)finish.hidden=!state.activeWorkout;
+    if(sessionFinish)sessionFinish.hidden=!state.activeWorkout;
+    if(sessionStatus)sessionStatus.textContent=state.activeWorkout?'Workout in progress · '+Math.max(1,Math.floor((Date.now()-state.activeWorkout.startedAt)/60000))+' min':'No active workout';
     if(dot)dot.classList.toggle('active',!!state.activeWorkout);
     updateProgressOverview();
     const weekEl=document.getElementById('dashboard-week');
