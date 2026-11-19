@@ -1,4 +1,4 @@
-const CACHE_NAME = 'calistrack-v6';
+const CACHE_NAME = 'calistrack-v7';
 const ASSETS = [
   './',
   './index.html',
