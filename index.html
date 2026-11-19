@@ -471,6 +471,21 @@
       <p class="muted">Log your sets, track your holds and build on your previous performance.</p>
       <button type="button" class="primary-cta" onclick="beginWorkout();document.getElementById('workout-exercise').scrollIntoView({behavior:'smooth',block:'center'});">Start workout <span>→</span></button>
     </section>
+    <section class="card home-next-card"><div class="section-head"><div><div class="eyebrow">NEXT STEP</div><h2>Ready for your next session?</h2></div></div><p class="muted">Open your workout to log sets, compare your last performance and track each exercise.</p><button type="button" class="primary-cta" onclick="switchTab('session',document.querySelector('[data-tab=session]'));beginWorkout();">Open workout <span>→</span></button></section>
+
+  </div>
+
+  <!-- TAB: ACTIVE WORKOUT -->
+  <div id="tab-session" class="tab hidden">
+    <div class="page-intro workout-page-intro">
+      <div class="eyebrow">TRAINING SESSION</div>
+      <div class="section-head"><div><h1 id="session-title">Today's workout</h1><p class="muted" id="session-subtitle">Your planned exercises, all in one place.</p></div><span class="live-tag">LIVE</span></div>
+      <div class="session-toolbar"><span id="session-status" class="muted">No active workout</span><button type="button" class="small secondary" id="finish-workout-btn" onclick="finishWorkout()" hidden>Finish workout</button></div>
+    </div>
+    <section class="card session-exercises-card">
+      <div class="section-head"><div><div class="eyebrow">TODAY'S PLAN</div><h2>Exercises</h2></div><span class="count-pill" id="session-exercise-count">0 exercises</span></div>
+      <div id="session-exercises-list"></div>
+    </section>
     <!-- Active Set Logger -->
     <div class="card">
       <div class="section-head"><div><div class="eyebrow">ACTIVE SESSION</div><h2>Log your set</h2></div><span class="live-tag">LIVE</span></div>
@@ -534,7 +549,6 @@
       <div id="today-logs"><p class="muted">No sets logged today yet.</p></div>
     </div>
   </div>
-
   <!-- TAB: ROUTINES -->
   <div id="tab-routines" class="tab hidden">
     <div class="page-intro"><div class="eyebrow">PLAN YOUR TRAINING</div><h1>Your routines</h1><p class="muted">Organise your week and prepare for every session.</p></div>
@@ -699,6 +713,7 @@
 
 <nav class="nav" aria-label="Main navigation">
   <button type="button" data-tab="workout" class="active" onclick="switchTab('workout',this)"><span class="nav-icon">⌂</span><span>Home</span></button>
+  <button type="button" data-tab="session" onclick="switchTab('session',this)"><span class="nav-icon">▣</span><span>Workout</span></button>
   <button type="button" data-tab="routines" onclick="switchTab('routines',this)"><span class="nav-icon">▦</span><span>Routines</span></button>
   <button type="button" data-tab="exercises" onclick="switchTab('exercises',this)"><span class="nav-icon">▤</span><span>Exercises</span></button>
   <button type="button" data-tab="prs" onclick="switchTab('prs',this)"><span class="nav-icon">⌁</span><span>Progress</span></button>
