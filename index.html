@@ -223,6 +223,94 @@
       background: rgba(56, 189, 248, 0.06);
     }
     .hidden { display: none; }
+
+    /* CalisTrack visual refresh — dark athletic, mobile-first */
+    :root {
+      --bg:#0b1110; --card:#141e1b; --card-2:#101815; --text:#f3f7f4;
+      --muted:#93a49a; --accent:#a5d6a7; --accent-dark:#4b8f63;
+      --success:#8bd49b; --warn:#eab66a; --danger:#e47777; --border:#293832;
+      --surface-glow:rgba(165,214,167,.09);
+    }
+    html { scroll-behavior:smooth; }
+    body { background:radial-gradient(ellipse at 50% -15%,rgba(87,143,105,.16),transparent 42%),var(--bg); padding-bottom:calc(82px + env(safe-area-inset-bottom)); }
+    header#app-header { background:rgba(15,24,20,.92); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-bottom:1px solid var(--border); text-align:left; padding:17px max(18px,calc((100vw - 1000px)/2)); letter-spacing:-.035em; font-size:1.22rem; }
+    header#app-header:before { content:""; display:inline-block; width:9px; height:9px; border-radius:3px; background:var(--accent); margin:0 10px 1px 0; box-shadow:0 0 18px rgba(165,214,167,.65); }
+    .container { max-width:1000px; padding:18px; }
+    .card { background:linear-gradient(145deg,rgba(24,36,31,.98),rgba(17,26,22,.98)); border:1px solid rgba(157,190,168,.12); border-radius:19px; padding:19px; margin-bottom:16px; box-shadow:0 10px 28px rgba(0,0,0,.12); }
+    h2,h3 { letter-spacing:-.025em; font-weight:750; }
+    h2 { font-size:1.13rem; }
+    h3 { font-size:1rem; }
+    .muted,label { color:var(--muted); }
+    .muted { line-height:1.5; }
+    label { font-size:.78rem; font-weight:650; letter-spacing:.015em; }
+    select,input:not([type=checkbox]),button { border-radius:12px; border:1px solid var(--border); background:#0d1512; color:var(--text); }
+    select,input:not([type=checkbox]) { min-height:49px; }
+    button { background:var(--accent); color:#102016; font-weight:750; box-shadow:none; transition:transform .15s ease,filter .15s ease,background .15s ease; }
+    button:hover { filter:brightness(1.06); }
+    button:active { transform:scale(.975); }
+    button.secondary { background:#26362e; color:#e5eee7; border:1px solid #34483c; }
+    button.success { background:var(--accent); color:#102016; }
+    button.danger { background:#713b3b; color:#fff; }
+    button.small { min-height:39px; border-radius:10px; }
+    .row { gap:12px; }
+    .day-pills { gap:8px; padding:3px 1px 9px; scrollbar-width:thin; }
+    .day-pill { background:#101a15; border:1px solid #2c3b32; color:#9eafa4; border-radius:999px; padding:9px 15px; }
+    .day-pill.active { background:var(--accent); color:#102016; border-color:var(--accent); }
+    .sched-item,.tier-box,.counter-box,.pr-card,.group-chart-box { background:#101915; border:1px solid #293a30; border-radius:14px; }
+    .sched-item { padding:14px; }
+    .counter-box { padding:10px; }
+    .counter-btn { background:#26372e; color:#eaf4ec; border:1px solid #3a5142; }
+    .counter-val { color:#f5faf6; font-variant-numeric:tabular-nums; }
+    .badge { background:rgba(165,214,167,.12); color:var(--accent); border:1px solid rgba(165,214,167,.2); margin-left:8px; }
+    .pr-val { color:var(--accent); }
+    .group-chart-box { padding:15px; }
+    #rest-banner { background:linear-gradient(120deg,#315d43,#1c3928); border:1px solid rgba(165,214,167,.3); border-radius:15px; box-shadow:0 10px 28px rgba(0,0,0,.2); }
+    .nav { background:rgba(13,21,17,.96); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border-top:1px solid #2a3b31; padding-bottom:env(safe-area-inset-bottom); }
+    .nav button { color:#91a198; border:0; border-top:2px solid transparent; border-radius:0; min-height:63px; padding:11px 4px 9px; font-size:.76rem; font-weight:650; letter-spacing:.01em; }
+    .nav button.active { color:var(--accent); border-top-color:var(--accent); background:linear-gradient(180deg,rgba(165,214,167,.09),transparent); }
+    .warmup-item { padding:13px 0; }
+    .log-item { padding:14px 0; }
+    .big-check { accent-color:var(--accent); }
+    .hidden { display:none!important; }
+    .dashboard-hero { position:relative; overflow:hidden; padding:22px; border-radius:22px; margin-bottom:16px; background:radial-gradient(circle at 100% 0%,rgba(165,214,167,.2),transparent 42%),linear-gradient(135deg,#1b3025,#111b16 72%); border:1px solid rgba(165,214,167,.2); }
+    .dashboard-kicker { color:#a9c3b0; font-size:.72rem; font-weight:800; letter-spacing:.13em; text-transform:uppercase; }
+    .dashboard-title { font-size:clamp(1.8rem,6vw,2.45rem); line-height:1.08; letter-spacing:-.055em; margin:9px 0 7px; font-weight:850; }
+    .dashboard-subtitle { color:#a9bcb0; font-size:.9rem; margin:0 0 18px; }
+    .dashboard-cta { max-width:240px; margin:0; background:var(--accent); color:#102016; }
+    .dashboard-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; margin-top:15px; }
+    .dashboard-stat { background:rgba(7,16,11,.36); border:1px solid rgba(185,220,192,.12); border-radius:14px; padding:12px; min-width:0; }
+    .dashboard-stat strong { display:block; color:#f4faf5; font-size:1.35rem; font-weight:850; letter-spacing:-.04em; }
+    .dashboard-stat span { display:block; color:#9eb2a3; font-size:.7rem; margin-top:3px; }
+    .week-strip { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:7px; margin-top:15px; }
+    .week-day { text-align:center; color:#9eb2a3; font-size:.68rem; }
+    .week-dot { width:30px; height:30px; border-radius:50%; margin:0 auto 5px; display:grid; place-items:center; background:#27372d; color:#9eb2a3; font-size:.7rem; font-weight:750; }
+    .week-dot.done { background:var(--accent); color:#102016; }
+    .section-kicker { color:var(--accent); font-size:.7rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; margin-bottom:7px; }
+    @media (min-width:760px) {
+      body { padding-bottom:24px; }
+      .container { padding:24px 22px 36px; }
+      .nav { position:sticky; top:0; bottom:auto; left:auto; right:auto; max-width:1000px; margin:0 auto; border:1px solid var(--border); border-radius:15px; overflow:hidden; }
+      .nav button { min-height:52px; border-top:0; border-bottom:2px solid transparent; }
+      .nav button.active { border-bottom-color:var(--accent); }
+      #tab-workout { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:0 16px; align-items:start; }
+      #tab-workout > .dashboard-hero { grid-column:1/-1; }
+      #tab-workout > .card:nth-of-type(2) { grid-column:1/-1; }
+      #tab-workout > .card { min-width:0; }
+      #tab-exercises,#tab-prs,#tab-settings { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 16px; align-items:start; }
+      #tab-prs > .card:last-child { grid-column:1/-1; }
+      #tab-settings > .card:last-child { grid-column:1/-1; }
+    }
+    @media (max-width:420px) {
+      .container { padding:12px; }
+      .card { padding:15px; border-radius:16px; }
+      .dashboard-hero { padding:19px; }
+      .dashboard-stat { padding:10px 8px; }
+      .dashboard-stat strong { font-size:1.2rem; }
+      .counter-btn { width:48px; flex-basis:48px; height:52px; min-height:52px; }
+      .nav button { font-size:.7rem; }
+    }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto!important; transition:none!important; } }
+
   </style>
 </head>
 <body>
@@ -240,6 +328,19 @@
 
   <!-- TAB 1: WORKOUT DASHBOARD -->
   <div id="tab-workout" class="tab">
+    <section class="dashboard-hero" aria-label="Workout overview">
+      <div class="dashboard-kicker" id="dashboard-date">YOUR TRAINING OVERVIEW</div>
+      <div class="dashboard-title">Ready to get stronger?</div>
+      <p class="dashboard-subtitle" id="dashboard-focus">Show up, put in the work, and build your next milestone.</p>
+      <button type="button" class="dashboard-cta" onclick="document.getElementById('workout-exercise').scrollIntoView({behavior:'smooth',block:'center'});">Start workout <span aria-hidden="true">→</span></button>
+      <div class="dashboard-stats">
+        <div class="dashboard-stat"><strong id="dash-today-sets">0</strong><span>Sets today</span></div>
+        <div class="dashboard-stat"><strong id="dash-total-sessions">0</strong><span>Training days</span></div>
+        <div class="dashboard-stat"><strong id="dash-streak">0</strong><span>Day streak</span></div>
+      </div>
+      <div class="week-strip" id="dashboard-week" aria-label="Weekly training activity"></div>
+    </section>
+
     <!-- Quick 3-Minute Warm-Up Checklist -->
     <div class="card">
       <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
@@ -450,7 +551,7 @@
 <div class="nav">
   <button type="button" class="active" onclick="switchTab('workout', this)">Workout</button>
   <button type="button" onclick="switchTab('exercises', this)">Library</button>
-  <button type="button" onclick="switchTab('prs', this)">PRs</button>
+  <button type="button" onclick="switchTab('prs', this)">Progress</button>
   <button type="button" onclick="switchTab('settings', this)">Settings</button>
 </div>
 
@@ -1452,6 +1553,43 @@
     navigator.serviceWorker.register('./sw.js')
       .then(() => console.log('Offline mode ready'))
       .catch(err => console.log('SW registration skipped:', err));
+  }
+
+  function updateDashboardStats() {
+    const now = new Date();
+    const today = getTodayDateStr();
+    const todayLogs = state.logs.filter(l => l.date === today);
+    const trainingDates = [...new Set(state.logs.map(l => l.date).filter(Boolean))].sort().reverse();
+    const sessionCount = trainingDates.length;
+    let streak = 0;
+    const cursor = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const dateString = d => {
+      const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
+      return y+'-'+m+'-'+day;
+    };
+    const dateSet = new Set(trainingDates);
+    if (!dateSet.has(dateString(cursor))) cursor.setDate(cursor.getDate()-1);
+    while (dateSet.has(dateString(cursor))) { streak++; cursor.setDate(cursor.getDate()-1); }
+    const focus = (state.schedule[getTodayKey()] || {}).focus || 'Workout';
+    const dateEl = document.getElementById('dashboard-date');
+    const focusEl = document.getElementById('dashboard-focus');
+    if (dateEl) dateEl.textContent = now.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'}).toUpperCase();
+    if (focusEl) focusEl.textContent = focus + ' · Small progress, repeated consistently.';
+    const setEl=document.getElementById('dash-today-sets'), totalEl=document.getElementById('dash-total-sessions'), streakEl=document.getElementById('dash-streak');
+    if(setEl) setEl.textContent=todayLogs.length;
+    if(totalEl) totalEl.textContent=sessionCount;
+    if(streakEl) streakEl.textContent=streak;
+    const weekEl=document.getElementById('dashboard-week');
+    if(weekEl) {
+      const mondayOffset=(now.getDay()+6)%7;
+      const monday=new Date(now.getFullYear(),now.getMonth(),now.getDate()-mondayOffset);
+      const labels=['M','T','W','T','F','S','S'];
+      weekEl.innerHTML=labels.map((label,i)=>{
+        const d=new Date(monday); d.setDate(monday.getDate()+i);
+        const done=dateSet.has(dateString(d));
+        return '<div class="week-day"><div class="week-dot '+(done?'done':'')+'">'+(done?'✓':label)+'</div>'+label+'</div>';
+      }).join('');
+    }
   }
 
   function initUI() {
