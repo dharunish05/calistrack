@@ -1372,7 +1372,7 @@
       : state.exercises.filter(ex => normalizeCategory(ex.category) === selectedLibGroup);
 
     if (!items.length) {
-      el.innerHTML = `<p class="muted" style="margin:0;">No exercises in ${selectedLibGroup} yet.</p>`;
+      el.innerHTML = `<p class="muted" style="margin:0;">No matching exercises. Try another search or category.</p>`;
       return;
     }
 
