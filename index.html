@@ -431,6 +431,7 @@
 @media(max-width:380px){.set-grid-head,.set-grid-row{grid-template-columns:.48fr 1.05fr .78fr .68fr 30px;gap:3px}.set-previous{font-size:.62rem}.set-grid-row input{font-size:.82rem}}
 
 .lyfta-exercise-head{position:relative}.exercise-menu{position:absolute;right:0;top:38px;z-index:30;min-width:180px;padding:6px;background:#252a27;border:1px solid #485149;border-radius:12px;box-shadow:0 12px 28px rgba(0,0,0,.45)}.exercise-menu button{display:block;width:100%;text-align:left;background:transparent;border:0;color:#f4f5f4;padding:11px 12px;border-radius:8px;font-size:.82rem}.exercise-menu button:active{background:#384237}.set-grid-row.completed.editing .set-check{background:#737b73;color:#fff}
+.skill-chart{width:100%;min-height:170px;padding:8px 0}.workout-history-card{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;background:#111914;border:1px solid #303d34;border-radius:13px;color:#f4f6f4;padding:15px;margin:8px 0}.workout-history-card span:first-child{display:flex;flex-direction:column;gap:5px}.workout-history-card small{color:#aab5ad;font-size:.76rem}.workout-history-card>span:last-child{color:#b7f36b;white-space:nowrap;font-size:.8rem}.history-detail-head{margin:12px 0 18px}.history-exercise{background:#111914;border:1px solid #303d34;border-radius:13px;padding:13px;margin:10px 0}.history-exercise>strong{display:block;margin-bottom:12px}.history-set-head,.history-set-row{display:grid;grid-template-columns:.6fr 1fr 1.2fr;gap:8px;padding:9px 5px;font-size:.82rem}.history-set-head{color:#aab5ad;border-bottom:1px solid #344139}.history-set-row{border-bottom:1px solid #27332b}.history-set-row:last-child{border:0}
 </style>
 </head>
 <body>
@@ -659,7 +660,7 @@
       <p class="muted">Tracks tier advancement over time (e.g., Planche Lean → Frog Stand → Tuck Planche, Pistol Squats).</p>
       <label for="skill-chart-select">Skill Progression</label>
       <select id="skill-chart-select" onchange="renderSkillChart()"></select>
-      <canvas id="skillProgressChart" height="190"></canvas>
+      <div id="skillProgressChart" class="skill-chart"></div>
       <div id="skill-tier-legend" class="tier-legend"></div>
     </div>
 
@@ -691,7 +692,7 @@
 
     <div class="card">
       <h3>Workout History</h3>
-      <div id="full-history"></div>
+      <div id="full-history"></div><div id="workout-history-detail" class="hidden"></div>
     </div>
   </div>
 
@@ -1536,91 +1537,48 @@
   }
 
   function renderSkillChart() {
-    const exId = document.getElementById('skill-chart-select').value;
-    const ex = getExerciseById(exId);
-    const legendEl = document.getElementById('skill-tier-legend');
-
-    if (!ex || !Array.isArray(ex.tiers)) {
-      legendEl.innerText = '';
-      return;
-    }
-
-    legendEl.innerHTML = '<strong>Tiers:</strong> ' + ex.tiers
-      .map((t, i) => `${i + 1}. ${t.label}`)
-      .join(' → ');
-
-    const dateToTier = {};
-    state.logs
-      .filter(l => l.exerciseId === exId)
-      .slice()
-      .reverse()
-      .forEach(l => {
-        if (typeof l.tierIndex === 'number' && l.tierIndex >= 1) {
-          dateToTier[l.date] = Math.max(dateToTier[l.date] || 0, l.tierIndex);
-        }
-      });
-
-    const dates = Object.keys(dateToTier).sort();
-    if (!dates.length) {
-      dates.push(getTodayDateStr());
-      dateToTier[dates[0]] = (ex.currentTier || 0) + 1;
-    }
-
-    const tierSeries = dates.map(d => dateToTier[d]);
-    const ctx = document.getElementById('skillProgressChart').getContext('2d');
-    if (skillChartInstance) skillChartInstance.destroy();
-
-    skillChartInstance = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: dates,
-        datasets: [{
-          label: `${ex.name} — Tier Level (1 to ${ex.tiers.length})`,
-          data: tierSeries,
-          borderColor: '#b7f36b',
-          backgroundColor: 'rgba(183, 243, 107, 0.16)',
-          stepped: true,
-          tension: 0,
-          fill: true,
-          pointRadius: 5
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            min: 0,
-            max: ex.tiers.length,
-            ticks: {
-              stepSize: 1,
-              callback: (val) => {
-                if (val < 1 || val > ex.tiers.length) return '';
-                const t = ex.tiers[val - 1];
-                return `T${val}: ${t ? t.label.split(' ')[0] : ''}`;
-              }
-            }
-          }
-        }
-      }
-    });
+    const select=document.getElementById('skill-chart-select'),chart=document.getElementById('skillProgressChart'),legend=document.getElementById('skill-tier-legend');
+    if(!select||!chart||!legend)return;
+    const ex=getExerciseById(select.value);
+    if(!ex||!Array.isArray(ex.tiers)||!ex.tiers.length){chart.innerHTML='<p class="muted">Choose a skill exercise to see your progression.</p>';legend.textContent='';return;}
+    legend.innerHTML='<strong>Tiers:</strong> '+ex.tiers.map((t,i)=>(i+1)+'. '+t.label).join(' → ');
+    const points=state.logs.filter(l=>l.exerciseId===ex.id&&Number(l.tierIndex)>0).sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+    const data=points.length?points:[{date:getTodayDateStr(),tierIndex:(ex.currentTier||0)+1}];
+    const w=640,h=230,left=46,right=18,top=18,bottom=42,iw=w-left-right,ih=h-top-bottom;
+    const x=i=>left+(data.length===1?iw/2:i*iw/(data.length-1)),y=v=>top+ih-(Math.max(1,Math.min(ex.tiers.length,Number(v)||1)-1)/Math.max(1,ex.tiers.length-1))*ih;
+    const grid=Array.from({length:ex.tiers.length},(_,i)=>{const yy=y(i+1);return '<line x1="'+left+'" y1="'+yy+'" x2="'+(w-right)+'" y2="'+yy+'" stroke="#344139" stroke-dasharray="3 5"/><text x="'+(left-8)+'" y="'+(yy+4)+'" text-anchor="end" fill="#aab5ad" font-size="10">T'+(i+1)+'</text>';}).join('');
+    const line=data.length>1?'<polyline points="'+data.map((p,i)=>x(i)+','+y(p.tierIndex)).join(' ')+'" fill="none" stroke="#b7f36b" stroke-width="3" stroke-linecap="round"/>':'';
+    const dots=data.map((p,i)=>'<circle cx="'+x(i)+'" cy="'+y(p.tierIndex)+'" r="5" fill="#b7f36b"><title>'+p.date+' · '+(ex.tiers[p.tierIndex-1]?.label||'Tier '+p.tierIndex)+'</title></circle>').join('');
+    const labels=data.map((p,i)=>'<text x="'+x(i)+'" y="'+(h-12)+'" text-anchor="middle" fill="#aab5ad" font-size="10">'+new Date((p.date||getTodayDateStr())+'T12:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'})+'</text>').join('');
+    chart.innerHTML='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Skill progression chart" style="width:100%;height:auto">'+grid+line+dots+labels+'</svg>';
   }
 
+  function getLogsForWorkoutSession(session) {
+    if(session.workoutId)return state.logs.filter(l=>Number(l.workoutId)===Number(session.workoutId));
+    if(session.startedAt)return state.logs.filter(l=>l.date===session.date&&Number(l.id)>=Number(session.startedAt)&&Number(l.id)<=Number(session.finishedAt||Date.now()));
+    return state.logs.filter(l=>l.date===session.date);
+  }
   function renderFullHistory() {
-    const el = document.getElementById('full-history');
-    if (!state.logs.length) {
-      el.innerHTML = `<p class="muted" style="margin:0;">No history logged yet.</p>`;
-      return;
-    }
-    el.innerHTML = state.logs.slice(0, 60).map(l => `
-      <div class="log-item">
-        <div>
-          <strong>${l.displayName || l.name}</strong>
-          <div class="muted">${formatSetSummary(l)} · ${l.date} ${l.timestamp || ''}</div>
-        </div>
-        <button type="button" class="danger small" onclick="deleteLog(${l.id})">X</button>
-      </div>
-    `).join('');
+    const el=document.getElementById('full-history');if(!el)return;
+    const sessions=(state.workoutSessions||[]).slice().sort((a,b)=>Number(b.finishedAt||b.id)-Number(a.finishedAt||a.id));
+    const represented=new Set(sessions.map(x=>x.date));
+    const legacyDates=[...new Set(state.logs.map(l=>l.date).filter(Boolean))].filter(d=>!represented.has(d));
+    const items=sessions.map(x=>({id:x.id,date:x.date,session:x,logs:getLogsForWorkoutSession(x)})).concat(legacyDates.map(date=>({id:'legacy-'+date,date,session:null,logs:state.logs.filter(l=>l.date===date)}))).filter(x=>x.logs.length||x.session);
+    if(!items.length){el.innerHTML='<p class="muted">Your completed workouts will appear here.</p>';return;}
+    el.innerHTML=items.map(item=>{
+      const sets=item.logs.length,volume=item.logs.reduce((n,l)=>n+(Number(l.weightKg)||0)*(Number(l.reps)||0),0),date=new Date(item.date+'T12:00:00'),label=isNaN(date.getTime())?item.date:date.toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric',year:'numeric'}),duration=item.session?.startedAt&&item.session?.finishedAt?Math.max(1,Math.round((item.session.finishedAt-item.session.startedAt)/60000))+' min':'';
+      return '<button type="button" class="workout-history-card" onclick="viewWorkoutSession(\''+item.id+'\')"><span><strong>'+label+'</strong><small>'+(item.session?.day||'Workout')+' · '+sets+' sets · '+Math.round(volume).toLocaleString()+' kg volume '+(duration?'· '+duration:'')+'</small></span><span>View →</span></button>';
+    }).join('');
   }
+  function viewWorkoutSession(sessionId) {
+    const detail=document.getElementById('workout-history-detail'),list=document.getElementById('full-history'),session=(state.workoutSessions||[]).find(x=>String(x.id)===String(sessionId)),date=String(sessionId).startsWith('legacy-')?String(sessionId).slice(7):session?.date,logs=session?getLogsForWorkoutSession(session):state.logs.filter(l=>l.date===date);
+    if(!detail)return;
+    const groups={};logs.slice().sort((a,b)=>Number(a.id)-Number(b.id)).forEach(l=>{const key=l.exerciseId||l.exerciseName||l.name;(groups[key]||(groups[key]={name:l.displayName||l.exerciseName||l.name,sets:[]})).sets.push(l);});
+    const volume=logs.reduce((n,l)=>n+(Number(l.weightKg)||0)*(Number(l.reps)||0),0),reps=logs.reduce((n,l)=>n+(Number(l.reps)||0),0),d=new Date(date+'T12:00:00'),label=isNaN(d.getTime())?date:d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+    detail.innerHTML='<div class="history-detail-head"><button type="button" class="small secondary" onclick="closeWorkoutDetail()">← Back to history</button><h3>'+label+'</h3><p class="muted">'+logs.length+' sets · '+reps+' reps · '+Math.round(volume).toLocaleString()+' kg volume</p></div>'+Object.values(groups).map(g=>'<section class="history-exercise"><strong>'+g.name+'</strong><div class="history-set-head"><span>Set</span><span>Weight</span><span>Reps</span></div>'+g.sets.map((l,i)=>'<div class="history-set-row"><span>'+(i+1)+'</span><span>'+(Number(l.weightKg)||0)+' kg</span><span>'+(Number(l.reps)||0)+'</span></div>').join('')+'</section>').join('')+(logs.length?'':'<p class="muted">No sets were logged in this session.</p>');
+    list.classList.add('hidden');detail.classList.remove('hidden');detail.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function closeWorkoutDetail(){document.getElementById('workout-history-detail')?.classList.add('hidden');document.getElementById('full-history')?.classList.remove('hidden');}
 
   function deleteLog(id) {
     state.logs = state.logs.filter(l => l.id !== id);
@@ -1835,18 +1793,13 @@
   }
 
   function finishWorkout() {
-    if(!state.activeWorkout) return;
-    const started=state.activeWorkout.startedAt||Date.now();
-    const date=state.activeWorkout.date||getTodayDateStr();
-    const count=state.logs.filter(l=>l.date===date && l.id>=started).length;
-    if(!confirm('Finish this workout? '+count+' sets logged.')) return;
-    state.workoutSessions.unshift({id:Date.now(),date,day:state.activeWorkout.day,startedAt:started,finishedAt:Date.now(),sets:count});
-    state.activeWorkout=null;
-    clearInterval(sessionClockInterval);sessionClockInterval=null;
-    Object.keys(sessionSetDrafts).forEach(k=>delete sessionSetDrafts[k]);
-    saveState();
-    updateDashboardStats();
-    alert('Workout saved. Great work!');
+    if(!state.activeWorkout)return;
+    const started=Number(state.activeWorkout.startedAt)||Date.now(),date=state.activeWorkout.date||getTodayDateStr(),logs=state.logs.filter(l=>Number(l.workoutId)===started),count=logs.length;
+    if(!confirm('Finish this workout? '+count+' sets logged.'))return;
+    const finishedAt=Date.now(),volume=logs.reduce((n,l)=>n+(Number(l.weightKg)||0)*(Number(l.reps)||0),0),reps=logs.reduce((n,l)=>n+(Number(l.reps)||0),0);
+    state.workoutSessions.unshift({id:finishedAt,workoutId:started,date,day:state.activeWorkout.day,startedAt:started,finishedAt,sets:count,reps,volume});
+    state.activeWorkout=null;clearInterval(sessionClockInterval);sessionClockInterval=null;Object.keys(sessionSetDrafts).forEach(k=>delete sessionSetDrafts[k]);
+    saveState();updateDashboardStats();renderFullHistory();renderSkillChart();alert('Workout saved to your history. Great work!');
   }
 
   function renderPreviousPerformance() {
