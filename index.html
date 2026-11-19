@@ -169,6 +169,21 @@
     }
     .pr-val { font-weight: 800; color: var(--success); font-size: 1.05rem; }
 
+    .group-chart-box {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .group-chart-box:last-child { margin-bottom: 0; }
+    .tier-legend {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
     #rest-banner {
       background: linear-gradient(135deg, var(--accent-dark), #0369a1);
       color: #ffffff;
@@ -322,20 +337,19 @@
     </div>
   </div>
 
-  <!-- TAB 2: EXERCISES & PROGRESSIONS -->
+  <!-- TAB 2: EXERCISES & PROGRESSIONS (Push / Pull / Legs / Core) -->
   <div id="tab-exercises" class="tab hidden">
     <div class="card">
       <h2>Add Custom Exercise</h2>
       <input type="text" id="new-ex-name" placeholder="Exercise name (e.g., Pike Handstand Pushups)" />
       <div class="row">
         <div>
-          <label for="new-ex-cat">Category</label>
+          <label for="new-ex-cat">Muscle Group</label>
           <select id="new-ex-cat">
             <option value="Push">Push</option>
             <option value="Pull">Pull</option>
             <option value="Legs">Legs</option>
             <option value="Core">Core</option>
-            <option value="Skill">Skill</option>
           </select>
         </div>
         <div>
@@ -351,29 +365,53 @@
     </div>
 
     <div class="card">
-      <h3>Progression Trees & Library</h3>
+      <h3>Library (Push · Pull · Legs · Core)</h3>
+      <div class="day-pills" id="lib-filter-pills"></div>
       <div id="exercise-library-list"></div>
     </div>
   </div>
 
-  <!-- TAB 3: PRs & HISTORY -->
+  <!-- TAB 3: PRs, SKILL PROGRESSION & CHARTS -->
   <div id="tab-prs" class="tab hidden">
     <div class="card">
       <h2>Personal Records (All-Time PRs)</h2>
       <div id="prs-list" class="pr-grid"></div>
     </div>
 
+    <!-- Historical Skill Progression Chart -->
     <div class="card">
-      <h2>Progress Chart</h2>
-      <label for="chart-exercise">Exercise</label>
-      <select id="chart-exercise" onchange="renderChart()"></select>
-      <label for="chart-metric">Metric</label>
-      <select id="chart-metric" onchange="renderChart()">
-        <option value="maxReps">Max Reps (Single Set)</option>
-        <option value="totalReps">Total Reps (Per Day)</option>
-        <option value="maxSec">Max Hold Time (Seconds)</option>
-      </select>
-      <canvas id="progressChart" height="210"></canvas>
+      <h2>Skill Progression History</h2>
+      <p class="muted">Tracks tier advancement over time (e.g., Planche Lean → Frog Stand → Tuck Planche, Pistol Squats).</p>
+      <label for="skill-chart-select">Skill Progression</label>
+      <select id="skill-chart-select" onchange="renderSkillChart()"></select>
+      <canvas id="skillProgressChart" height="190"></canvas>
+      <div id="skill-tier-legend" class="tier-legend"></div>
+    </div>
+
+    <!-- Muscle Group Area Charts (Push, Pull, Legs, Core) -->
+    <div class="card">
+      <h2>Muscle Group Area Charts</h2>
+      <p class="muted">Cumulative daily volume (Reps + Hold Seconds combined) across Push, Pull, Legs, and Core.</p>
+
+      <div class="group-chart-box">
+        <h3>Push Area</h3>
+        <canvas id="areaChartPush" height="140"></canvas>
+      </div>
+
+      <div class="group-chart-box">
+        <h3>Pull Area</h3>
+        <canvas id="areaChartPull" height="140"></canvas>
+      </div>
+
+      <div class="group-chart-box">
+        <h3>Legs Area</h3>
+        <canvas id="areaChartLegs" height="140"></canvas>
+      </div>
+
+      <div class="group-chart-box">
+        <h3>Core Area</h3>
+        <canvas id="areaChartCore" height="140"></canvas>
+      </div>
     </div>
 
     <div class="card">
@@ -418,9 +456,10 @@
 
 <script>
   const STORAGE_KEY = 'calisTrackData';
+  const MUSCLE_GROUPS = ['Push', 'Pull', 'Legs', 'Core'];
 
   const DEFAULT_EXERCISES = [
-    // 6 Progression Trees
+    // Progression Trees categorized strictly into Push, Pull, Legs, Core
     {
       id: 'prog_planche',
       name: 'Planche Progression',
@@ -559,12 +598,18 @@
   const DAYS_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
   function getTodayKey() {
-    const jsDay = new Date().getDay(); // 0 = Sun, 1 = Mon...
+    const jsDay = new Date().getDay();
     return DAYS_ORDER[(jsDay + 6) % 7];
   }
 
   function getTodayDateStr() {
     return new Date().toISOString().split('T')[0];
+  }
+
+  function normalizeCategory(cat) {
+    if (MUSCLE_GROUPS.includes(cat)) return cat;
+    if (cat === 'Skill') return 'Push';
+    return 'Core';
   }
 
   let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
@@ -577,6 +622,7 @@
   };
 
   if (!state.exercises || !state.exercises.length) state.exercises = DEFAULT_EXERCISES;
+  state.exercises = state.exercises.map(ex => ({ ...ex, category: normalizeCategory(ex.category) }));
   if (!state.schedule) state.schedule = DEFAULT_SCHEDULE;
   if (!state.logs) state.logs = [];
   if (!state.completedByDate) state.completedByDate = {};
@@ -584,13 +630,15 @@
   if (!state.settings) state.settings = { restDuration: 90, reminderTime: '' };
 
   let selectedDay = getTodayKey();
+  let selectedLibGroup = 'All';
   let currentReps = 10;
   let currentSeconds = 20;
   let restInterval = null;
-  let holdTimerState = 'idle'; // 'idle' | 'prep' | 'holding'
+  let holdTimerState = 'idle';
   let holdInterval = null;
   let audioCtx = null;
-  let chartInstance = null;
+  let skillChartInstance = null;
+  const areaChartInstances = {};
 
   function saveState() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -634,11 +682,15 @@
     document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
 
-    if (tabName === 'exercises') renderLibrary();
+    if (tabName === 'exercises') {
+      renderLibFilterPills();
+      renderLibrary();
+    }
     if (tabName === 'prs') {
       renderPRs();
-      populateChartSelects();
-      renderChart();
+      populateSkillChartSelect();
+      renderSkillChart();
+      renderAllMuscleAreaCharts();
       renderFullHistory();
     }
   }
@@ -982,11 +1034,14 @@
       return;
     }
 
-    const tierObj = Array.isArray(ex.tiers) ? ex.tiers[ex.currentTier || 0] : null;
+    const tierIdx = Array.isArray(ex.tiers) ? (ex.currentTier || 0) : null;
+    const tierObj = tierIdx !== null ? ex.tiers[tierIdx] : null;
     const entry = {
       id: Date.now(),
       exerciseId: ex.id,
       exerciseName: ex.name,
+      category: normalizeCategory(ex.category),
+      tierIndex: tierIdx !== null ? tierIdx + 1 : null,
       tierLabel: tierObj ? tierObj.label : null,
       displayName: getActiveExerciseLabel(ex),
       reps: currentReps,
@@ -1060,10 +1115,25 @@
     `).join('');
   }
 
-  // Library & Custom Exercises
+  // Library & Filter (Push / Pull / Legs / Core)
+  function renderLibFilterPills() {
+    const groups = ['All', ...MUSCLE_GROUPS];
+    const el = document.getElementById('lib-filter-pills');
+    el.innerHTML = groups.map(g => {
+      const active = selectedLibGroup === g ? 'active' : '';
+      return `<button type="button" class="day-pill ${active}" onclick="selectLibGroup('${g}')">${g}</button>`;
+    }).join('');
+  }
+
+  function selectLibGroup(group) {
+    selectedLibGroup = group;
+    renderLibFilterPills();
+    renderLibrary();
+  }
+
   function addCustomExercise() {
     const name = document.getElementById('new-ex-name').value.trim();
-    const category = document.getElementById('new-ex-cat').value;
+    const category = normalizeCategory(document.getElementById('new-ex-cat').value);
     const metric = document.getElementById('new-ex-metric').value;
     if (!name) return;
 
@@ -1078,15 +1148,25 @@
 
   function renderLibrary() {
     const el = document.getElementById('exercise-library-list');
-    el.innerHTML = state.exercises.map(ex => {
+    const items = selectedLibGroup === 'All'
+      ? state.exercises
+      : state.exercises.filter(ex => normalizeCategory(ex.category) === selectedLibGroup);
+
+    if (!items.length) {
+      el.innerHTML = `<p class="muted" style="margin:0;">No exercises in ${selectedLibGroup} yet.</p>`;
+      return;
+    }
+
+    el.innerHTML = items.map(ex => {
+      const cat = normalizeCategory(ex.category);
       const isProg = Array.isArray(ex.tiers) && ex.tiers.length;
       const tierInfo = isProg
-        ? `<div class="muted" style="margin-top:4px;">Active: <strong>${ex.tiers[ex.currentTier || 0].label}</strong> (${ex.tiers.length} tiers)</div>`
+        ? `<div class="muted" style="margin-top:4px;">Active: <strong>${ex.tiers[ex.currentTier || 0].label}</strong> (Tier ${(ex.currentTier || 0) + 1}/${ex.tiers.length})</div>`
         : `<div class="muted" style="margin-top:4px;">Metric: ${ex.metric}</div>`;
       return `
         <div class="log-item">
           <div>
-            <strong>${ex.name}</strong><span class="badge">${ex.category}</span>
+            <strong>${ex.name}</strong><span class="badge">${cat}</span>
             ${tierInfo}
           </div>
           <button type="button" class="small secondary" onclick="switchToWorkoutWith('${ex.id}')">Select</button>
@@ -1101,7 +1181,7 @@
     focusExerciseInLogger(exId);
   }
 
-  // Personal Bests (PRs), Progress Chart & History
+  // Personal Bests (PRs), Skill Progression Chart, Muscle Area Charts & History
   function computePRs() {
     const map = {};
     state.logs.forEach(l => {
@@ -1139,48 +1219,137 @@
     }).join('');
   }
 
-  function populateChartSelects() {
-    const sel = document.getElementById('chart-exercise');
+  function populateSkillChartSelect() {
+    const sel = document.getElementById('skill-chart-select');
     const prev = sel.value;
-    sel.innerHTML = state.exercises.map(ex => `<option value="${ex.id}">${ex.name}</option>`).join('');
-    if (prev && [...sel.options].some(o => o.value === prev)) sel.value = prev;
+    const progExercises = state.exercises.filter(ex => Array.isArray(ex.tiers) && ex.tiers.length);
+    sel.innerHTML = progExercises
+      .map(ex => `<option value="${ex.id}">${ex.name} (${normalizeCategory(ex.category)})</option>`)
+      .join('');
+    if (prev && [...sel.options].some(o => o.value === prev)) {
+      sel.value = prev;
+    }
   }
 
-  function renderChart() {
-    const exId = document.getElementById('chart-exercise').value;
-    const metric = document.getElementById('chart-metric').value;
-    const filtered = state.logs.filter(l => l.exerciseId === exId);
+  function renderSkillChart() {
+    const exId = document.getElementById('skill-chart-select').value;
+    const ex = getExerciseById(exId);
+    const legendEl = document.getElementById('skill-tier-legend');
 
-    const byDate = {};
-    filtered.forEach(l => {
-      if (!byDate[l.date]) byDate[l.date] = { maxReps: 0, totalReps: 0, maxSec: 0 };
-      byDate[l.date].maxReps = Math.max(byDate[l.date].maxReps, l.reps || 0);
-      byDate[l.date].totalReps += (l.reps || 0);
-      byDate[l.date].maxSec = Math.max(byDate[l.date].maxSec, l.seconds || 0);
-    });
+    if (!ex || !Array.isArray(ex.tiers)) {
+      legendEl.innerText = '';
+      return;
+    }
 
-    const dates = Object.keys(byDate).sort();
-    const values = dates.map(d => byDate[d][metric]);
+    legendEl.innerHTML = '<strong>Tiers:</strong> ' + ex.tiers
+      .map((t, i) => `${i + 1}. ${t.label}`)
+      .join(' → ');
 
-    const ctx = document.getElementById('progressChart').getContext('2d');
-    if (chartInstance) chartInstance.destroy();
-    chartInstance = new Chart(ctx, {
+    const dateToTier = {};
+    state.logs
+      .filter(l => l.exerciseId === exId)
+      .slice()
+      .reverse()
+      .forEach(l => {
+        if (typeof l.tierIndex === 'number' && l.tierIndex >= 1) {
+          dateToTier[l.date] = Math.max(dateToTier[l.date] || 0, l.tierIndex);
+        }
+      });
+
+    const dates = Object.keys(dateToTier).sort();
+    if (!dates.length) {
+      dates.push(getTodayDateStr());
+      dateToTier[dates[0]] = (ex.currentTier || 0) + 1;
+    }
+
+    const tierSeries = dates.map(d => dateToTier[d]);
+    const ctx = document.getElementById('skillProgressChart').getContext('2d');
+    if (skillChartInstance) skillChartInstance.destroy();
+
+    skillChartInstance = new Chart(ctx, {
       type: 'line',
       data: {
         labels: dates,
         datasets: [{
-          label: metric === 'maxSec' ? 'Max Hold (s)' : metric === 'totalReps' ? 'Total Reps' : 'Max Reps',
-          data: values,
-          borderColor: '#38bdf8',
-          backgroundColor: 'rgba(56, 189, 248, 0.2)',
-          tension: 0.25,
-          fill: true
+          label: `${ex.name} — Tier Level (1 to ${ex.tiers.length})`,
+          data: tierSeries,
+          borderColor: '#22c55e',
+          backgroundColor: 'rgba(34, 197, 94, 0.18)',
+          stepped: true,
+          tension: 0,
+          fill: true,
+          pointRadius: 5
         }]
       },
       options: {
         responsive: true,
-        scales: { y: { beginAtZero: true } }
+        scales: {
+          y: {
+            min: 0,
+            max: ex.tiers.length,
+            ticks: {
+              stepSize: 1,
+              callback: (val) => {
+                if (val < 1 || val > ex.tiers.length) return '';
+                const t = ex.tiers[val - 1];
+                return `T${val}: ${t ? t.label.split(' ')[0] : ''}`;
+              }
+            }
+          }
+        }
       }
+    });
+  }
+
+  function renderAllMuscleAreaCharts() {
+    const palette = {
+      Push: { stroke: '#38bdf8', fill: 'rgba(56, 189, 248, 0.24)' },
+      Pull: { stroke: '#22c55e', fill: 'rgba(34, 197, 94, 0.24)' },
+      Legs: { stroke: '#eab308', fill: 'rgba(234, 179, 8, 0.24)' },
+      Core: { stroke: '#f97316', fill: 'rgba(249, 115, 22, 0.24)' }
+    };
+
+    const allDatesSet = new Set(state.logs.map(l => l.date));
+    if (!allDatesSet.size) allDatesSet.add(getTodayDateStr());
+    const sortedDates = [...allDatesSet].sort();
+
+    MUSCLE_GROUPS.forEach(group => {
+      const dailyTotals = {};
+      sortedDates.forEach(d => { dailyTotals[d] = 0; });
+
+      state.logs.forEach(l => {
+        const ex = getExerciseById(l.exerciseId);
+        const logGroup = normalizeCategory(l.category || (ex && ex.category));
+        if (logGroup === group) {
+          const volumeMetric = (l.reps || 0) + (l.seconds || 0);
+          dailyTotals[l.date] = (dailyTotals[l.date] || 0) + volumeMetric;
+        }
+      });
+
+      const canvasId = `areaChart${group}`;
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      if (areaChartInstances[group]) areaChartInstances[group].destroy();
+
+      areaChartInstances[group] = new Chart(canvas.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: sortedDates,
+          datasets: [{
+            label: `${group} Volume (Reps + Hold Sec)`,
+            data: sortedDates.map(d => dailyTotals[d]),
+            borderColor: palette[group].stroke,
+            backgroundColor: palette[group].fill,
+            tension: 0.3,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
     });
   }
 
@@ -1206,7 +1375,8 @@
     saveState();
     renderTodayLogs();
     renderPRs();
-    renderChart();
+    renderSkillChart();
+    renderAllMuscleAreaCharts();
     renderFullHistory();
   }
 
@@ -1258,6 +1428,7 @@
       try {
         const imported = JSON.parse(e.target.result);
         state = Object.assign({}, state, imported);
+        state.exercises = (state.exercises || []).map(ex => ({ ...ex, category: normalizeCategory(ex.category) }));
         saveState();
         initUI();
         alert('Backup restored.');
@@ -1293,6 +1464,8 @@
     renderDayPills();
     renderDaySchedule();
     renderWorkoutExerciseSelect();
+    renderLibFilterPills();
+    renderLibrary();
     renderTodayLogs();
   }
 
