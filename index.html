@@ -424,7 +424,13 @@
     @media(min-width:760px){.nav{position:sticky;top:58px;max-width:760px;margin:0 auto;border:1px solid #303632;border-radius:0 0 13px 13px}.nav button{min-height:54px}.container{padding-top:20px}}
     @media(max-width:390px){.nav button{font-size:.59rem}.set-extra-fields{grid-template-columns:1fr}.dashboard-title{font-size:1.8rem}}
 
-  </style>
+  
+.session-summary{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #303632;border-radius:13px;margin:15px 0 18px;overflow:hidden}.session-summary>div{text-align:center;padding:12px 5px;background:#101211}.session-summary>div+div{border-left:1px solid #303632}.session-summary span{display:block;color:#a0a7a2;font-size:.72rem;margin-bottom:6px}.session-summary strong{font-size:1.08rem;font-weight:800}#session-duration{color:#28b8ef}
+.session-exercises-card{padding:0;background:transparent;border:0}#session-exercises-list{display:flex;flex-direction:column;gap:16px}.lyfta-exercise{background:#101211;border:1px solid #292f2b;border-radius:14px;padding:14px 11px}.lyfta-exercise-head{display:flex;align-items:center;gap:11px;margin-bottom:10px}.lyfta-exercise-icon{width:42px;height:48px;border-radius:8px;background:#282d29;display:grid;place-items:center;color:#b8f36b;font-weight:900;flex:0 0 42px}.lyfta-exercise-title{min-width:0;flex:1}.lyfta-exercise-title strong{display:block;font-size:.98rem}.lyfta-exercise-title small{display:block;color:#9ba39d;margin-top:3px}.lyfta-more{border:0;background:transparent;color:#27a9df;font-size:1.2rem;padding:8px}.lyfta-notes{width:100%;background:transparent;border:0;border-bottom:1px solid #292f2b;border-radius:0;padding:9px 2px;color:#eee;margin:0 0 9px;font-size:.82rem}.lyfta-rest{display:inline-flex;align-items:center;gap:7px;color:#28b8ef;background:transparent;border:0;padding:7px 2px;margin:0 0 12px;font-weight:700}
+.set-grid-head,.set-grid-row{display:grid;grid-template-columns:.55fr 1.2fr .85fr .75fr 34px;gap:5px;align-items:center;text-align:center}.set-grid-head{font-size:.68rem;color:#9ba39d;padding:5px 0 8px}.set-grid-row{padding:8px 3px;border-radius:8px;background:#202321;margin:3px 0}.set-grid-row.completed{background:#12390b}.set-grid-row.completed .set-num{color:#28b8ef}.set-num{color:#28b8ef;font-weight:800}.set-previous{font-size:.69rem;color:#aeb5b0;white-space:nowrap}.set-grid-row input{min-width:0;width:100%;height:38px;padding:4px 3px;text-align:center;font-weight:800;font-size:.9rem;background:#151816;border:1px solid #353c37;border-radius:7px;color:#f4f5f4;margin:0}.set-grid-row.completed input{background:transparent;border-color:transparent;color:#fff}.set-check{width:32px;height:32px;min-height:32px;border:0;border-radius:50%;background:#3a3d42;color:#fff;font-size:1rem;padding:0;display:grid;place-items:center}.set-grid-row.completed .set-check{background:#55d500;color:#102400}.lyfta-add-set{width:100%;border:0;border-radius:28px;background:#292b2d;color:#fff;padding:13px;margin-top:10px;font-weight:800}#tab-session .session-exercises-card>.section-head{display:none}#tab-session .workout-page-intro{padding-bottom:2px}
+@media(max-width:380px){.set-grid-head,.set-grid-row{grid-template-columns:.48fr 1.05fr .78fr .68fr 30px;gap:3px}.set-previous{font-size:.62rem}.set-grid-row input{font-size:.82rem}}
+
+</style>
 </head>
 <body>
 
@@ -481,12 +487,13 @@
       <div class="eyebrow">TRAINING SESSION</div>
       <div class="section-head"><div><h1 id="session-title">Today's workout</h1><p class="muted" id="session-subtitle">Your planned exercises, all in one place.</p></div><span class="live-tag">LIVE</span></div>
       <div class="session-toolbar"><span id="session-status" class="muted">No active workout</span><button type="button" class="small secondary" id="finish-workout-btn" onclick="finishWorkout()" hidden>Finish workout</button></div>
+      <div class="session-summary"><div><span>Duration</span><strong id="session-duration">0:00</strong></div><div><span>Volume</span><strong id="session-volume">0 kg</strong></div><div><span>Sets</span><strong id="session-total-sets">0</strong></div></div>
     </div>
     <section class="card session-exercises-card">
       <div class="section-head"><div><div class="eyebrow">TODAY'S PLAN</div><h2>Exercises</h2></div><span class="count-pill" id="session-exercise-count">0 exercises</span></div>
       <div id="session-exercises-list"></div>
     </section>
-    <!-- Active Set Logger -->
+    <div id="legacy-set-logger" class="hidden">    <!-- Active Set Logger -->
     <div class="card">
       <div class="section-head"><div><div class="eyebrow">ACTIVE SESSION</div><h2>Log your set</h2></div><span class="live-tag">LIVE</span></div>
       <label for="workout-exercise">Exercise / Progression</label>
@@ -551,6 +558,8 @@
       <div id="today-logs"><p class="muted">No sets logged today yet.</p></div>
     </div>
   </div>
+</div>
+
   <!-- TAB: ROUTINES -->
   <div id="tab-routines" class="tab hidden">
     <div class="page-intro"><div class="eyebrow">PLAN YOUR TRAINING</div><h1>Your routines</h1><p class="muted">Organise your week and prepare for every session.</p></div>
@@ -955,7 +964,7 @@
     if (btn) btn.classList.add('active');
     else { const navBtn=document.querySelector('.nav button[data-tab='+tabName+']'); if(navBtn) navBtn.classList.add('active'); }
     if(tabName==='workout') { renderHomePlan(); updateDashboardStats(); }
-    if(tabName==='session') { renderSessionPlan(); renderTodayLogs(); updateDashboardStats(); }
+    if(tabName==='session') { if(state.activeWorkout&&!sessionClockInterval)sessionClockInterval=setInterval(updateSessionSummary,1000); renderSessionPlan(); renderTodayLogs(); updateDashboardStats(); }
     if(tabName==='routines') { renderDayPills(); renderDaySchedule(); renderWarmup(); }
 
     if (tabName === 'exercises') {
@@ -1708,35 +1717,66 @@
     }).join('') || '<p class="muted">Rest day. Take time for mobility and recovery.</p>';
   }
 
+
+  const sessionSetDrafts = {};
+  let sessionClockInterval = null;
+  function getExerciseSessionLogs(exId) {
+    if(!state.activeWorkout)return [];
+    const start=Number(state.activeWorkout.startedAt)||0;
+    return state.logs.filter(l=>l.exerciseId===exId && l.date===state.activeWorkout.date && (l.workoutId===start || (!l.workoutId && Number(l.id)>=start))).sort((a,b)=>Number(a.id)-Number(b.id));
+  }
+  function getPreviousExerciseLogs(exId) {
+    const currentDate=state.activeWorkout?.date||getTodayDateStr();
+    const dates=[...new Set(state.logs.filter(l=>l.exerciseId===exId && l.date && l.date<currentDate).map(l=>l.date))].sort().reverse();
+    if(!dates.length)return [];
+    return state.logs.filter(l=>l.exerciseId===exId && l.date===dates[0]).sort((a,b)=>Number(a.id)-Number(b.id));
+  }
+  function addExerciseSet(exId) {
+    if(!state.activeWorkout)beginWorkout();
+    if(!sessionSetDrafts[exId])sessionSetDrafts[exId]=[];
+    const prev=getPreviousExerciseLogs(exId),last=prev[prev.length-1]||{};
+    sessionSetDrafts[exId].push({weight:last.weightKg??0,reps:last.reps??10});
+    renderSessionPlan();
+  }
+  function updateSetDraft(exId,index,field,value) {
+    if(!sessionSetDrafts[exId])sessionSetDrafts[exId]=[];
+    if(!sessionSetDrafts[exId][index])sessionSetDrafts[exId][index]={weight:0,reps:10};
+    sessionSetDrafts[exId][index][field]=value;
+  }
+  function completeExerciseSet(exId,index) {
+    const drafts=sessionSetDrafts[exId]||[],draft=drafts[index];if(!draft)return;
+    const weight=Number(draft.weight)||0,reps=Number(draft.reps)||0;
+    if(reps<=0){alert('Enter at least 1 rep before completing this set.');return;}
+    const ex=getExerciseById(exId);if(!ex)return;
+    const tierIdx=Array.isArray(ex.tiers)?(ex.currentTier||0):null,tierObj=tierIdx!==null?ex.tiers[tierIdx]:null;
+    const entry={id:Date.now(),workoutId:Number(state.activeWorkout.startedAt),exerciseId:ex.id,exerciseName:ex.name,category:normalizeCategory(ex.category),tierIndex:tierIdx!==null?tierIdx+1:null,tierLabel:tierObj?tierObj.label:null,displayName:getActiveExerciseLabel(ex),reps,seconds:0,weightKg:weight,rpe:null,setType:'Normal',notes:'',date:state.activeWorkout.date,timestamp:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})};
+    state.logs.unshift(entry);drafts.splice(index,1);saveState();renderSessionPlan();renderTodayLogs();updateDashboardStats();startRestTimer();
+  }
+  function updateExerciseNotes(exId,value) { sessionSetDrafts['sessionNotes_'+exId]=value; }
   function renderSessionPlan() {
-    const day=getTodayKey();
-    const plan=(state.schedule[day]||{focus:'Workout',items:[]}).items||[];
-    const host=document.getElementById('session-exercises-list');
-    if(!host)return;
-    const title=document.getElementById('session-title');
-    const subtitle=document.getElementById('session-subtitle');
-    const count=document.getElementById('session-exercise-count');
-    if(title)title.textContent=day+' workout';
-    if(subtitle)subtitle.textContent=(state.schedule[day]?.focus||'Training session')+' · Tap an exercise to log your sets.';
-    if(count)count.textContent=plan.length+' exercises';
-    if(!plan.length){host.innerHTML='<p class="muted">No exercises planned for today. Add movements in Routines.</p>';return;}
+    const day=getTodayKey(),plan=(state.schedule[day]||{focus:'Workout',items:[]}).items||[],host=document.getElementById('session-exercises-list');if(!host)return;
+    const title=document.getElementById('session-title'),subtitle=document.getElementById('session-subtitle'),count=document.getElementById('session-exercise-count');
+    if(title)title.textContent=day+' workout';if(subtitle)subtitle.textContent=(state.schedule[day]?.focus||'Training session')+' · Log each set as you go.';if(count)count.textContent=plan.length+' exercises';
+    if(!plan.length){host.innerHTML='<p class="muted">No exercises planned for today. Add movements in Routines.</p>';updateSessionSummary();return;}
     host.innerHTML=plan.map((id,i)=>{
       const ex=getExerciseById(id);if(!ex)return '';
-      const last=state.logs.find(l=>l.exerciseId===id);
-      return '<div class="session-exercise"><span class="exercise-number">'+(i+1)+'</span><div class="session-exercise-main"><strong>'+getActiveExerciseLabel(ex)+'</strong><div class="muted">'+normalizeCategory(ex.category)+' · '+(last?'Last: '+formatSetSummary(last):'No previous performance')+'</div></div><button type="button" class="small secondary" onclick="startExerciseFromSession(\''+id+'\')">Log sets</button></div>';
-    }).join('');
+      const logs=getExerciseSessionLogs(id),prev=getPreviousExerciseLogs(id),drafts=sessionSetDrafts[id]||[],note=sessionSetDrafts['sessionNotes_'+id]||'',previousFor=n=>prev[n-1]?(Number(prev[n-1].weightKg||0)+' kg × '+(prev[n-1].reps||0)):'—';
+      const rows=logs.map((l,j)=>'<div class="set-grid-row completed"><span class="set-num">'+(j+1)+'</span><span class="set-previous">'+previousFor(j+1)+'</span><input aria-label="Completed weight" value="'+(l.weightKg||0)+'" readonly><input aria-label="Completed reps" value="'+(l.reps||0)+'" readonly><button class="set-check" type="button" aria-label="Set completed">✓</button></div>').join('');
+      const draftRows=drafts.map((d,j)=>'<div class="set-grid-row"><span class="set-num">'+(logs.length+j+1)+'</span><span class="set-previous">'+previousFor(logs.length+j+1)+'</span><input type="number" min="0" step="0.5" inputmode="decimal" aria-label="Weight in kilograms" value="'+d.weight+'" onchange="updateSetDraft(\''+id+'\','+j+',\'weight\',this.value)"><input type="number" min="1" step="1" inputmode="numeric" aria-label="Reps" value="'+d.reps+'" onchange="updateSetDraft(\''+id+'\','+j+',\'reps\',this.value)"><button class="set-check" type="button" onclick="completeExerciseSet(\''+id+'\','+j+')" aria-label="Complete set">✓</button></div>').join('');
+      return '<article class="lyfta-exercise"><div class="lyfta-exercise-head"><div class="lyfta-exercise-icon">'+(i+1)+'</div><div class="lyfta-exercise-title"><strong>'+getActiveExerciseLabel(ex)+'</strong><small>'+logs.length+' sets completed</small></div><button class="lyfta-more" type="button" onclick="startExerciseFromSession(\''+id+'\')" aria-label="Select exercise">•••</button></div><input class="lyfta-notes" type="text" placeholder="Add notes..." value="'+note.replace(/"/g,'&quot;')+'" oninput="updateExerciseNotes(\''+id+'\',this.value)"><button class="lyfta-rest" type="button" onclick="startRestTimer()">◷ &nbsp; '+Math.round((Number(state.settings.restDuration)||90)/60)+' min rest</button><div class="set-grid-head"><span>Set</span><span>Previous</span><span>KG</span><span>Reps</span><span></span></div>'+rows+draftRows+'<button class="lyfta-add-set" type="button" onclick="addExerciseSet(\''+id+'\')">Add set</button></article>';
+    }).join('');updateSessionSummary();
   }
-
-  function startExerciseFromSession(exId) {
-    beginWorkout();
-    const select=document.getElementById('workout-exercise');
-    if(select&&[...select.options].some(o=>o.value===exId)){select.value=exId;onExerciseChange();}
-    if(select)select.scrollIntoView({behavior:'smooth',block:'center'});
+  function updateSessionSummary() {
+    const active=state.activeWorkout,logs=active?state.logs.filter(l=>l.date===active.date && (l.workoutId===Number(active.startedAt)||(!l.workoutId&&Number(l.id)>=Number(active.startedAt)))):[],volume=logs.reduce((sum,l)=>sum+(Number(l.weightKg)||0)*(Number(l.reps)||0),0),put=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+    put('session-total-sets',logs.length);put('session-volume',Math.round(volume).toLocaleString()+' kg');
+    if(active){const sec=Math.max(0,Math.floor((Date.now()-active.startedAt)/1000));put('session-duration',Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'));}else put('session-duration','0:00');
   }
+  function startExerciseFromSession(exId) { beginWorkout();const select=document.getElementById('workout-exercise');if(select&&[...select.options].some(o=>o.value===exId)){select.value=exId;onExerciseChange();} }
   function beginWorkout() {
     if(!state.activeWorkout) state.activeWorkout={date:getTodayDateStr(),startedAt:Date.now(),day:getTodayKey()};
     saveState();
     updateDashboardStats();
+    if(!sessionClockInterval)sessionClockInterval=setInterval(updateSessionSummary,1000);
     const logger=document.getElementById('workout-exercise');
     if(logger) logger.focus({preventScroll:true});
   }
@@ -1749,6 +1789,8 @@
     if(!confirm('Finish this workout? '+count+' sets logged.')) return;
     state.workoutSessions.unshift({id:Date.now(),date,day:state.activeWorkout.day,startedAt:started,finishedAt:Date.now(),sets:count});
     state.activeWorkout=null;
+    clearInterval(sessionClockInterval);sessionClockInterval=null;
+    Object.keys(sessionSetDrafts).forEach(k=>delete sessionSetDrafts[k]);
     saveState();
     updateDashboardStats();
     alert('Workout saved. Great work!');
@@ -1799,6 +1841,7 @@
     if(finish)finish.hidden=!state.activeWorkout;
     if(sessionFinish)sessionFinish.hidden=!state.activeWorkout;
     if(sessionStatus)sessionStatus.textContent=state.activeWorkout?'Workout in progress · '+Math.max(1,Math.floor((Date.now()-state.activeWorkout.startedAt)/60000))+' min':'No active workout';
+    updateSessionSummary();
     if(dot)dot.classList.toggle('active',!!state.activeWorkout);
     updateProgressOverview();
     const weekEl=document.getElementById('dashboard-week');
