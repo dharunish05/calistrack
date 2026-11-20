@@ -528,6 +528,13 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
       </div>
       <div id="home-plan-list" class="home-plan-list"></div>
     </section>
+    <section class="card" id="custom-workout-builder">
+      <div class="section-head"><div><div class="eyebrow">FLEXIBLE TRAINING</div><h2>Start a one-time workout</h2></div><span class="count-pill" id="custom-workout-count">0 selected</span></div>
+      <p class="muted">Choose any exercises from your library for a workout outside your six-day split. This won't change your regular routines.</p>
+      <input type="search" id="custom-workout-search" class="search-input" placeholder="Search exercises…" oninput="renderCustomWorkoutChoices()" />
+      <div id="custom-workout-choices" style="max-height:280px;overflow:auto;"></div>
+      <button type="button" class="dashboard-cta" onclick="startCustomWorkout()">Start custom workout →</button>
+    </section>
     <section class="card home-recent-card"><div class="section-head"><div><div class="eyebrow">RECENT TRAINING</div><h2>Last two workouts</h2></div></div><div id="home-recent-history"><p class="muted">Your completed sessions will appear here.</p></div></section>
 
   </div>
@@ -926,6 +933,7 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
     renderSessionPlan();
     updateDashboardStats();
   }
+  let customWorkoutSelection = new Set();
   let selectedLibGroup = 'All';
   let exerciseSearchTerm = '';
   let currentReps = 10;
@@ -1000,7 +1008,7 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
     document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
     else { const navBtn=document.querySelector('.nav button[data-tab='+tabName+']'); if(navBtn) navBtn.classList.add('active'); }
-    if(tabName==='workout') { renderHomePlan(); renderHomeRecentHistory(); updateDashboardStats(); }
+    if(tabName==='workout') { renderHomePlan(); renderHomeRecentHistory(); renderCustomWorkoutChoices(); updateDashboardStats(); }
     if(tabName==='session') { if(state.activeWorkout&&!sessionClockInterval)sessionClockInterval=setInterval(updateSessionSummary,1000); renderSessionPlan(); renderTodayLogs(); updateDashboardStats(); }
     if(tabName==='routines') { renderDayPills(); renderDaySchedule(); }
 
@@ -1795,6 +1803,27 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
     }).join('');
   }
 
+
+  function renderCustomWorkoutChoices() {
+    const host=document.getElementById('custom-workout-choices'); if(!host)return;
+    const q=(document.getElementById('custom-workout-search')?.value||'').trim().toLowerCase();
+    const matches=state.exercises.filter(ex=>(ex.name+' '+normalizeCategory(ex.category)).toLowerCase().includes(q));
+    const count=document.getElementById('custom-workout-count'); if(count)count.textContent=customWorkoutSelection.size+' selected';
+    if(!matches.length){host.innerHTML='<p class="muted">No exercises found. Try another search.</p>';return;}
+    host.innerHTML=matches.map(ex=>{
+      const checked=customWorkoutSelection.has(ex.id)?'checked':'';
+      return '<label class="warmup-item" style="display:flex;align-items:center;gap:10px;"><input type="checkbox" data-exercise-id="'+ex.id+'" '+checked+' onchange="toggleCustomWorkoutExercise(this.dataset.exerciseId,this.checked)" style="width:18px;min-height:18px;"><span style="flex:1"><strong>'+ex.name+'</strong><span class="muted" style="display:block">'+normalizeCategory(ex.category)+(ex.metric==='time'?' · Hold':ex.metric==='both'?' · Reps & hold':' · Reps')+'</span></span></label>';
+    }).join('');
+  }
+  function toggleCustomWorkoutExercise(exId,checked){if(checked)customWorkoutSelection.add(exId);else customWorkoutSelection.delete(exId);renderCustomWorkoutChoices();}
+  function startCustomWorkout(){
+    if(state.activeWorkout){alert('Finish or discard your current workout before starting another one.');return;}
+    const selected=state.exercises.filter(ex=>customWorkoutSelection.has(ex.id)).map(ex=>ex.id);
+    if(!selected.length){alert('Select at least one exercise for your custom workout.');return;}
+    state.activeWorkout={date:getTodayDateStr(),startedAt:Date.now(),day:'Custom Workout',program:'Custom Workout',isCustom:true,customExerciseIds:selected,draftLogs:[],pendingSets:sessionSetDrafts};
+    saveState();switchTab('session',document.querySelector('.nav button[data-tab="session"]'));renderSessionPlan();updateDashboardStats();
+  }
+
   function renderHomePlan() {
     const todayKey=getSelectedProgram(), day=(state.schedule[todayKey]||{focus:'Rest day',items:[]});
     const title=document.getElementById('home-plan-title'), focus=document.getElementById('home-plan-focus'), count=document.getElementById('home-plan-count'), list=document.getElementById('home-plan-list');
@@ -1867,19 +1896,20 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
   }
   function handleExerciseMenu(action,exId) {
     if(action==='add'){addExerciseSet(exId);return;}
-    const dayPlan=state.schedule[getTodayKey()]||(state.schedule[getTodayKey()]={focus:'Workout',items:[]});
+    const isCustom=!!state.activeWorkout?.isCustom;
+    const dayPlan=isCustom?null:(state.schedule[getTodayKey()]||(state.schedule[getTodayKey()]={focus:'Workout',items:[]}));
     if(action==='delete') {
       if(!confirm('Remove this exercise from today’s workout? Your logged history will be kept.'))return;
-      dayPlan.items=dayPlan.items.filter(id=>id!==exId);delete sessionSetDrafts[exId];
-      saveState();renderSessionPlan();renderHomePlan();return;
+      if(isCustom)state.activeWorkout.customExerciseIds=(state.activeWorkout.customExerciseIds||[]).filter(id=>id!==exId);else dayPlan.items=dayPlan.items.filter(id=>id!==exId);
+      delete sessionSetDrafts[exId];saveState();renderSessionPlan();renderHomePlan();return;
     }
     if(action==='replace') {
       const choices=state.exercises.filter(ex=>ex.id!==exId);if(!choices.length){alert('No other exercises are available.');return;}
       const listing=choices.map((ex,i)=>(i+1)+'. '+ex.name).join('\n');
       const answer=prompt('Replace with which exercise? Enter its number:\n'+listing);if(answer===null)return;
       const chosen=choices[Number(answer)-1];if(!chosen){alert('Please enter a valid exercise number.');return;}
-      dayPlan.items=dayPlan.items.map(id=>id===exId?chosen.id:id);delete sessionSetDrafts[exId];
-      saveState();renderSessionPlan();renderHomePlan();
+      if(isCustom)state.activeWorkout.customExerciseIds=(state.activeWorkout.customExerciseIds||[]).map(id=>id===exId?chosen.id:id);else dayPlan.items=dayPlan.items.map(id=>id===exId?chosen.id:id);
+      delete sessionSetDrafts[exId];saveState();renderSessionPlan();renderHomePlan();
     }
   }
 
@@ -1898,13 +1928,13 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
     handleExerciseMenu(action,exId);
   }
   function renderSessionPlan() {
-    const program=state.activeWorkout?.program||getSelectedProgram(),plan=(state.schedule[program]||{items:[]}).items||[],host=document.getElementById('session-exercises-list');
+    const program=state.activeWorkout?.program||getSelectedProgram(),plan=state.activeWorkout?.isCustom?(state.activeWorkout.customExerciseIds||[]):((state.schedule[program]||{items:[]}).items||[]),host=document.getElementById('session-exercises-list');
     if(!host)return;
     const title=document.getElementById('session-title'),subtitle=document.getElementById('session-subtitle'),count=document.getElementById('session-exercise-count');
     if(title)title.textContent=program;
-    if(subtitle)subtitle.textContent=program+' · Sets are saved only when you finish the workout.';
+    if(subtitle)subtitle.textContent=(state.activeWorkout?.isCustom?'One-time workout · Your six-day routines are unchanged.':program+' · Planned workout')+' · Sets are saved only when you finish the workout.';
     if(count)count.textContent=plan.length+' exercises';
-    if(!plan.length){host.innerHTML='<p class="muted">No exercises planned for '+program+'. Add movements in Routines.</p>';updateSessionSummary();return;}
+    if(!plan.length){host.innerHTML='<p class="muted">No exercises in this workout. Add movements from your exercise library.</p>';updateSessionSummary();return;}
     host.innerHTML=plan.map((id,i)=>{
       const ex=getExerciseById(id);if(!ex)return '';
       const timed=ex.metric==='time',logs=getExerciseSessionLogs(id),prev=getPreviousExerciseLogs(id),drafts=sessionSetDrafts[id]||[],note=state.exerciseNotes[id]||'';
@@ -2072,6 +2102,7 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
     renderLibrary();
     renderTodayLogs();
     renderHomePlan();
+    renderCustomWorkoutChoices();
     updateDashboardStats();
     renderPreviousPerformance();
     renderHomeRecentHistory();
