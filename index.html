@@ -225,17 +225,17 @@
 
     /* CalisTrack visual refresh — dark athletic, mobile-first */
     :root {
-      --bg:#0b1110; --card:#141e1b; --card-2:#101815; --text:#f3f7f4;
-      --muted:#93a49a; --accent:#a5d6a7; --accent-dark:#4b8f63;
-      --success:#8bd49b; --warn:#eab66a; --danger:#e47777; --border:#293832;
-      --surface-glow:rgba(165,214,167,.09);
+      --bg:#071321; --card:#10243a; --card-2:#0b1b2d; --text:#eff7ff;
+      --muted:#9bb4ca; --accent:#55b8ff; --accent-dark:#168bd2;
+      --success:#55b8ff; --warn:#eab66a; --danger:#e47777; --border:#23415c;
+      --surface-glow:rgba(85,184,255,.12);
     }
     html { scroll-behavior:smooth; }
-    body { background:radial-gradient(ellipse at 50% -15%,rgba(87,143,105,.16),transparent 42%),var(--bg); padding-bottom:calc(82px + env(safe-area-inset-bottom)); }
+    body { background:radial-gradient(ellipse at 50% -15%,rgba(37,137,210,.20),transparent 42%),var(--bg); padding-bottom:calc(82px + env(safe-area-inset-bottom)); }
     header#app-header { background:rgba(15,24,20,.92); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-bottom:1px solid var(--border); text-align:left; padding:17px max(18px,calc((100vw - 1000px)/2)); letter-spacing:-.035em; font-size:1.22rem; }
     header#app-header:before { content:""; display:inline-block; width:9px; height:9px; border-radius:3px; background:var(--accent); margin:0 10px 1px 0; box-shadow:0 0 18px rgba(165,214,167,.65); }
     .container { max-width:1000px; padding:18px; }
-    .card { background:linear-gradient(145deg,rgba(24,36,31,.98),rgba(17,26,22,.98)); border:1px solid rgba(157,190,168,.12); border-radius:19px; padding:19px; margin-bottom:16px; box-shadow:0 10px 28px rgba(0,0,0,.12); }
+    .card { background:linear-gradient(145deg,rgba(16,36,58,.98),rgba(9,25,42,.98)); border:1px solid rgba(157,190,168,.12); border-radius:19px; padding:19px; margin-bottom:16px; box-shadow:0 10px 28px rgba(0,0,0,.12); }
     h2,h3 { letter-spacing:-.025em; font-weight:750; }
     h2 { font-size:1.13rem; }
     h3 { font-size:1rem; }
@@ -340,7 +340,7 @@
     select:focus,input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(183,243,107,.09)}
     input[type=checkbox]{accent-color:var(--accent)}
     .row{display:flex;align-items:center;gap:10px}.row>*{min-width:0;flex:1}
-    .dashboard-hero{padding:22px 20px 18px;margin:0 0 14px;border-radius:22px;background:radial-gradient(circle at 95% 4%,rgba(183,243,107,.13),transparent 34%),linear-gradient(145deg,#202821,#151a16 74%);border:1px solid #384438;position:relative;overflow:hidden}
+    .dashboard-hero{padding:22px 20px 18px;margin:0 0 14px;border-radius:22px;background:radial-gradient(circle at 95% 4%,rgba(85,184,255,.18),transparent 34%),linear-gradient(145deg,#153654,#0b1b2d 74%);border:1px solid #285477;position:relative;overflow:hidden}
     .dashboard-hero:after{content:"";position:absolute;width:170px;height:170px;border:1px solid rgba(183,243,107,.08);border-radius:50%;right:-85px;bottom:-110px;box-shadow:0 0 0 22px rgba(183,243,107,.025),0 0 0 44px rgba(183,243,107,.018);pointer-events:none}
     .dashboard-kicker{font-size:.65rem;color:#b5c4b4;font-weight:850;letter-spacing:.15em}
     .dashboard-title{font-size:clamp(1.75rem,6vw,2.35rem);font-weight:900;letter-spacing:-.065em;line-height:1.05;margin:12px 0 8px;max-width:420px}
@@ -434,6 +434,16 @@
  .library-actions{display:flex;gap:6px;align-items:center}.set-more{background:transparent;border:0;color:#aab5ad;font-weight:700;padding:4px 6px}.set-grid-row{position:relative}.set-menu{position:absolute;right:4px;top:38px;z-index:40;background:#252a27;border:1px solid #485149;border-radius:10px;padding:5px;box-shadow:0 10px 24px #0009}.set-menu button{background:transparent;border:0;color:#ff8c8c;padding:9px 12px;white-space:nowrap}
 .set-grid-row.completed{grid-template-columns:.45fr 1fr .75fr .75fr auto auto}.set-grid-head{grid-template-columns:.45fr 1fr .75fr .75fr auto auto}
 .chart-legend{display:flex;flex-wrap:wrap;gap:7px;font-size:.72rem;margin-top:8px;color:#9bb4ca}.home-history-item{padding:12px 0;border-bottom:1px solid var(--border)}.home-history-item:last-child{border-bottom:0}.home-history-top{display:flex;justify-content:space-between;gap:8px;margin-bottom:5px}.session-toolbar{align-items:center}
+:root{--bg:#071321;--card:#10243a;--card-2:#0b1b2d;--text:#eff7ff;--muted:#9bb4ca;--accent:#55b8ff;--accent-dark:#168bd2;--success:#55b8ff;--border:#23415c}
+body{background:radial-gradient(ellipse at 50% -15%,rgba(37,137,210,.2),transparent 42%),var(--bg)}
+.card,.lyfta-exercise{background:linear-gradient(145deg,#10243a,#0b1b2d);border-color:#23415c}
+.dashboard-hero{background:radial-gradient(circle at 95% 4%,rgba(85,184,255,.18),transparent 34%),linear-gradient(145deg,#153654,#0b1b2d 74%);border-color:#285477}
+.lyfta-exercise-icon,.set-num{color:#55b8ff}
+.set-grid-row.completed{background:#10334d}.set-grid-row.completed .set-check{background:#168bd2;color:#fff}
+.day-pill.active,.dashboard-cta,.primary-cta,button:not(.secondary):not(.danger):not(.text-action):not(.lyfta-more):not(.lyfta-rest):not(.set-more){background:#55b8ff;color:#061a2b}
+.nav button.active{color:#55b8ff}
+.chart-legend{color:#9bb4ca}
+.home-history-item{border-color:#23415c}
 </style>
 </head>
 <body>
@@ -805,6 +815,7 @@
 
   const PROGRAMS = ['Push A','Pull A','Leg A','Push B','Pull B','Leg B'];
   const DEFAULT_SCHEDULE = {
+    'Rest': { focus:'Rest day', items:[] },
     'Push A': { focus:'Push A', items:['prog_planche','prog_finger_pushup','ex_pike_pushups','ex_hollow_body_holds'] },
     'Pull A': { focus:'Pull A', items:['prog_deadhang','prog_pullup','ex_australian_rows','ex_hanging_leg_raises'] },
     'Leg A': { focus:'Leg A', items:['prog_pistol_squat','ex_bulgarian_split_squats','ex_lsit_holds'] },
@@ -812,8 +823,8 @@
     'Pull B': { focus:'Pull B', items:['prog_deadhang','prog_pullup','ex_archer_rows','prog_dragon_flag'] },
     'Leg B': { focus:'Leg B', items:['prog_pistol_squat','ex_nordic_hamstring_curls','ex_hollow_body_holds'] }
   };
-  const DAYS_ORDER = PROGRAMS;
-  const WEEKDAY_PROGRAM = {'Monday':'Push A','Tuesday':'Pull A','Wednesday':'Leg A','Thursday':'Push B','Friday':'Pull B','Saturday':'Leg B','Sunday':'Leg A'};
+  const DAYS_ORDER = [...PROGRAMS, 'Rest'];
+  const WEEKDAY_PROGRAM = {'Monday':'Push A','Tuesday':'Pull A','Wednesday':'Leg A','Thursday':'Push B','Friday':'Pull B','Saturday':'Leg B','Sunday':'Rest'};
   function getTodayKey() { return WEEKDAY_PROGRAM[DAYS_ORDER_WEEKDAY[new Date().getDay()]] || PROGRAMS[0]; }
   const DAYS_ORDER_WEEKDAY = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
@@ -841,7 +852,7 @@
   if (!state.schedule) state.schedule = DEFAULT_SCHEDULE;
   if (!state.schedule['Push A']) {
     const old=state.schedule, map={'Push A':'Monday','Pull A':'Tuesday','Leg A':'Wednesday','Push B':'Thursday','Pull B':'Friday','Leg B':'Saturday'};
-    const migrated={}; PROGRAMS.forEach(p=>{const day=old[map[p]]||{};migrated[p]={focus:p,items:Array.isArray(day.items)?day.items.slice():DEFAULT_SCHEDULE[p].items.slice()};});
+    const migrated={Rest:{focus:'Rest day',items:[]}}; PROGRAMS.forEach(p=>{const day=old[map[p]]||{};migrated[p]={focus:p,items:Array.isArray(day.items)?day.items.slice():DEFAULT_SCHEDULE[p].items.slice()};});
     state.schedule=migrated;
   }
   if (!state.logs) state.logs = [];
@@ -864,6 +875,11 @@
 
   if (!Array.isArray(state.workoutSessions)) state.workoutSessions = [];
   if (state.activeWorkout && !Array.isArray(state.activeWorkout.draftLogs)) state.activeWorkout.draftLogs = [];
+  if (state.activeWorkout) {
+    const legacyDrafts=state.logs.filter(l=>Number(l.workoutId)===Number(state.activeWorkout.startedAt));
+    if(legacyDrafts.length){state.activeWorkout.draftLogs.push(...legacyDrafts);state.logs=state.logs.filter(l=>Number(l.workoutId)!==Number(state.activeWorkout.startedAt));}
+    if(!state.activeWorkout.program)state.activeWorkout.program=state.activeWorkout.day||getTodayKey();
+  }
   if (!state.settings) state.settings = { restDuration: 90, reminderTime: '' };
 
   function saveState() {
@@ -1805,7 +1821,6 @@
       document.getElementById('reminder-time').value = state.settings.reminderTime;
       document.getElementById('reminder-status').innerText = `Reminder active for ${state.settings.reminderTime} daily.`;
     }
-    renderWarmup();
     renderDayPills();
     renderDaySchedule();
     renderWorkoutExerciseSelect();
