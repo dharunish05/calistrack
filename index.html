@@ -883,7 +883,10 @@ body{background:radial-gradient(ellipse at 50% -15%,rgba(37,137,210,.2),transpar
   if (!state.settings) state.settings = { restDuration: 90, reminderTime: '' };
 
   function saveState() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const snapshot={...state};
+    // An unfinished session is deliberately never written to persistent storage.
+    delete snapshot.activeWorkout;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
   }
 
   // Hands-Free Audio Engine (Web Audio API)
@@ -1470,10 +1473,10 @@ body{background:radial-gradient(ellipse at 50% -15%,rgba(37,137,210,.2),transpar
   }
   function renderSkillChart() {
     const sessions=(state.workoutSessions||[]).slice().sort((a,b)=>(a.date||'').localeCompare(b.date||'')||Number(a.finishedAt)-Number(b.finishedAt));
-    const byProgram=PROGRAMS.map(program=>({name:program,values:sessions.filter(s=>(s.program||s.day)===program).map(s=>({date:s.date,value:Number(s.volume)||0}))}));
+    const byProgram=PROGRAMS.map(program=>{const daily={};sessions.filter(s=>(s.program||s.day)===program).forEach(s=>daily[s.date]=(daily[s.date]||0)+(Number(s.volume)||0));return {name:program,values:Object.keys(daily).sort().map(date=>({date,value:daily[date]}))};});
     drawLineChart('skillProgressChart',byProgram,'kg');
     const holdLogs=state.logs.filter(l=>Number(l.seconds)>0),names=[...new Set(holdLogs.map(l=>l.exerciseName||l.displayName||'Timed hold'))];
-    const holdSeries=names.map(name=>{const daily={};holdLogs.filter(l=>(l.exerciseName||l.displayName||'Timed hold')===name).forEach(l=>daily[l.date]=(daily[l.date]||0)+Number(l.seconds));return {name,values:Object.keys(daily).sort().map(date=>({date,value:daily[date]}))};});
+    const holdSeries=names.map(name=>{const daily={};holdLogs.filter(l=>(l.exerciseName||l.displayName||'Timed hold')===name).forEach(l=>daily[l.date]=Math.max(daily[l.date]||0,Number(l.seconds)));return {name,values:Object.keys(daily).sort().map(date=>({date,value:daily[date]}))};});
     drawLineChart('holdTimeChart',holdSeries,'sec');
   }
 
@@ -1589,7 +1592,8 @@ body{background:radial-gradient(ellipse at 50% -15%,rgba(37,137,210,.2),transpar
 
   function renderHomeRecentHistory() {
     const host=document.getElementById('home-recent-history');if(!host)return;
-    const sessions=(state.workoutSessions||[]).slice().sort((a,b)=>Number(b.finishedAt||b.id)-Number(a.finishedAt||a.id)).slice(0,2);
+    const all=(state.workoutSessions||[]).slice().sort((a,b)=>Number(b.finishedAt||b.id)-Number(a.finishedAt||a.id));
+    const recentDates=[...new Set(all.map(x=>x.date))].slice(0,2),sessions=all.filter(x=>recentDates.includes(x.date));
     if(!sessions.length){host.innerHTML='<p class="muted">Your completed workouts will appear here.</p>';return;}
     host.innerHTML=sessions.map(session=>{
       const logs=getLogsForWorkoutSession(session),groups={};
