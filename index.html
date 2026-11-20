@@ -1917,7 +1917,15 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
       if (document.visibilityState === 'hidden') saveState();
     });
     window.addEventListener('pagehide', saveState);
-    window.addEventListener('beforeunload', saveState);
+    // Ask before a browser refresh or tab close during an unfinished workout.
+    // The browser controls the wording of this native confirmation dialog.
+    window.addEventListener('beforeunload', (event) => {
+      saveState();
+      if (state.activeWorkout && !allowConfirmedExit) {
+        event.preventDefault();
+        event.returnValue = '';
+      }
+    });
   }
 
   function initUI() {
