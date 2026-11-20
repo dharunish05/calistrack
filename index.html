@@ -445,6 +445,40 @@ body{background:radial-gradient(ellipse at 50% -15%,rgba(37,137,210,.2),transpar
 .chart-legend{color:#9bb4ca}
 .home-history-item{border-color:#23415c}
 </style>
+<style id="user-theme-overrides">
+:root{
+ --bg:#0F1115;--card:#181B22;--card-2:#232732;--text:#F4F6FA;--muted:#949BA8;
+ --accent:#C8F938;--accent-dark:#a4d51f;--success:#C8F938;--warn:#38BDF8;
+ --border:#303541;--surface:#181B22;--radius:18px;
+}
+body{background:var(--bg);color:var(--text)}
+#app-header{background:rgba(15,17,21,.96);border-color:#292e38}
+.card,.lyfta-exercise{background:var(--card);border-color:#292e38}
+.dashboard-hero{background:linear-gradient(135deg,#252a34,#181b22 78%);border-color:#353b48}
+.quick-start-card{background:linear-gradient(140deg,#232732,#181b22)}
+.nav{background:rgba(24,27,34,.97);border-color:#303541}
+.nav button.active{color:var(--accent)}
+button{background:var(--accent);color:#151a0d}
+button.secondary{background:var(--card-2);color:var(--text);border-color:#3a414f}
+button.success{background:var(--accent);color:#151a0d}
+button.danger{background:#713b43;color:#fff}
+select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);border-color:#343a46}
+.day-pill{background:var(--card-2);color:var(--muted);border-color:#343a46}
+.day-pill.active,.week-dot.done{background:var(--accent);color:#151a0d;border-color:var(--accent)}
+.sched-item,.tier-box,.counter-box,.pr-card,.group-chart-box,.metric-tile,.previous-performance{background:var(--card-2);border-color:#343a46}
+.counter-btn{background:#303644;color:var(--text);border-color:#424958}
+.counter-val,.dashboard-stat strong{color:var(--text)}
+.dashboard-stat span,.dashboard-kicker,.dashboard-subtitle,.week-day,.week-dot{color:var(--muted)}
+.dashboard-cta,.primary-cta{background:var(--accent);color:#151a0d}
+.text-action,.brand-mark,.exercise-number,.set-index,.lyfta-exercise-icon{color:var(--accent)}
+.brand-mark{background:var(--accent);color:#151a0d}
+#rest-banner{background:#153246;color:var(--accent);border-color:#24536a}
+.set-grid-row.completed{background:#202a35}
+.set-grid-row.completed .set-check{background:var(--accent);color:#151a0d}
+.exercise-menu,.set-menu{background:var(--card-2);border-color:#454c5a}
+.workout-history-card{background:var(--card-2);border-color:#343a46}
+.chart-legend{color:var(--muted)}
+</style>
 </head>
 <body>
 
@@ -928,7 +962,9 @@ body{background:radial-gradient(ellipse at 50% -15%,rgba(37,137,210,.2),transpar
   }
 
   // Navigation
+  let currentTabName = 'workout';
   function switchTab(tabName, btn) {
+    currentTabName = tabName;
     document.querySelectorAll('.tab').forEach(t => t.classList.add('hidden'));
     document.getElementById('tab-' + tabName).classList.remove('hidden');
     document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
@@ -1573,7 +1609,24 @@ body{background:radial-gradient(ellipse at 50% -15%,rgba(37,137,210,.2),transpar
         state = Object.assign({}, state, imported);
         state.exercises = (state.exercises || []).map(ex => ({ ...ex, category: normalizeCategory(ex.category) }));
         saveState();
-        initUI();
+        // Handle Android/browser back: return to Home first, then confirm exit.
+  function installBackNavigation() {
+    try { history.pushState({ calistrackHomeGuard: true }, '', location.href); } catch (_) {}
+    window.addEventListener('popstate', () => {
+      if (currentTabName !== 'workout') {
+        switchTab('workout', document.querySelector('.nav button[data-tab="workout"]'));
+        try { history.pushState({ calistrackHomeGuard: true }, '', location.href); } catch (_) {}
+        return;
+      }
+      const shouldExit = window.confirm('Do you want to exit CalisTrack?');
+      if (!shouldExit) {
+        try { history.pushState({ calistrackHomeGuard: true }, '', location.href); } catch (_) {}
+      }
+    });
+  }
+
+  initUI();
+  installBackNavigation();
         alert('Backup restored.');
       } catch (err) {
         alert('Invalid JSON backup file.');
