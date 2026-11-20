@@ -225,17 +225,17 @@
 
     /* CalisTrack visual refresh — dark athletic, mobile-first */
     :root {
-      --bg:#0b1110; --card:#141e1b; --card-2:#101815; --text:#f3f7f4;
-      --muted:#93a49a; --accent:#a5d6a7; --accent-dark:#4b8f63;
-      --success:#8bd49b; --warn:#eab66a; --danger:#e47777; --border:#293832;
-      --surface-glow:rgba(165,214,167,.09);
+      --bg:#071321; --card:#10243a; --card-2:#0b1b2d; --text:#eff7ff;
+      --muted:#9bb4ca; --accent:#55b8ff; --accent-dark:#168bd2;
+      --success:#55b8ff; --warn:#eab66a; --danger:#e47777; --border:#23415c;
+      --surface-glow:rgba(85,184,255,.12);
     }
     html { scroll-behavior:smooth; }
-    body { background:radial-gradient(ellipse at 50% -15%,rgba(87,143,105,.16),transparent 42%),var(--bg); padding-bottom:calc(82px + env(safe-area-inset-bottom)); }
+    body { background:radial-gradient(ellipse at 50% -15%,rgba(37,137,210,.20),transparent 42%),var(--bg); padding-bottom:calc(82px + env(safe-area-inset-bottom)); }
     header#app-header { background:rgba(15,24,20,.92); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-bottom:1px solid var(--border); text-align:left; padding:17px max(18px,calc((100vw - 1000px)/2)); letter-spacing:-.035em; font-size:1.22rem; }
     header#app-header:before { content:""; display:inline-block; width:9px; height:9px; border-radius:3px; background:var(--accent); margin:0 10px 1px 0; box-shadow:0 0 18px rgba(165,214,167,.65); }
     .container { max-width:1000px; padding:18px; }
-    .card { background:linear-gradient(145deg,rgba(24,36,31,.98),rgba(17,26,22,.98)); border:1px solid rgba(157,190,168,.12); border-radius:19px; padding:19px; margin-bottom:16px; box-shadow:0 10px 28px rgba(0,0,0,.12); }
+    .card { background:linear-gradient(145deg,rgba(16,36,58,.98),rgba(9,25,42,.98)); border:1px solid rgba(157,190,168,.12); border-radius:19px; padding:19px; margin-bottom:16px; box-shadow:0 10px 28px rgba(0,0,0,.12); }
     h2,h3 { letter-spacing:-.025em; font-weight:750; }
     h2 { font-size:1.13rem; }
     h3 { font-size:1rem; }
@@ -312,7 +312,7 @@
 
 
     /* CalisTrack — Lyfta-inspired product redesign (original brand/assets) */
-    :root{--bg:#0d0f0e;--card:#171a18;--card-2:#202421;--text:#f4f6f4;--muted:#9aa39c;--accent:#b7f36b;--accent-dark:#83b83e;--success:#b7f36b;--warn:#f2c66d;--danger:#ed7777;--border:#303631;--surface:#111412;--radius:18px}
+    :root{--bg:#0d0f0e;--card:#171a18;--card-2:#202421;--text:#f4f6f4;--muted:#9aa39c;--accent:#55b8ff;--accent-dark:#168bd2;--success:#55b8ff;--warn:#f2c66d;--danger:#ed7777;--border:#303631;--surface:#111412;--radius:18px}
     html{background:var(--bg);scroll-behavior:smooth}
     body{background:var(--bg);color:var(--text);padding:0 0 calc(82px + env(safe-area-inset-bottom));font-size:14px;line-height:1.45}
     #app-header{height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 max(18px,calc((100vw - 980px)/2));background:rgba(13,15,14,.94);border-bottom:1px solid #242a25;position:sticky;top:0;z-index:30;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);font-size:1rem;letter-spacing:0}
@@ -340,7 +340,7 @@
     select:focus,input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(183,243,107,.09)}
     input[type=checkbox]{accent-color:var(--accent)}
     .row{display:flex;align-items:center;gap:10px}.row>*{min-width:0;flex:1}
-    .dashboard-hero{padding:22px 20px 18px;margin:0 0 14px;border-radius:22px;background:radial-gradient(circle at 95% 4%,rgba(183,243,107,.13),transparent 34%),linear-gradient(145deg,#202821,#151a16 74%);border:1px solid #384438;position:relative;overflow:hidden}
+    .dashboard-hero{padding:22px 20px 18px;margin:0 0 14px;border-radius:22px;background:radial-gradient(circle at 95% 4%,rgba(85,184,255,.18),transparent 34%),linear-gradient(145deg,#153654,#0b1b2d 74%);border:1px solid #285477;position:relative;overflow:hidden}
     .dashboard-hero:after{content:"";position:absolute;width:170px;height:170px;border:1px solid rgba(183,243,107,.08);border-radius:50%;right:-85px;bottom:-110px;box-shadow:0 0 0 22px rgba(183,243,107,.025),0 0 0 44px rgba(183,243,107,.018);pointer-events:none}
     .dashboard-kicker{font-size:.65rem;color:#b5c4b4;font-weight:850;letter-spacing:.15em}
     .dashboard-title{font-size:clamp(1.75rem,6vw,2.35rem);font-weight:900;letter-spacing:-.065em;line-height:1.05;margin:12px 0 8px;max-width:420px}
@@ -381,7 +381,7 @@
 
   
     /* Lyfta-inspired workout interface: original CalisTrack styling */
-    :root{--bg:#101211;--card:#1b1e1c;--card-2:#252a27;--text:#f4f5f4;--muted:#a0a7a2;--accent:#b8f36b;--accent-dark:#8fc34d;--border:#353b37}
+    :root{--bg:#101211;--card:#1b1e1c;--card-2:#252a27;--text:#f4f5f4;--muted:#a0a7a2;--accent:#55b8ff;--accent-dark:#8fc34d;--border:#353b37}
     body{background:#101211;color:var(--text);font-size:14px;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
     #app-header{height:58px;background:#101211;border-bottom:1px solid #292e2b}
     .container{max-width:760px;padding:16px 14px 30px}
@@ -425,14 +425,25 @@
 
   
 .session-summary{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #303632;border-radius:13px;margin:15px 0 18px;overflow:hidden}.session-summary>div{text-align:center;padding:12px 5px;background:#101211}.session-summary>div+div{border-left:1px solid #303632}.session-summary span{display:block;color:#a0a7a2;font-size:.72rem;margin-bottom:6px}.session-summary strong{font-size:1.08rem;font-weight:800}#session-duration{color:#28b8ef}
-.session-exercises-card{padding:0;background:transparent;border:0}#session-exercises-list{display:flex;flex-direction:column;gap:16px}.lyfta-exercise{background:#101211;border:1px solid #292f2b;border-radius:14px;padding:14px 11px}.lyfta-exercise-head{display:flex;align-items:center;gap:11px;margin-bottom:10px}.lyfta-exercise-icon{width:42px;height:48px;border-radius:8px;background:#282d29;display:grid;place-items:center;color:#b8f36b;font-weight:900;flex:0 0 42px}.lyfta-exercise-title{min-width:0;flex:1}.lyfta-exercise-title strong{display:block;font-size:.98rem}.lyfta-exercise-title small{display:block;color:#9ba39d;margin-top:3px}.lyfta-more{border:0;background:transparent;color:#27a9df;font-size:1.2rem;padding:8px}.lyfta-notes{width:100%;background:transparent;border:0;border-bottom:1px solid #292f2b;border-radius:0;padding:9px 2px;color:#eee;margin:0 0 9px;font-size:.82rem}.lyfta-rest{display:inline-flex;align-items:center;gap:7px;color:#28b8ef;background:transparent;border:0;padding:7px 2px;margin:0 0 12px;font-weight:700}
-.set-grid-head,.set-grid-row{display:grid;grid-template-columns:.55fr 1.2fr .85fr .75fr 34px;gap:5px;align-items:center;text-align:center}.set-grid-head{font-size:.68rem;color:#9ba39d;padding:5px 0 8px}.set-grid-row{padding:8px 3px;border-radius:8px;background:#202321;margin:3px 0}.set-grid-row.completed{background:#12390b}.set-grid-row.completed .set-num{color:#28b8ef}.set-num{color:#28b8ef;font-weight:800}.set-previous{font-size:.69rem;color:#aeb5b0;white-space:nowrap}.set-grid-row input{min-width:0;width:100%;height:38px;padding:4px 3px;text-align:center;font-weight:800;font-size:.9rem;background:#151816;border:1px solid #353c37;border-radius:7px;color:#f4f5f4;margin:0}.set-grid-row.completed input{background:transparent;border-color:transparent;color:#fff}.set-grid-row.completed.editing{background:#263b23}.set-grid-row.completed.editing input{background:#151816;border:1px solid #6c9256;color:#fff}.set-check{width:32px;height:32px;min-height:32px;border:0;border-radius:50%;background:#3a3d42;color:#fff;font-size:1rem;padding:0;display:grid;place-items:center}.set-grid-row.completed .set-check{background:#55d500;color:#102400}.lyfta-add-set{width:100%;border:0;border-radius:28px;background:#292b2d;color:#fff;padding:13px;margin-top:10px;font-weight:800}#tab-session .session-exercises-card>.section-head{display:none}#tab-session .workout-page-intro{padding-bottom:2px}
+.session-exercises-card{padding:0;background:transparent;border:0}#session-exercises-list{display:flex;flex-direction:column;gap:16px}.lyfta-exercise{background:#101211;border:1px solid #292f2b;border-radius:14px;padding:14px 11px}.lyfta-exercise-head{display:flex;align-items:center;gap:11px;margin-bottom:10px}.lyfta-exercise-icon{width:42px;height:48px;border-radius:8px;background:#282d29;display:grid;place-items:center;color:#55b8ff;font-weight:900;flex:0 0 42px}.lyfta-exercise-title{min-width:0;flex:1}.lyfta-exercise-title strong{display:block;font-size:.98rem}.lyfta-exercise-title small{display:block;color:#9ba39d;margin-top:3px}.lyfta-more{border:0;background:transparent;color:#27a9df;font-size:1.2rem;padding:8px}.lyfta-notes{width:100%;background:transparent;border:0;border-bottom:1px solid #292f2b;border-radius:0;padding:9px 2px;color:#eee;margin:0 0 9px;font-size:.82rem}.lyfta-rest{display:inline-flex;align-items:center;gap:7px;color:#28b8ef;background:transparent;border:0;padding:7px 2px;margin:0 0 12px;font-weight:700}
+.set-grid-head,.set-grid-row{display:grid;grid-template-columns:.55fr 1.2fr .85fr .75fr 34px;gap:5px;align-items:center;text-align:center}.set-grid-head{font-size:.68rem;color:#9ba39d;padding:5px 0 8px}.set-grid-row{padding:8px 3px;border-radius:8px;background:#202321;margin:3px 0}.set-grid-row.completed{background:#12390b}.set-grid-row.completed .set-num{color:#28b8ef}.set-num{color:#28b8ef;font-weight:800}.set-previous{font-size:.69rem;color:#aeb5b0;white-space:nowrap}.set-grid-row input{min-width:0;width:100%;height:38px;padding:4px 3px;text-align:center;font-weight:800;font-size:.9rem;background:#151816;border:1px solid #353c37;border-radius:7px;color:#f4f5f4;margin:0}.set-grid-row.completed input{background:transparent;border-color:transparent;color:#fff}.set-grid-row.completed.editing{background:#263b23}.set-grid-row.completed.editing input{background:#151816;border:1px solid #6c9256;color:#fff}.set-check{width:32px;height:32px;min-height:32px;border:0;border-radius:50%;background:#3a3d42;color:#fff;font-size:1rem;padding:0;display:grid;place-items:center}.set-grid-row.completed .set-check{background:#168bd2;color:#102400}.lyfta-add-set{width:100%;border:0;border-radius:28px;background:#292b2d;color:#fff;padding:13px;margin-top:10px;font-weight:800}#tab-session .session-exercises-card>.section-head{display:none}#tab-session .workout-page-intro{padding-bottom:2px}
 @media(max-width:380px){.set-grid-head,.set-grid-row{grid-template-columns:.48fr 1.05fr .78fr .68fr 30px;gap:3px}.set-previous{font-size:.62rem}.set-grid-row input{font-size:.82rem}}
 
 .lyfta-exercise-head{position:relative}.exercise-menu{position:absolute;right:0;top:38px;z-index:30;min-width:180px;padding:6px;background:#252a27;border:1px solid #485149;border-radius:12px;box-shadow:0 12px 28px rgba(0,0,0,.45)}.exercise-menu button{display:block;width:100%;text-align:left;background:transparent;border:0;color:#f4f5f4;padding:11px 12px;border-radius:8px;font-size:.82rem}.exercise-menu button:active{background:#384237}.set-grid-row.completed.editing .set-check{background:#737b73;color:#fff}
-.skill-chart{width:100%;min-height:170px;padding:8px 0}.workout-history-card{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;background:#111914;border:1px solid #303d34;border-radius:13px;color:#f4f6f4;padding:15px;margin:8px 0}.workout-history-card span:first-child{display:flex;flex-direction:column;gap:5px}.workout-history-card small{color:#aab5ad;font-size:.76rem}.workout-history-card>span:last-child{color:#b7f36b;white-space:nowrap;font-size:.8rem}.history-detail-head{margin:12px 0 18px}.history-exercise{background:#111914;border:1px solid #303d34;border-radius:13px;padding:13px;margin:10px 0}.history-exercise>strong{display:block;margin-bottom:12px}.history-set-head,.history-set-row{display:grid;grid-template-columns:.6fr 1fr 1.2fr;gap:8px;padding:9px 5px;font-size:.82rem}.history-set-head{color:#aab5ad;border-bottom:1px solid #344139}.history-set-row{border-bottom:1px solid #27332b}.history-set-row:last-child{border:0}
+.skill-chart{width:100%;min-height:170px;padding:8px 0}.workout-history-card{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;background:#111914;border:1px solid #303d34;border-radius:13px;color:#f4f6f4;padding:15px;margin:8px 0}.workout-history-card span:first-child{display:flex;flex-direction:column;gap:5px}.workout-history-card small{color:#aab5ad;font-size:.76rem}.workout-history-card>span:last-child{color:#55b8ff;white-space:nowrap;font-size:.8rem}.history-detail-head{margin:12px 0 18px}.history-exercise{background:#111914;border:1px solid #303d34;border-radius:13px;padding:13px;margin:10px 0}.history-exercise>strong{display:block;margin-bottom:12px}.history-set-head,.history-set-row{display:grid;grid-template-columns:.6fr 1fr 1.2fr;gap:8px;padding:9px 5px;font-size:.82rem}.history-set-head{color:#aab5ad;border-bottom:1px solid #344139}.history-set-row{border-bottom:1px solid #27332b}.history-set-row:last-child{border:0}
  .library-actions{display:flex;gap:6px;align-items:center}.set-more{background:transparent;border:0;color:#aab5ad;font-weight:700;padding:4px 6px}.set-grid-row{position:relative}.set-menu{position:absolute;right:4px;top:38px;z-index:40;background:#252a27;border:1px solid #485149;border-radius:10px;padding:5px;box-shadow:0 10px 24px #0009}.set-menu button{background:transparent;border:0;color:#ff8c8c;padding:9px 12px;white-space:nowrap}
 .set-grid-row.completed{grid-template-columns:.45fr 1fr .75fr .75fr auto auto}.set-grid-head{grid-template-columns:.45fr 1fr .75fr .75fr auto auto}
+.chart-legend{display:flex;flex-wrap:wrap;gap:7px;font-size:.72rem;margin-top:8px;color:#9bb4ca}.home-history-item{padding:12px 0;border-bottom:1px solid var(--border)}.home-history-item:last-child{border-bottom:0}.home-history-top{display:flex;justify-content:space-between;gap:8px;margin-bottom:5px}.session-toolbar{align-items:center}
+:root{--bg:#071321;--card:#10243a;--card-2:#0b1b2d;--text:#eff7ff;--muted:#9bb4ca;--accent:#55b8ff;--accent-dark:#168bd2;--success:#55b8ff;--border:#23415c}
+body{background:radial-gradient(ellipse at 50% -15%,rgba(37,137,210,.2),transparent 42%),var(--bg)}
+.card,.lyfta-exercise{background:linear-gradient(145deg,#10243a,#0b1b2d);border-color:#23415c}
+.dashboard-hero{background:radial-gradient(circle at 95% 4%,rgba(85,184,255,.18),transparent 34%),linear-gradient(145deg,#153654,#0b1b2d 74%);border-color:#285477}
+.lyfta-exercise-icon,.set-num{color:#55b8ff}
+.set-grid-row.completed{background:#10334d}.set-grid-row.completed .set-check{background:#168bd2;color:#fff}
+.day-pill.active,.dashboard-cta,.primary-cta,button:not(.secondary):not(.danger):not(.text-action):not(.lyfta-more):not(.lyfta-rest):not(.set-more){background:#55b8ff;color:#061a2b}
+.nav button.active{color:#55b8ff}
+.chart-legend{color:#9bb4ca}
+.home-history-item{border-color:#23415c}
 </style>
 </head>
 <body>
@@ -475,6 +486,7 @@
       <div class="home-plan-meta"><span class="plan-chip" id="home-plan-focus">Training day</span><span class="muted" id="home-plan-count">0 exercises</span></div>
       <div id="home-plan-list" class="home-plan-list"></div>
     </section>
+    <section class="card home-recent-card"><div class="section-head"><div><div class="eyebrow">RECENT TRAINING</div><h2>Last two workouts</h2></div></div><div id="home-recent-history"><p class="muted">Your completed sessions will appear here.</p></div></section>
     <section class="card quick-start-card">
       <div class="section-head"><div><div class="eyebrow">READY WHEN YOU ARE</div><h2>Start training</h2></div><span class="quick-start-icon">↗</span></div>
       <p class="muted">Log your sets, track your holds and build on your previous performance.</p>
@@ -489,7 +501,7 @@
     <div class="page-intro workout-page-intro">
       <div class="eyebrow">TRAINING SESSION</div>
       <div class="section-head"><div><h1 id="session-title">Today's workout</h1><p class="muted" id="session-subtitle">Your planned exercises, all in one place.</p></div><span class="live-tag">LIVE</span></div>
-      <div class="session-toolbar"><span id="session-status" class="muted">No active workout</span><button type="button" class="small secondary" id="finish-workout-btn" onclick="finishWorkout()" hidden>Finish workout</button></div>
+      <div class="session-toolbar"><span id="session-status" class="muted">No active workout</span><div style="display:flex;gap:7px"><button type="button" class="small danger" id="discard-workout-btn" onclick="discardWorkout()" hidden>Discard</button><button type="button" class="small secondary" id="finish-workout-btn" onclick="finishWorkout()" hidden>Finish workout</button></div></div>
       <div class="session-summary"><div><span>Duration</span><strong id="session-duration">0:00</strong></div><div><span>Volume</span><strong id="session-volume">0 kg</strong></div><div><span>Sets</span><strong id="session-total-sets">0</strong></div></div>
     </div>
     <section class="card session-exercises-card">
@@ -568,28 +580,7 @@
   <!-- TAB: ROUTINES -->
   <div id="tab-routines" class="tab hidden">
     <div class="page-intro"><div class="eyebrow">PLAN YOUR TRAINING</div><h1>Your routines</h1><p class="muted">Organise your week and prepare for every session.</p></div>
-    <!-- Quick 3-Minute Warm-Up Checklist -->
-    <div class="card">
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-        <h2 style="margin:0;">3-Min Warm-Up Checklist</h2>
-        <button class="small secondary" onclick="resetWarmup()">Reset</button>
-      </div>
-      <p class="muted" style="margin:4px 0 8px 0;">~60s each before loading joints or straight-arm holds.</p>
-      <label class="warmup-item">
-        <input type="checkbox" class="big-check warmup-cb" data-idx="0" onchange="saveWarmup()" />
-        <span><strong>Wrist Circles</strong> — 60s both directions, seated or standing</span>
-      </label>
-      <label class="warmup-item">
-        <input type="checkbox" class="big-check warmup-cb" data-idx="1" onchange="saveWarmup()" />
-        <span><strong>Palm Pulses</strong> — 60s gentle lean & lift with fingers forward/back</span>
-      </label>
-      <label class="warmup-item">
-        <input type="checkbox" class="big-check warmup-cb" data-idx="2" onchange="saveWarmup()" />
-        <span><strong>Scapular Shrugs</strong> — 60s protract/retract & depress shoulders</span>
-      </label>
-    </div>
-
-    <!-- Today's Workout Schedule -->
+    <!-- Six-program training rotation -->
     <div class="card">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:8px;">
         <h2 id="schedule-heading" style="margin:0;">Today's Workout</h2>
@@ -658,20 +649,17 @@
       <div id="prs-list" class="pr-grid"></div>
     </div>
 
-    <!-- Historical Skill Progression Chart -->
     <div class="card">
-      <h2>Skill Progression History</h2>
-      <p class="muted">Tracks tier advancement over time (e.g., Planche Lean → Frog Stand → Tuck Planche, Pistol Squats).</p>
-      <label for="chart-exercise-search">Find exercise</label>
-      <input id="chart-exercise-search" type="search" class="search-input" placeholder="Search logged exercises..." oninput="filterChartExercises()" />
-      <label for="skill-chart-select">Exercise</label>
-      <select id="skill-chart-select" onchange="renderSkillChart()"></select>
-      <label for="chart-metric-select">Progress metric</label>
-      <select id="chart-metric-select" onchange="renderSkillChart()"><option value="auto">Auto (reps / hold time)</option><option value="reps">Reps</option><option value="seconds">Hold time (seconds)</option></select>
+      <h2>Program training volume</h2>
+      <p class="muted">Total volume (kg × reps) for each of your six programs across completed sessions.</p>
       <div id="skillProgressChart" class="skill-chart"></div>
       <div id="skill-tier-legend" class="tier-legend"></div>
     </div>
-
+    <div class="card">
+      <h2>Hold-time progression</h2>
+      <p class="muted">Track your longest dead hang, plank and other timed holds in seconds.</p>
+      <div id="holdTimeChart" class="skill-chart"></div>
+    </div>
     <div class="card">
       <h3>Workout History</h3>
       <div id="full-history"></div><div id="workout-history-detail" class="hidden"></div>
@@ -825,43 +813,20 @@
     { id: 'ex_lsit_holds', name: 'L-Sit Holds', category: 'Core', metric: 'time' }
   ];
 
+  const PROGRAMS = ['Push A','Pull A','Leg A','Push B','Pull B','Leg B'];
   const DEFAULT_SCHEDULE = {
-    Monday: {
-      focus: 'Push A',
-      items: ['prog_planche', 'prog_finger_pushup', 'ex_pike_pushups', 'ex_hollow_body_holds']
-    },
-    Tuesday: {
-      focus: 'Pull A',
-      items: ['prog_deadhang', 'prog_pullup', 'ex_australian_rows', 'ex_hanging_leg_raises']
-    },
-    Wednesday: {
-      focus: 'Legs & Core',
-      items: ['prog_pistol_squat', 'ex_bulgarian_split_squats', 'ex_lsit_holds']
-    },
-    Thursday: {
-      focus: 'Push B',
-      items: ['prog_planche', 'ex_pseudo_planche_pushups', 'ex_diamond_pushups', 'ex_dips']
-    },
-    Friday: {
-      focus: 'Pull B',
-      items: ['prog_deadhang', 'prog_pullup', 'ex_archer_rows', 'prog_dragon_flag']
-    },
-    Saturday: {
-      focus: 'Legs & Conditioning',
-      items: ['prog_pistol_squat', 'ex_nordic_hamstring_curls', 'ex_hollow_body_holds']
-    },
-    Sunday: {
-      focus: 'Rest & Mobility Day',
-      items: []
-    }
+    'Rest': { focus:'Rest day', items:[] },
+    'Push A': { focus:'Push A', items:['prog_planche','prog_finger_pushup','ex_pike_pushups','ex_hollow_body_holds'] },
+    'Pull A': { focus:'Pull A', items:['prog_deadhang','prog_pullup','ex_australian_rows','ex_hanging_leg_raises'] },
+    'Leg A': { focus:'Leg A', items:['prog_pistol_squat','ex_bulgarian_split_squats','ex_lsit_holds'] },
+    'Push B': { focus:'Push B', items:['prog_planche','ex_pseudo_planche_pushups','ex_diamond_pushups','ex_dips'] },
+    'Pull B': { focus:'Pull B', items:['prog_deadhang','prog_pullup','ex_archer_rows','prog_dragon_flag'] },
+    'Leg B': { focus:'Leg B', items:['prog_pistol_squat','ex_nordic_hamstring_curls','ex_hollow_body_holds'] }
   };
-
-  const DAYS_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
-  function getTodayKey() {
-    const jsDay = new Date().getDay();
-    return DAYS_ORDER[(jsDay + 6) % 7];
-  }
+  const DAYS_ORDER = [...PROGRAMS, 'Rest'];
+  const WEEKDAY_PROGRAM = {'Monday':'Push A','Tuesday':'Pull A','Wednesday':'Leg A','Thursday':'Push B','Friday':'Pull B','Saturday':'Leg B','Sunday':'Rest'};
+  function getTodayKey() { return WEEKDAY_PROGRAM[DAYS_ORDER_WEEKDAY[new Date().getDay()]] || PROGRAMS[0]; }
+  const DAYS_ORDER_WEEKDAY = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
   function getTodayDateStr() {
     return new Date().toISOString().split('T')[0];
@@ -885,6 +850,11 @@
   if (!state.exercises || !state.exercises.length) state.exercises = DEFAULT_EXERCISES;
   state.exercises = state.exercises.map(ex => ({ ...ex, category: normalizeCategory(ex.category) }));
   if (!state.schedule) state.schedule = DEFAULT_SCHEDULE;
+  if (!state.schedule['Push A']) {
+    const old=state.schedule, map={'Push A':'Monday','Pull A':'Tuesday','Leg A':'Wednesday','Push B':'Thursday','Pull B':'Friday','Leg B':'Saturday'};
+    const migrated={Rest:{focus:'Rest day',items:[]}}; PROGRAMS.forEach(p=>{const day=old[map[p]]||{};migrated[p]={focus:p,items:Array.isArray(day.items)?day.items.slice():DEFAULT_SCHEDULE[p].items.slice()};});
+    state.schedule=migrated;
+  }
   if (!state.logs) state.logs = [];
   if (!state.completedByDate) state.completedByDate = {};
   if (!state.warmupByDate) state.warmupByDate = {};
@@ -904,10 +874,26 @@
   const areaChartInstances = {};
 
   if (!Array.isArray(state.workoutSessions)) state.workoutSessions = [];
+  const legacyProgramByWeekday=['Rest','Push A','Pull A','Leg A','Push B','Pull B','Leg B'];
+  state.workoutSessions.forEach(session=>{
+    if(!PROGRAMS.includes(session.program||session.day)){
+      const d=new Date((session.date||'')+'T12:00:00').getDay();
+      session.program=legacyProgramByWeekday[d]||'Workout';
+    }
+  });
+  if (state.activeWorkout && !Array.isArray(state.activeWorkout.draftLogs)) state.activeWorkout.draftLogs = [];
+  if (state.activeWorkout) {
+    const legacyDrafts=state.logs.filter(l=>Number(l.workoutId)===Number(state.activeWorkout.startedAt));
+    if(legacyDrafts.length){state.activeWorkout.draftLogs.push(...legacyDrafts);state.logs=state.logs.filter(l=>Number(l.workoutId)!==Number(state.activeWorkout.startedAt));}
+    if(!state.activeWorkout.program)state.activeWorkout.program=state.activeWorkout.day||getTodayKey();
+  }
   if (!state.settings) state.settings = { restDuration: 90, reminderTime: '' };
 
   function saveState() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const snapshot={...state};
+    // An unfinished session is deliberately never written to persistent storage.
+    delete snapshot.activeWorkout;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
   }
 
   // Hands-Free Audio Engine (Web Audio API)
@@ -948,9 +934,9 @@
     document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
     else { const navBtn=document.querySelector('.nav button[data-tab='+tabName+']'); if(navBtn) navBtn.classList.add('active'); }
-    if(tabName==='workout') { renderHomePlan(); updateDashboardStats(); }
+    if(tabName==='workout') { renderHomePlan(); renderHomeRecentHistory(); updateDashboardStats(); }
     if(tabName==='session') { if(state.activeWorkout&&!sessionClockInterval)sessionClockInterval=setInterval(updateSessionSummary,1000); renderSessionPlan(); renderTodayLogs(); updateDashboardStats(); }
-    if(tabName==='routines') { renderDayPills(); renderDaySchedule(); renderWarmup(); }
+    if(tabName==='routines') { renderDayPills(); renderDaySchedule(); }
 
     if (tabName === 'exercises') {
       renderLibFilterPills();
@@ -958,7 +944,6 @@
     }
     if (tabName === 'prs') {
       renderPRs();
-      populateSkillChartSelect();
       renderSkillChart();
       renderFullHistory();
       updateProgressOverview();
@@ -989,7 +974,6 @@
     const today = getTodayDateStr();
     state.warmupByDate[today] = [false, false, false];
     saveState();
-    renderWarmup();
   }
 
   // Exercise Helpers
@@ -1021,7 +1005,7 @@
     const pillsEl = document.getElementById('day-pills');
     pillsEl.innerHTML = DAYS_ORDER.map(day => {
       const activeClass = day === selectedDay ? 'active' : '';
-      const label = day === todayKey ? `${day.slice(0, 3)} (Today)` : day.slice(0, 3);
+      const label = day === todayKey ? `${day} · Today` : day;
       return `<button type="button" class="day-pill ${activeClass}" onclick="selectDay('${day}')">${label}</button>`;
     }).join('');
   }
@@ -1080,60 +1064,16 @@
   }
 
   function renderDaySchedule() {
-    const todayKey = getTodayKey();
-    const todayDate = getTodayDateStr();
-    const dayObj = state.schedule[selectedDay] || { focus: '', items: [] };
-    const completedSet = new Set(state.completedByDate[`${todayDate}_${selectedDay}`] || []);
-
-    document.getElementById('schedule-heading').innerText =
-      selectedDay === todayKey ? `Today's Workout (${selectedDay})` : `${selectedDay} Routine`;
-    document.getElementById('schedule-focus').innerText = dayObj.focus || '';
-
-    const listEl = document.getElementById('day-schedule-list');
-    if (!dayObj.items.length) {
-      listEl.innerHTML = `<p class="muted" style="margin:6px 0 0 0;">No exercises scheduled for ${selectedDay} yet—add one below or take a rest & mobility day.</p>`;
-    } else {
-      listEl.innerHTML = dayObj.items.map(exId => {
-        const ex = getExerciseById(exId);
-        if (!ex) return '';
-        const isDone = completedSet.has(exId);
-        const displayName = getActiveExerciseLabel(ex);
-        return `
-          <div class="sched-item">
-            <div class="sched-left" onclick="focusExerciseInLogger('${ex.id}')">
-              <input
-                type="checkbox"
-                class="big-check"
-                ${isDone ? 'checked' : ''}
-                onclick="event.stopPropagation(); toggleScheduleItem('${ex.id}')"
-              />
-              <div>
-                <div class="${isDone ? 'done-text' : ''}" style="font-weight:700;">${displayName}</div>
-                <div class="muted">${ex.category} · Tap to load logger</div>
-              </div>
-            </div>
-            <div style="display:flex; gap:6px;">
-              <button type="button" class="small secondary" onclick="focusExerciseInLogger('${ex.id}')">Log</button>
-              <button type="button" class="small danger" onclick="removeExerciseFromSelectedDay('${ex.id}')">X</button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
+    const dayObj=state.schedule[selectedDay]||{focus:selectedDay,items:[]};
+    document.getElementById('schedule-heading').textContent=selectedDay;
+    document.getElementById('schedule-focus').textContent='Program routine';
+    const listEl=document.getElementById('day-schedule-list');
+    if(!dayObj.items?.length) listEl.innerHTML='<p class="muted">No exercises in this program yet. Add exercises below.</p>';
+    else listEl.innerHTML=dayObj.items.map((exId,index)=>{
+      const ex=getExerciseById(exId); if(!ex)return '';
+      return '<div class="sched-item"><div class="sched-left"><span class="set-index">'+(index+1)+'</span><div><strong>'+getActiveExerciseLabel(ex)+'</strong><div class="muted">'+normalizeCategory(ex.category)+'</div></div></div><div style="display:flex;gap:6px"><button type="button" class="small secondary" onclick="focusExerciseInLogger(\''+ex.id+'\')">Open</button><button type="button" class="small danger" onclick="removeExerciseFromSelectedDay(\''+ex.id+'\')">×</button></div></div>';
+    }).join('');
     populateDayAddSelect();
-  }
-
-  function toggleScheduleItem(exId) {
-    const todayDate = getTodayDateStr();
-    const key = `${todayDate}_${selectedDay}`;
-    const arr = state.completedByDate[key] || [];
-    const idx = arr.indexOf(exId);
-    if (idx >= 0) arr.splice(idx, 1);
-    else arr.push(exId);
-    state.completedByDate[key] = arr;
-    saveState();
-    renderDaySchedule();
   }
 
   function focusExerciseInLogger(exId) {
@@ -1480,7 +1420,7 @@
     state.exercises=state.exercises.filter(item=>item.id!==exId);
     Object.values(state.schedule).forEach(day=>{if(Array.isArray(day.items))day.items=day.items.filter(id=>id!==exId);});
     delete sessionSetDrafts[exId];delete state.exerciseNotes[exId];
-    saveState();renderLibrary();renderWorkoutExerciseSelect();populateDayAddSelect();renderDaySchedule();renderHomePlan();populateSkillChartSelect();renderSkillChart();
+    saveState();renderLibrary();renderWorkoutExerciseSelect();populateDayAddSelect();renderDaySchedule();renderHomePlan();renderSkillChart();
   }
 
   function switchToWorkoutWith(exId) {
@@ -1527,36 +1467,24 @@
     }).join('');
   }
 
-  function filterChartExercises() {
-    const q=(document.getElementById('chart-exercise-search')?.value||'').trim().toLowerCase();
-    const previous=document.getElementById('skill-chart-select')?.value;
-    const list=state.exercises.filter(ex=>(ex.name+' '+normalizeCategory(ex.category)).toLowerCase().includes(q)&&state.logs.some(l=>l.exerciseId===ex.id));
-    const sel=document.getElementById('skill-chart-select');if(!sel)return;
-    sel.innerHTML=list.map(ex=>'<option value="'+ex.id+'">'+ex.name+'</option>').join('');
-    if(list.some(ex=>ex.id===previous))sel.value=previous;
-    renderSkillChart();
+  function drawLineChart(targetId,series,unit) {
+    const el=document.getElementById(targetId);if(!el)return;
+    const all=series.flatMap(s=>s.values.map(p=>p.value));if(!all.length){el.innerHTML='<p class="muted">Finish a workout to build this chart.</p>';return;}
+    const w=640,h=230,left=48,right=18,top=18,bottom=42,iw=w-left-right,ih=h-top-bottom,max=Math.max(1,...all),dates=[...new Set(series.flatMap(s=>s.values.map(p=>p.date)))].sort();
+    const x=d=>left+(dates.length===1?iw/2:dates.indexOf(d)*iw/(dates.length-1)),y=v=>top+ih-(v/max)*ih;
+    const grid=[0,.25,.5,.75,1].map(t=>{const v=Math.round(max*t),yy=y(v);return '<line x1="'+left+'" y1="'+yy+'" x2="'+(w-right)+'" y2="'+yy+'" stroke="#28445d" stroke-dasharray="3 5"/><text x="'+(left-8)+'" y="'+(yy+4)+'" text-anchor="end" fill="#9bb4ca" font-size="10">'+v+'</text>';}).join('');
+    const colors=['#55b8ff','#258fe0','#8bd3ff','#3979b9','#b5e5ff','#17639e'];
+    const lines=series.map((s,i)=>{const pts=s.values.map(p=>x(p.date)+','+y(p.value)).join(' ');return (s.values.length>1?'<polyline points="'+pts+'" fill="none" stroke="'+colors[i%colors.length]+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>':'')+s.values.map(p=>'<circle cx="'+x(p.date)+'" cy="'+y(p.value)+'" r="4" fill="'+colors[i%colors.length]+'"><title>'+s.name+' · '+p.date+': '+p.value+' '+unit+'</title></circle>').join('');}).join('');
+    const labels=dates.map(d=>'<text x="'+x(d)+'" y="'+(h-12)+'" text-anchor="middle" fill="#9bb4ca" font-size="10">'+new Date(d+'T12:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'})+'</text>').join('');
+    el.innerHTML='<svg viewBox="0 0 '+w+' '+h+'" style="width:100%;height:auto" role="img">'+grid+lines+labels+'</svg><div class="chart-legend">'+series.map((s,i)=>'<span style="color:'+colors[i%colors.length]+'">● '+s.name+'</span>').join(' &nbsp; ')+'</div>';
   }
-  function populateSkillChartSelect() { filterChartExercises(); }
   function renderSkillChart() {
-    const sel=document.getElementById('skill-chart-select'),chart=document.getElementById('skillProgressChart'),legend=document.getElementById('skill-tier-legend'),metricSelect=document.getElementById('chart-metric-select');
-    if(!sel||!chart||!legend||!metricSelect)return;
-    const ex=getExerciseById(sel.value);
-    if(!ex){chart.innerHTML='<p class="muted">Log an exercise to see its progress here.</p>';legend.textContent='';return;}
-    const logs=state.logs.filter(l=>l.exerciseId===ex.id).sort((a,b)=>(a.date||'').localeCompare(b.date||'')||Number(a.id)-Number(b.id));
-    if(!logs.length){chart.innerHTML='<p class="muted">No logged sets for this exercise yet.</p>';legend.textContent='';return;}
-    const chosen=metricSelect.value,metric=chosen==='auto'?(logs.some(l=>Number(l.seconds)>0)||ex.metric==='time'?'seconds':'reps'):chosen;
-    const daily={};logs.forEach(l=>{const value=Number(metric==='seconds'?l.seconds:l.reps)||0;if(value>0)daily[l.date||'Unknown'] = Math.max(daily[l.date||'Unknown']||0,value);});
-    const points=Object.keys(daily).sort().map(date=>({date,value:daily[date]}));
-    const label=metric==='seconds'?'Best hold time (seconds)':'Best reps';
-    legend.textContent=ex.name+' · '+label+' · '+points.length+' logged sets';
-    if(!points.length){chart.innerHTML='<p class="muted">No '+label.toLowerCase()+' data recorded for this exercise yet.</p>';return;}
-    const w=640,h=230,left=48,right=18,top=18,bottom=42,iw=w-left-right,ih=h-top-bottom,max=Math.max(1,...points.map(p=>p.value));
-    const x=i=>left+(points.length===1?iw/2:i*iw/(points.length-1)),y=v=>top+ih-(v/max)*ih;
-    const grid=[0,.25,.5,.75,1].map(t=>{const val=Math.round(max*t),yy=y(val);return '<line x1="'+left+'" y1="'+yy+'" x2="'+(w-right)+'" y2="'+yy+'" stroke="#344139" stroke-dasharray="3 5"/><text x="'+(left-8)+'" y="'+(yy+4)+'" text-anchor="end" fill="#aab5ad" font-size="10">'+val+'</text>';}).join('');
-    const line=points.length>1?'<polyline points="'+points.map((p,i)=>x(i)+','+y(p.value)).join(' ')+'" fill="none" stroke="#b7f36b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>':'';
-    const dots=points.map((p,i)=>'<circle cx="'+x(i)+'" cy="'+y(p.value)+'" r="5" fill="#b7f36b"><title>'+p.date+': '+p.value+' '+(metric==='seconds'?'sec':'reps')+'</title></circle>').join('');
-    const labels=points.map((p,i)=>'<text x="'+x(i)+'" y="'+(h-12)+'" text-anchor="middle" fill="#aab5ad" font-size="10">'+new Date((p.date||getTodayDateStr())+'T12:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'})+'</text>').join('');
-    chart.innerHTML='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="'+ex.name+' '+label+' progress chart" style="width:100%;height:auto">'+grid+line+dots+labels+'</svg>';
+    const sessions=(state.workoutSessions||[]).slice().sort((a,b)=>(a.date||'').localeCompare(b.date||'')||Number(a.finishedAt)-Number(b.finishedAt));
+    const byProgram=PROGRAMS.map(program=>{const daily={};sessions.filter(s=>(s.program||s.day)===program).forEach(s=>daily[s.date]=(daily[s.date]||0)+(Number(s.volume)||0));return {name:program,values:Object.keys(daily).sort().map(date=>({date,value:daily[date]}))};});
+    drawLineChart('skillProgressChart',byProgram,'kg');
+    const holdLogs=state.logs.filter(l=>Number(l.seconds)>0),names=[...new Set(holdLogs.map(l=>l.exerciseName||l.displayName||'Timed hold'))];
+    const holdSeries=names.map(name=>{const daily={};holdLogs.filter(l=>(l.exerciseName||l.displayName||'Timed hold')===name).forEach(l=>daily[l.date]=Math.max(daily[l.date]||0,Number(l.seconds)));return {name,values:Object.keys(daily).sort().map(date=>({date,value:daily[date]}))};});
+    drawLineChart('holdTimeChart',holdSeries,'sec');
   }
 
   function getLogsForWorkoutSession(session) {
@@ -1573,15 +1501,15 @@
     if(!items.length){el.innerHTML='<p class="muted">Your completed workouts will appear here.</p>';return;}
     el.innerHTML=items.map(item=>{
       const sets=item.logs.length,volume=item.logs.reduce((n,l)=>n+(Number(l.weightKg)||0)*(Number(l.reps)||0),0),date=new Date(item.date+'T12:00:00'),label=isNaN(date.getTime())?item.date:date.toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric',year:'numeric'}),duration=item.session?.startedAt&&item.session?.finishedAt?Math.max(1,Math.round((item.session.finishedAt-item.session.startedAt)/60000))+' min':'';
-      return '<button type="button" class="workout-history-card" onclick="viewWorkoutSession(\''+item.id+'\')"><span><strong>'+label+'</strong><small>'+(item.session?.day||'Workout')+' · '+sets+' sets · '+Math.round(volume).toLocaleString()+' kg volume '+(duration?'· '+duration:'')+'</small></span><span>View →</span></button>';
+      return '<button type="button" class="workout-history-card" onclick="viewWorkoutSession(\''+item.id+'\')"><span><strong>'+label+'</strong><small>'+(item.session?.program||item.session?.day||'Workout')+' · '+sets+' sets · '+Math.round(volume).toLocaleString()+' kg volume '+(duration?'· '+duration:'')+'</small></span><span>View →</span></button>';
     }).join('');
   }
   function viewWorkoutSession(sessionId) {
     const detail=document.getElementById('workout-history-detail'),list=document.getElementById('full-history'),session=(state.workoutSessions||[]).find(x=>String(x.id)===String(sessionId)),date=String(sessionId).startsWith('legacy-')?String(sessionId).slice(7):session?.date,logs=session?getLogsForWorkoutSession(session):state.logs.filter(l=>l.date===date);
     if(!detail)return;
     const groups={};logs.slice().sort((a,b)=>Number(a.id)-Number(b.id)).forEach(l=>{const key=l.exerciseId||l.exerciseName||l.name;(groups[key]||(groups[key]={name:l.displayName||l.exerciseName||l.name,sets:[]})).sets.push(l);});
-    const volume=logs.reduce((n,l)=>n+(Number(l.weightKg)||0)*(Number(l.reps)||0),0),reps=logs.reduce((n,l)=>n+(Number(l.reps)||0),0),d=new Date(date+'T12:00:00'),label=isNaN(d.getTime())?date:d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'});
-    detail.innerHTML='<div class="history-detail-head"><button type="button" class="small secondary" onclick="closeWorkoutDetail()">← Back to history</button><h3>'+label+'</h3><p class="muted">'+logs.length+' sets · '+reps+' reps · '+Math.round(volume).toLocaleString()+' kg volume</p></div>'+Object.values(groups).map(g=>'<section class="history-exercise"><strong>'+g.name+'</strong><div class="history-set-head"><span>Set</span><span>Weight</span><span>Reps</span></div>'+g.sets.map((l,i)=>'<div class="history-set-row"><span>'+(i+1)+'</span><span>'+(Number(l.weightKg)||0)+' kg</span><span>'+(Number(l.reps)||0)+'</span></div>').join('')+'</section>').join('')+(logs.length?'':'<p class="muted">No sets were logged in this session.</p>');
+    const volume=logs.reduce((n,l)=>n+(Number(l.weightKg)||0)*(Number(l.reps)||0),0),reps=logs.reduce((n,l)=>n+(Number(l.reps)||0),0),holds=logs.reduce((n,l)=>n+(Number(l.seconds)||0),0),d=new Date(date+'T12:00:00'),label=isNaN(d.getTime())?date:d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+    detail.innerHTML='<div class="history-detail-head"><button type="button" class="small secondary" onclick="closeWorkoutDetail()">← Back to history</button><h3>'+label+'</h3><p class="muted">'+(session?.program||session?.day||'Workout')+' · '+logs.length+' sets · '+reps+' reps · '+holds+' sec holds · '+Math.round(volume).toLocaleString()+' kg volume</p></div>'+Object.values(groups).map(g=>'<section class="history-exercise"><strong>'+g.name+'</strong><div class="history-set-head"><span>Set</span><span>Weight</span><span>'+(g.sets.some(x=>Number(x.seconds)>0)?'Hold':'Reps')+'</span></div>'+g.sets.map((l,i)=>'<div class="history-set-row"><span>'+(i+1)+'</span><span>'+(Number(l.weightKg)||0)+' kg</span><span>'+(Number(l.reps)||0)+'</span></div>').join('')+'</section>').join('')+(logs.length?'':'<p class="muted">No sets were logged in this session.</p>');
     list.classList.add('hidden');detail.classList.remove('hidden');detail.scrollIntoView({behavior:'smooth',block:'start'});
   }
   function closeWorkoutDetail(){document.getElementById('workout-history-detail')?.classList.add('hidden');document.getElementById('full-history')?.classList.remove('hidden');}
@@ -1622,7 +1550,7 @@
     const hm = now.toTimeString().slice(0, 5);
     if (hm === state.settings.reminderTime && now.getSeconds() === 0 && ('Notification' in window) && Notification.permission === 'granted') {
       const todayKey = getTodayKey();
-      const focus = (state.schedule[todayKey] || {}).focus || 'Workout';
+      const focus = (state.schedule[todayKey] || {}).focus || todayKey;
       new Notification('CalisTrack', { body: `Time for ${todayKey} (${focus})!` });
     }
   }, 1000);
@@ -1669,11 +1597,24 @@
       .catch(err => console.log('SW registration skipped:', err));
   }
 
+  function renderHomeRecentHistory() {
+    const host=document.getElementById('home-recent-history');if(!host)return;
+    const all=(state.workoutSessions||[]).slice().sort((a,b)=>Number(b.finishedAt||b.id)-Number(a.finishedAt||a.id));
+    const recentDates=[...new Set(all.map(x=>x.date))].slice(0,2),sessions=all.filter(x=>recentDates.includes(x.date));
+    if(!sessions.length){host.innerHTML='<p class="muted">Your completed workouts will appear here.</p>';return;}
+    host.innerHTML=sessions.map(session=>{
+      const logs=getLogsForWorkoutSession(session),groups={};
+      logs.forEach(l=>{const key=l.exerciseId||l.exerciseName;(groups[key]||(groups[key]={name:l.exerciseName||l.displayName,sets:0})).sets++;});
+      const d=new Date(session.date+'T12:00:00'),dateLabel=d.toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'});
+      return '<div class="home-history-item"><div class="home-history-top"><strong>'+((session.program||session.day)||'Workout')+'</strong><span class="muted">'+dateLabel+'</span></div><div class="muted">'+Object.values(groups).map(g=>g.name+' ('+g.sets+' sets)').join(' · ')+'</div></div>';
+    }).join('');
+  }
+
   function renderHomePlan() {
     const todayKey=getTodayKey(), day=(state.schedule[todayKey]||{focus:'Rest day',items:[]});
     const title=document.getElementById('home-plan-title'), focus=document.getElementById('home-plan-focus'), count=document.getElementById('home-plan-count'), list=document.getElementById('home-plan-list');
     if(!title||!list)return;
-    title.textContent=todayKey+" routine";
+    title.textContent=todayKey;
     focus.textContent=day.focus||'Training day';
     count.textContent=(day.items||[]).length+' exercises';
     const loggedToday=new Set(state.logs.filter(l=>l.date===getTodayDateStr()).map(l=>l.exerciseId));
@@ -1689,53 +1630,52 @@
   let sessionClockInterval = null;
   function getExerciseSessionLogs(exId) {
     if(!state.activeWorkout)return [];
-    const start=Number(state.activeWorkout.startedAt)||0;
-    return state.logs.filter(l=>l.exerciseId===exId && l.date===state.activeWorkout.date && (l.workoutId===start || (!l.workoutId && Number(l.id)>=start))).sort((a,b)=>Number(a.id)-Number(b.id));
+    return (state.activeWorkout.draftLogs||[]).filter(l=>l.exerciseId===exId).sort((a,b)=>Number(a.setNumber)-Number(b.setNumber));
   }
   function getPreviousExerciseLogs(exId) {
-    const currentDate=state.activeWorkout?.date||getTodayDateStr();
-    const dates=[...new Set(state.logs.filter(l=>l.exerciseId===exId && l.date && l.date<currentDate).map(l=>l.date))].sort().reverse();
-    if(!dates.length)return [];
-    return state.logs.filter(l=>l.exerciseId===exId && l.date===dates[0]).sort((a,b)=>Number(a.id)-Number(b.id));
+    const currentStart=Number(state.activeWorkout?.startedAt)||Date.now();
+    const previous=state.logs.filter(l=>l.exerciseId===exId && (Number(l.workoutId)!==currentStart) && (l.date||'')<=(state.activeWorkout?.date||getTodayDateStr()));
+    if(!previous.length)return [];
+    const latestDate=previous.map(l=>l.date||'').sort().reverse()[0];
+    return previous.filter(l=>(l.date||'')===latestDate).sort((a,b)=>Number(a.id)-Number(b.id));
   }
   function addExerciseSet(exId) {
     if(!state.activeWorkout)beginWorkout();
+    const ex=getExerciseById(exId),prev=getPreviousExerciseLogs(exId),last=prev[prev.length-1]||{};
     if(!sessionSetDrafts[exId])sessionSetDrafts[exId]=[];
-    const prev=getPreviousExerciseLogs(exId),last=prev[prev.length-1]||{};
-    sessionSetDrafts[exId].push({weight:last.weightKg??0,reps:last.reps??10});
+    sessionSetDrafts[exId].push({weight:last.weightKg??0,reps:last.reps??10,seconds:last.seconds??0});
     renderSessionPlan();
   }
   function updateSetDraft(exId,index,field,value) {
     if(!sessionSetDrafts[exId])sessionSetDrafts[exId]=[];
-    if(!sessionSetDrafts[exId][index])sessionSetDrafts[exId][index]={weight:0,reps:10};
+    if(!sessionSetDrafts[exId][index])sessionSetDrafts[exId][index]={weight:0,reps:10,seconds:0};
     sessionSetDrafts[exId][index][field]=value;
   }
   function completeExerciseSet(exId,index) {
-    const drafts=sessionSetDrafts[exId]||[],draft=drafts[index];if(!draft)return;
-    const weight=Number(draft.weight)||0,reps=Number(draft.reps)||0;
-    if(reps<=0){alert('Enter at least 1 rep before completing this set.');return;}
-    const ex=getExerciseById(exId);if(!ex)return;
+    const drafts=sessionSetDrafts[exId]||[],draft=drafts[index],ex=getExerciseById(exId);if(!draft||!ex||!state.activeWorkout)return;
+    const weight=Number(draft.weight)||0,isTimed=ex.metric==='time',reps=isTimed?0:Number(draft.reps)||0,seconds=isTimed?Number(draft.seconds)||0:0;
+    if(isTimed?seconds<=0:reps<=0){alert(isTimed?'Enter a hold time before completing this set.':'Enter at least 1 rep before completing this set.');return;}
     const tierIdx=Array.isArray(ex.tiers)?(ex.currentTier||0):null,tierObj=tierIdx!==null?ex.tiers[tierIdx]:null;
-    const entry={id:Date.now(),workoutId:Number(state.activeWorkout.startedAt),exerciseId:ex.id,exerciseName:ex.name,category:normalizeCategory(ex.category),tierIndex:tierIdx!==null?tierIdx+1:null,tierLabel:tierObj?tierObj.label:null,displayName:getActiveExerciseLabel(ex),reps,seconds:0,weightKg:weight,rpe:null,setType:'Normal',notes:'',date:state.activeWorkout.date,timestamp:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})};
-    state.logs.unshift(entry);drafts.splice(index,1);saveState();renderSessionPlan();renderTodayLogs();updateDashboardStats();startRestTimer();
+    const entry={id:Date.now()+Math.random(),workoutId:Number(state.activeWorkout.startedAt),exerciseId:ex.id,exerciseName:ex.name,category:normalizeCategory(ex.category),tierIndex:tierIdx!==null?tierIdx+1:null,tierLabel:tierObj?tierObj.label:null,displayName:getActiveExerciseLabel(ex),reps,seconds,weightKg:weight,rpe:null,setType:'Normal',notes:'',date:state.activeWorkout.date,timestamp:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),setNumber:(state.activeWorkout.draftLogs.filter(l=>l.exerciseId===exId).length+1)};
+    state.activeWorkout.draftLogs.push(entry);drafts.splice(index,1);renderSessionPlan();updateDashboardStats();startRestTimer();
   }
   function toggleCompletedSet(exId,logId) {
-    const log=state.logs.find(l=>Number(l.id)===Number(logId)&&l.exerciseId===exId);if(!log)return;
+    const log=(state.activeWorkout?.draftLogs||[]).find(l=>String(l.id)===String(logId)&&l.exerciseId===exId);if(!log)return;
     if(sessionSetEdits[logId]) {
-      const edit=sessionSetEdits[logId],reps=Number(edit.reps),weight=Number(edit.weight)||0;
-      if(!Number.isFinite(reps)||reps<1){alert('Enter at least 1 rep before saving.');return;}
-      log.reps=reps;log.weightKg=weight;log.timestamp=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-      delete sessionSetEdits[logId];saveState();renderTodayLogs();updateDashboardStats();renderSessionPlan();return;
+      const edit=sessionSetEdits[logId],ex=getExerciseById(exId),timed=ex?.metric==='time',reps=Number(edit.reps),seconds=Number(edit.seconds),weight=Number(edit.weight)||0;
+      if(timed?seconds<=0:reps<1){alert(timed?'Enter a valid hold time.':'Enter at least 1 rep.');return;}
+      log.reps=timed?0:reps;log.seconds=timed?seconds:0;log.weightKg=weight;
+      delete sessionSetEdits[logId];renderSessionPlan();updateSessionSummary();return;
     }
-    sessionSetEdits[logId]={weight:Number(log.weightKg)||0,reps:Number(log.reps)||0};renderSessionPlan();
+    sessionSetEdits[logId]={weight:Number(log.weightKg)||0,reps:Number(log.reps)||0,seconds:Number(log.seconds)||0};renderSessionPlan();
   }
   function updateCompletedSetDraft(logId,field,value) { if(sessionSetEdits[logId])sessionSetEdits[logId][field]=value; }
   function toggleSetMenu(logId) { const menu=document.getElementById('set-menu-'+logId);if(!menu)return;document.querySelectorAll('.set-menu').forEach(el=>{if(el!==menu)el.classList.add('hidden');});menu.classList.toggle('hidden'); }
   function deleteCompletedSet(logId) {
-    if(!confirm('Delete this completed set?'))return;
+    if(!confirm('Delete this set from the current workout?'))return;
     document.getElementById('set-menu-'+logId)?.classList.add('hidden');
-    state.logs=state.logs.filter(l=>Number(l.id)!==Number(logId));delete sessionSetEdits[logId];
-    saveState();renderSessionPlan();renderTodayLogs();renderPRs();renderFullHistory();updateDashboardStats();
+    if(state.activeWorkout)state.activeWorkout.draftLogs=(state.activeWorkout.draftLogs||[]).filter(l=>String(l.id)!==String(logId));
+    delete sessionSetEdits[logId];renderSessionPlan();updateSessionSummary();
   }
   function handleExerciseMenu(action,exId) {
     if(action==='add'){addExerciseSet(exId);return;}
@@ -1770,30 +1710,34 @@
     handleExerciseMenu(action,exId);
   }
   function renderSessionPlan() {
-    const day=getTodayKey(),plan=(state.schedule[day]||{focus:'Workout',items:[]}).items||[],host=document.getElementById('session-exercises-list');if(!host)return;
+    const program=state.activeWorkout?.program||getTodayKey(),plan=(state.schedule[program]||{items:[]}).items||[],host=document.getElementById('session-exercises-list');
+    if(!host)return;
     const title=document.getElementById('session-title'),subtitle=document.getElementById('session-subtitle'),count=document.getElementById('session-exercise-count');
-    if(title)title.textContent=day+' workout';if(subtitle)subtitle.textContent=(state.schedule[day]?.focus||'Training session')+' · Log each set as you go.';if(count)count.textContent=plan.length+' exercises';
-    if(!plan.length){host.innerHTML='<p class="muted">No exercises planned for today. Add movements in Routines.</p>';updateSessionSummary();return;}
+    if(title)title.textContent=program;
+    if(subtitle)subtitle.textContent=program+' · Sets are saved only when you finish the workout.';
+    if(count)count.textContent=plan.length+' exercises';
+    if(!plan.length){host.innerHTML='<p class="muted">No exercises planned for '+program+'. Add movements in Routines.</p>';updateSessionSummary();return;}
     host.innerHTML=plan.map((id,i)=>{
       const ex=getExerciseById(id);if(!ex)return '';
-      const logs=getExerciseSessionLogs(id),prev=getPreviousExerciseLogs(id),drafts=sessionSetDrafts[id]||[],note=state.exerciseNotes[id]||'',previousFor=n=>prev[n-1]?(Number(prev[n-1].weightKg||0)+' kg × '+(prev[n-1].reps||0)):'—';
+      const timed=ex.metric==='time',logs=getExerciseSessionLogs(id),prev=getPreviousExerciseLogs(id),drafts=sessionSetDrafts[id]||[],note=state.exerciseNotes[id]||'';
+      const previousFor=n=>{const p=prev[n-1];return p?(p.seconds?Number(p.seconds)+' sec hold':(Number(p.weightKg||0)+' kg × '+(Number(p.reps)||0))):'—';};
       const rows=logs.map((l,j)=>{
         const edit=sessionSetEdits[l.id],editing=!!edit;
-        return '<div class="set-grid-row completed '+(editing?'editing':'')+'"><span class="set-num">'+(j+1)+'</span><span class="set-previous">'+previousFor(j+1)+'</span><input type="number" min="0" step="0.5" inputmode="decimal" aria-label="Weight in kilograms" value="'+(editing?edit.weight:(l.weightKg||0))+'" '+(editing?'onchange="updateCompletedSetDraft(\''+l.id+'\',\'weight\',this.value)"':'readonly')+'><input type="number" min="1" step="1" inputmode="numeric" aria-label="Reps" value="'+(editing?edit.reps:(l.reps||0))+'" '+(editing?'onchange="updateCompletedSetDraft(\''+l.id+'\',\'reps\',this.value)"':'readonly')+'><button class="set-check" type="button" onclick="toggleCompletedSet(\''+id+'\',\''+l.id+'\')" aria-label="'+(editing?'Save set':'Edit completed set')+'">✓</button><button class="set-more" type="button" onclick="toggleSetMenu(\''+l.id+'\')" aria-label="Set options">•••</button><div class="set-menu hidden" id="set-menu-'+l.id+'"><button type="button" onclick="deleteCompletedSet(\''+l.id+'\')">Delete set</button></div></div>';
+        return '<div class="set-grid-row completed '+(editing?'editing':'')+'"><span class="set-num">'+(j+1)+'</span><span class="set-previous">'+previousFor(j+1)+'</span><input type="number" min="0" step="0.5" aria-label="Weight in kilograms" value="'+(editing?edit.weight:(l.weightKg||0))+'" '+(editing?'onchange="updateCompletedSetDraft(\''+l.id+'\',\'weight\',this.value)"':'readonly')+'><input type="number" min="1" step="1" aria-label="'+(timed?'Hold seconds':'Reps')+'" value="'+(editing?(timed?edit.seconds:edit.reps):(timed?l.seconds:l.reps))+'" '+(editing?'onchange="updateCompletedSetDraft(\''+l.id+'\',\''+(timed?'seconds':'reps')+'\',this.value)"':'readonly')+'><button class="set-check" type="button" onclick="toggleCompletedSet(\''+id+'\',\''+l.id+'\')" aria-label="Edit or save set">✓</button><button class="set-more" type="button" onclick="toggleSetMenu(\''+l.id+'\')">•••</button><div class="set-menu hidden" id="set-menu-'+l.id+'"><button type="button" onclick="deleteCompletedSet(\''+l.id+'\')">Delete set</button></div></div>';
       }).join('');
-      const draftRows=drafts.map((d,j)=>'<div class="set-grid-row"><span class="set-num">'+(logs.length+j+1)+'</span><span class="set-previous">'+previousFor(logs.length+j+1)+'</span><input type="number" min="0" step="0.5" inputmode="decimal" aria-label="Weight in kilograms" value="'+d.weight+'" onchange="updateSetDraft(\''+id+'\','+j+',\'weight\',this.value)"><input type="number" min="1" step="1" inputmode="numeric" aria-label="Reps" value="'+d.reps+'" onchange="updateSetDraft(\''+id+'\','+j+',\'reps\',this.value)"><button class="set-check" type="button" onclick="completeExerciseSet(\''+id+'\','+j+')" aria-label="Complete set">✓</button></div>').join('');
-      return '<article class="lyfta-exercise"><div class="lyfta-exercise-head"><div class="lyfta-exercise-icon">'+(i+1)+'</div><div class="lyfta-exercise-title"><strong>'+getActiveExerciseLabel(ex)+'</strong><small>'+logs.length+' sets completed</small></div><button class="lyfta-more" type="button" onclick="openExerciseMenu(\''+id+'\')" aria-label="Exercise options">•••</button><div class="exercise-menu hidden" id="exercise-menu-'+id+'"><button type="button" data-action="add" onclick="chooseExerciseMenuAction(this.dataset.action,\''+id+'\')">＋ Add set</button><button type="button" data-action="delete" onclick="chooseExerciseMenuAction(this.dataset.action,\''+id+'\')">Delete exercise</button><button type="button" data-action="replace" onclick="chooseExerciseMenuAction(this.dataset.action,\''+id+'\')">Replace exercise</button></div></div><input class="lyfta-notes" type="text" placeholder="Add notes..." value="'+note.replace(/"/g,'&quot;')+'" oninput="updateExerciseNotes(\''+id+'\',this.value)"><button class="lyfta-rest" type="button" onclick="startRestTimer()">◷ &nbsp; '+Math.round((Number(state.settings.restDuration)||90)/60)+' min rest</button><div class="set-grid-head"><span>Set</span><span>Previous</span><span>KG</span><span>Reps</span><span></span></div>'+rows+draftRows+'<button class="lyfta-add-set" type="button" onclick="addExerciseSet(\''+id+'\')">Add set</button></article>';
-    }).join('');updateSessionSummary();
+      const draftRows=drafts.map((d,j)=>'<div class="set-grid-row"><span class="set-num">'+(logs.length+j+1)+'</span><span class="set-previous">'+previousFor(logs.length+j+1)+'</span><input type="number" min="0" step="0.5" aria-label="Weight in kilograms" value="'+d.weight+'" onchange="updateSetDraft(\''+id+'\','+j+',\'weight\',this.value)"><input type="number" min="1" step="1" aria-label="'+(timed?'Hold seconds':'Reps')+'" value="'+(timed?d.seconds:d.reps)+'" onchange="updateSetDraft(\''+id+'\','+j+',\''+(timed?'seconds':'reps')+'\',this.value)"><button class="set-check" type="button" onclick="completeExerciseSet(\''+id+'\','+j+')">✓</button></div>').join('');
+      return '<article class="lyfta-exercise"><div class="lyfta-exercise-head"><div class="lyfta-exercise-icon">'+(i+1)+'</div><div class="lyfta-exercise-title"><strong>'+getActiveExerciseLabel(ex)+'</strong><small>'+logs.length+' sets completed in this draft</small></div><button class="lyfta-more" type="button" onclick="openExerciseMenu(\''+id+'\')">•••</button><div class="exercise-menu hidden" id="exercise-menu-'+id+'"><button type="button" onclick="chooseExerciseMenuAction(\'add\',\''+id+'\')">＋ Add set</button><button type="button" onclick="chooseExerciseMenuAction(\'delete\',\''+id+'\')">Delete exercise</button><button type="button" onclick="chooseExerciseMenuAction(\'replace\',\''+id+'\')">Replace exercise</button></div></div><input class="lyfta-notes" type="text" placeholder="Add notes..." value="'+note.replace(/"/g,'&quot;')+'" oninput="updateExerciseNotes(\''+id+'\',this.value)"><button class="lyfta-rest" type="button" onclick="startRestTimer()">◷ &nbsp; '+Math.round((Number(state.settings.restDuration)||90)/60)+' min rest</button><div class="set-grid-head"><span>Set</span><span>Previous</span><span>KG</span><span>'+(timed?'Sec':'Reps')+'</span><span></span></div>'+rows+draftRows+'<button class="lyfta-add-set" type="button" onclick="addExerciseSet(\''+id+'\')">Add set</button></article>';
+    }).join('');
+    updateSessionSummary();
   }
   function updateSessionSummary() {
-    const active=state.activeWorkout,logs=active?state.logs.filter(l=>l.date===active.date && (l.workoutId===Number(active.startedAt)||(!l.workoutId&&Number(l.id)>=Number(active.startedAt)))):[],volume=logs.reduce((sum,l)=>sum+(Number(l.weightKg)||0)*(Number(l.reps)||0),0),put=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+    const active=state.activeWorkout,logs=active?(active.draftLogs||[]):[],volume=logs.reduce((sum,l)=>sum+(Number(l.weightKg)||0)*(Number(l.reps)||0),0),put=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
     put('session-total-sets',logs.length);put('session-volume',Math.round(volume).toLocaleString()+' kg');
     if(active){const sec=Math.max(0,Math.floor((Date.now()-active.startedAt)/1000));put('session-duration',Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'));}else put('session-duration','0:00');
   }
   function startExerciseFromSession(exId) { beginWorkout();const select=document.getElementById('workout-exercise');if(select&&[...select.options].some(o=>o.value===exId)){select.value=exId;onExerciseChange();} }
   function beginWorkout() {
-    if(!state.activeWorkout) state.activeWorkout={date:getTodayDateStr(),startedAt:Date.now(),day:getTodayKey()};
-    saveState();
+    if(!state.activeWorkout) state.activeWorkout={date:getTodayDateStr(),startedAt:Date.now(),day:getTodayKey(),program:getTodayKey(),draftLogs:[]};
     updateDashboardStats();
     if(!sessionClockInterval)sessionClockInterval=setInterval(updateSessionSummary,1000);
     const logger=document.getElementById('workout-exercise');
@@ -1802,12 +1746,22 @@
 
   function finishWorkout() {
     if(!state.activeWorkout)return;
-    const started=Number(state.activeWorkout.startedAt)||Date.now(),date=state.activeWorkout.date||getTodayDateStr(),logs=state.logs.filter(l=>Number(l.workoutId)===started),count=logs.length;
-    if(!confirm('Finish this workout? '+count+' sets logged.'))return;
+    const active=state.activeWorkout,started=Number(active.startedAt)||Date.now(),date=active.date||getTodayDateStr(),logs=(active.draftLogs||[]).slice(),count=logs.length;
+    if(!count){alert('Add and complete at least one set before finishing.');return;}
+    if(!confirm('Finish '+(active.program||active.day)+'? '+count+' sets will be saved.'))return;
     const finishedAt=Date.now(),volume=logs.reduce((n,l)=>n+(Number(l.weightKg)||0)*(Number(l.reps)||0),0),reps=logs.reduce((n,l)=>n+(Number(l.reps)||0),0);
-    state.workoutSessions.unshift({id:finishedAt,workoutId:started,date,day:state.activeWorkout.day,startedAt:started,finishedAt,sets:count,reps,volume});
-    state.activeWorkout=null;clearInterval(sessionClockInterval);sessionClockInterval=null;Object.keys(sessionSetDrafts).forEach(k=>delete sessionSetDrafts[k]);
-    saveState();updateDashboardStats();renderFullHistory();renderSkillChart();alert('Workout saved to your history. Great work!');
+    logs.forEach((l,i)=>{l.workoutId=started;l.date=date;l.program=active.program||active.day;l.id=finishedAt+i+1;});
+    state.logs.push(...logs);
+    state.workoutSessions.unshift({id:finishedAt,workoutId:started,date,day:active.program||active.day,program:active.program||active.day,startedAt:started,finishedAt,sets:count,reps,volume});
+    state.activeWorkout=null;clearInterval(sessionClockInterval);sessionClockInterval=null;Object.keys(sessionSetDrafts).forEach(k=>delete sessionSetDrafts[k]);Object.keys(sessionSetEdits).forEach(k=>delete sessionSetEdits[k]);
+    saveState();updateDashboardStats();renderFullHistory();renderSkillChart();renderPRs();renderHomeRecentHistory();alert('Workout saved to your history. Great work!');
+  }
+  function discardWorkout() {
+    if(!state.activeWorkout)return;
+    if(!confirm('Discard this session? All sets in this unfinished session will be lost.'))return;
+    state.activeWorkout=null;clearInterval(sessionClockInterval);sessionClockInterval=null;
+    Object.keys(sessionSetDrafts).forEach(k=>delete sessionSetDrafts[k]);Object.keys(sessionSetEdits).forEach(k=>delete sessionSetEdits[k]);
+    renderSessionPlan();updateDashboardStats();alert('Unfinished workout discarded. No history was saved.');
   }
 
   function renderPreviousPerformance() {
@@ -1850,10 +1804,11 @@
     if(setEl) setEl.textContent=todayLogs.length;
     if(totalEl) totalEl.textContent=sessionCount;
     if(streakEl) streakEl.textContent=streak;
-    const status=document.getElementById('home-session-status'), finish=document.getElementById('home-finish-workout-btn'), sessionStatus=document.getElementById('session-status'), sessionFinish=document.getElementById('finish-workout-btn'), dot=document.querySelector('.session-live-dot');
+    const status=document.getElementById('home-session-status'), finish=document.getElementById('home-finish-workout-btn'), sessionStatus=document.getElementById('session-status'), sessionFinish=document.getElementById('finish-workout-btn'), discard=document.getElementById('discard-workout-btn'), dot=document.querySelector('.session-live-dot');
     if(status)status.textContent=state.activeWorkout?'Workout in progress · '+Math.max(1,Math.floor((Date.now()-state.activeWorkout.startedAt)/60000))+' min':'No active workout';
     if(finish)finish.hidden=!state.activeWorkout;
     if(sessionFinish)sessionFinish.hidden=!state.activeWorkout;
+    if(discard)discard.hidden=!state.activeWorkout;
     if(sessionStatus)sessionStatus.textContent=state.activeWorkout?'Workout in progress · '+Math.max(1,Math.floor((Date.now()-state.activeWorkout.startedAt)/60000))+' min':'No active workout';
     updateSessionSummary();
     if(dot)dot.classList.toggle('active',!!state.activeWorkout);
@@ -1877,7 +1832,6 @@
       document.getElementById('reminder-time').value = state.settings.reminderTime;
       document.getElementById('reminder-status').innerText = `Reminder active for ${state.settings.reminderTime} daily.`;
     }
-    renderWarmup();
     renderDayPills();
     renderDaySchedule();
     renderWorkoutExerciseSelect();
@@ -1887,6 +1841,7 @@
     renderHomePlan();
     updateDashboardStats();
     renderPreviousPerformance();
+    renderHomeRecentHistory();
   }
 
   initUI();
