@@ -640,6 +640,17 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
   <!-- TAB 2: EXERCISES & PROGRESSIONS (Push / Pull / Legs / Core) -->
   <div id="tab-exercises" class="tab hidden">
     <div class="card">
+      <div class="section-head"><div><div class="eyebrow">BULK IMPORT</div><h2>Upload exercises from Excel</h2></div></div>
+      <p class="muted">Download the template, fill in each exercise, choose its muscle group and metric from the dropdowns, then upload the completed file.</p>
+      <div class="row" style="flex-wrap:wrap;">
+        <button type="button" class="secondary" onclick="downloadExerciseTemplate()">Download Excel Template</button>
+        <label class="small" for="exercise-excel-upload" style="display:flex;align-items:center;justify-content:center;padding:10px 14px;border:1px solid var(--border);border-radius:12px;cursor:pointer;">Choose Excel File</label>
+        <input type="file" id="exercise-excel-upload" accept=".xlsx" style="display:none;" onchange="importExercisesFromExcel(event)" />
+      </div>
+      <p class="muted" id="excel-import-status" aria-live="polite" style="margin:10px 0 0;">Supported format: .xlsx. Existing exercise names will not be duplicated.</p>
+    </div>
+
+    <div class="card">
       <h2>Add Custom Exercise</h2>
       <input type="text" id="new-ex-name" placeholder="Exercise name (e.g., Pike Handstand Pushups)" />
       <div class="row">
@@ -1424,6 +1435,126 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
     selectedLibGroup = group;
     renderLibFilterPills();
     renderLibrary();
+  }
+
+  // Excel import/export helpers. ExcelJS is loaded only when the user requests it.
+  let excelJsLoader = null;
+  function loadExcelJS() {
+    if (window.ExcelJS) return Promise.resolve(window.ExcelJS);
+    if (excelJsLoader) return excelJsLoader;
+    excelJsLoader = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js';
+      script.onload = () => window.ExcelJS ? resolve(window.ExcelJS) : reject(new Error('Excel library did not load.'));
+      script.onerror = () => reject(new Error('Could not load the Excel library. Check your internet connection and try again.'));
+      document.head.appendChild(script);
+    });
+    return excelJsLoader;
+  }
+
+  async function downloadExerciseTemplate() {
+    const status = document.getElementById('excel-import-status');
+    try {
+      status.textContent = 'Preparing your Excel template…';
+      const ExcelJS = await loadExcelJS();
+      const workbook = new ExcelJS.Workbook();
+      workbook.creator = 'CalisTrack';
+      const sheet = workbook.addWorksheet('Exercises');
+      sheet.columns = [
+        { header: 'Exercise Name', key: 'name', width: 38 },
+        { header: 'Muscle Group', key: 'category', width: 22 },
+        { header: 'Metric', key: 'metric', width: 26 }
+      ];
+      sheet.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+      sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF26372E' } };
+      sheet.getRow(1).height = 24;
+      for (let row = 2; row <= 501; row++) {
+        sheet.getCell('B' + row).dataValidation = { type: 'list', allowBlank: true, formulae: ['"Push,Pull,Legs,Core"'], showErrorMessage: true, errorTitle: 'Choose a muscle group', error: 'Select Push, Pull, Legs, or Core.' };
+        sheet.getCell('C' + row).dataValidation = { type: 'list', allowBlank: true, formulae: ['"Reps,Seconds (Hold),Both (Reps & Sec)"'], showErrorMessage: true, errorTitle: 'Choose a metric', error: 'Select one of the listed metrics.' };
+      }
+      sheet.views = [{ state: 'frozen', ySplit: 1 }];
+      sheet.autoFilter = 'A1:C501';
+      const guide = workbook.addWorksheet('Instructions');
+      guide.columns = [{ width: 105 }];
+      guide.addRow(['How to use the CalisTrack exercise template']);
+      guide.getRow(1).font = { bold: true, size: 14 };
+      guide.addRow(['1. Enter one exercise per row in the Exercises sheet, starting from row 2.']);
+      guide.addRow(['2. Select Muscle Group and Metric using the dropdowns.']);
+      guide.addRow(['3. Muscle Group options: Push, Pull, Legs, Core.']);
+      guide.addRow(['4. Metric options: Reps, Seconds (Hold), Both (Reps & Sec).']);
+      guide.addRow(['5. Do not rename the column headings. Leave unused rows blank.']);
+      guide.addRow(['6. Save the workbook as .xlsx and upload it in CalisTrack.']);
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'CalisTrack-Exercise-Template.xlsx';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      status.textContent = 'Template downloaded. Fill it in and upload the .xlsx file here.';
+    } catch (err) {
+      status.textContent = err.message || 'Could not create the Excel template.';
+      alert(status.textContent);
+    }
+  }
+
+  async function importExercisesFromExcel(event) {
+    const file = event.target.files && event.target.files[0];
+    const status = document.getElementById('excel-import-status');
+    if (!file) return;
+    try {
+      status.textContent = 'Reading your Excel file…';
+      const ExcelJS = await loadExcelJS();
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load(await file.arrayBuffer());
+      const sheet = workbook.getWorksheet('Exercises') || workbook.worksheets[0];
+      if (!sheet) throw new Error('No worksheet found in this file.');
+      const headers = [1, 2, 3].map(col => String(sheet.getCell(1, col).text || '').trim().toLowerCase());
+      if (headers[0] !== 'exercise name' || headers[1] !== 'muscle group' || headers[2] !== 'metric') {
+        throw new Error('Please use the CalisTrack template with these headings: Exercise Name, Muscle Group, Metric.');
+      }
+      const metricMap = { 'reps': 'reps', 'seconds (hold)': 'time', 'seconds': 'time', 'time': 'time', 'both (reps & sec)': 'both', 'both': 'both' };
+      const existing = new Set(state.exercises.map(ex => String(ex.name || '').trim().toLowerCase()));
+      const seen = new Set();
+      const additions = [];
+      const errors = [];
+      let duplicates = 0;
+      for (let row = 2; row <= sheet.rowCount; row++) {
+        const name = String(sheet.getCell(row, 1).text || '').trim();
+        const categoryRaw = String(sheet.getCell(row, 2).text || '').trim();
+        const metricRaw = String(sheet.getCell(row, 3).text || '').trim();
+        if (!name && !categoryRaw && !metricRaw) continue;
+        const category = MUSCLE_GROUPS.find(g => g.toLowerCase() === categoryRaw.toLowerCase());
+        const metric = metricMap[metricRaw.toLowerCase()];
+        if (!name) { errors.push('Row ' + row + ': exercise name is missing.'); continue; }
+        if (!category) { errors.push('Row ' + row + ': choose Push, Pull, Legs, or Core.'); continue; }
+        if (!metric) { errors.push('Row ' + row + ': choose Reps, Seconds (Hold), or Both (Reps & Sec).'); continue; }
+        const key = name.toLowerCase();
+        if (existing.has(key) || seen.has(key)) { duplicates++; continue; }
+        additions.push({ id: 'custom_excel_' + Date.now() + '_' + row, name, category, metric });
+        seen.add(key);
+      }
+      if (additions.length) {
+        state.exercises.push(...additions);
+        saveState();
+        renderWorkoutExerciseSelect();
+        renderLibrary();
+        populateDayAddSelect();
+      }
+      status.textContent = additions.length + ' exercise(s) added.' +
+        (duplicates ? ' ' + duplicates + ' duplicate name(s) skipped.' : '') +
+        (errors.length ? ' ' + errors.length + ' invalid row(s) skipped.' : '');
+      if (errors.length) alert(status.textContent + '\n\n' + errors.slice(0, 8).join('\n') + (errors.length > 8 ? '\n…and more.' : ''));
+      else alert(status.textContent);
+    } catch (err) {
+      status.textContent = err.message || 'Could not import this Excel file.';
+      alert(status.textContent);
+    } finally {
+      event.target.value = '';
+    }
   }
 
   function addCustomExercise() {
