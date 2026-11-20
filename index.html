@@ -705,7 +705,9 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
 
     <div class="card">
       <h2>Program training volume</h2>
-      <p class="muted">Total volume (kg × reps) for each of your six programs across completed sessions.</p>
+      <p class="muted">Select a program to view its training volume across completed sessions.</p>
+      <label for="program-volume-select">Select program</label>
+      <select id="program-volume-select" onchange="renderProgramVolumeChart()"><option value="">Select a program</option></select>
       <div id="skillProgressChart" class="skill-chart"></div>
       <div id="skill-tier-legend" class="tier-legend"></div>
     </div>
@@ -715,6 +717,13 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
       <label for="exercise-progress-select">Select exercise</label>
       <select id="exercise-progress-select" onchange="renderExerciseProgressChart()"><option value="">Select an exercise</option></select>
       <div id="exerciseProgressChart" class="skill-chart"></div>
+    </div>
+    <div class="card">
+      <h2>Exercise training volume</h2>
+      <p class="muted">Select a reps-based exercise to track total volume (weight × reps) across workouts.</p>
+      <label for="exercise-volume-select">Select exercise</label>
+      <select id="exercise-volume-select" onchange="renderExerciseVolumeChart()"><option value="">Select an exercise</option></select>
+      <div id="exerciseVolumeChart" class="skill-chart"></div>
     </div>
     <div class="card">
       <h3>Workout History</h3>
@@ -1675,11 +1684,27 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
     el.innerHTML='<svg viewBox="0 0 '+w+' '+h+'" style="width:100%;height:auto" role="img">'+grid+lines+labels+'</svg><div class="chart-legend">'+series.map((s,i)=>'<span style="color:'+colors[i%colors.length]+'">● '+s.name+'</span>').join(' &nbsp; ')+'</div>';
   }
   function renderSkillChart() {
-    const sessions=(state.workoutSessions||[]).slice().sort((a,b)=>(a.date||'').localeCompare(b.date||'')||Number(a.finishedAt)-Number(b.finishedAt));
-    const byProgram=PROGRAMS.map(program=>{const daily={};sessions.filter(s=>(s.program||s.day)===program).forEach(s=>daily[s.date]=(daily[s.date]||0)+(Number(s.volume)||0));return {name:program,values:Object.keys(daily).sort().map(date=>({date,value:daily[date]}))};});
-    drawLineChart('skillProgressChart',byProgram,'kg');
+    renderProgramVolumeOptions();
+    renderProgramVolumeChart();
     renderExerciseProgressOptions();
     renderExerciseProgressChart();
+    renderExerciseVolumeOptions();
+    renderExerciseVolumeChart();
+  }
+  function renderProgramVolumeOptions() {
+    const select=document.getElementById('program-volume-select');if(!select)return;
+    const previous=select.value;
+    select.innerHTML='<option value="">Select a program</option>'+PROGRAMS.map(p=>'<option value="'+String(p).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')+'">'+String(p).replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</option>').join('');
+    if(PROGRAMS.includes(previous))select.value=previous;else if(PROGRAMS.length)select.value=PROGRAMS[0];
+  }
+  function renderProgramVolumeChart() {
+    const select=document.getElementById('program-volume-select'),el=document.getElementById('skillProgressChart');if(!select||!el)return;
+    const program=select.value;if(!program){el.innerHTML='<p class="muted">Select a program to view its volume.</p>';return;}
+    const sessions=(state.workoutSessions||[]).filter(s=>(s.program||s.day)===program).slice().sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+    const daily={};sessions.forEach(s=>daily[s.date]=(daily[s.date]||0)+(Number(s.volume)||0));
+    const values=Object.keys(daily).sort().map(date=>({date,value:daily[date]}));
+    if(!values.length){el.innerHTML='<p class="muted">No completed sessions for this program yet.</p>';return;}
+    drawLineChart('skillProgressChart',[{name:program,values}],'kg');
   }
   function renderExerciseProgressOptions() {
     const select=document.getElementById('exercise-progress-select');if(!select)return;
@@ -1699,6 +1724,25 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
     const values=Object.keys(daily).sort().map(date=>({date,value:daily[date]}));
     if(!values.length){el.innerHTML='<p class="muted">No progression data for this exercise yet.</p>';return;}
     drawLineChart('exerciseProgressChart',[{name,values}],unit);
+  }
+  function renderExerciseVolumeOptions() {
+    const select=document.getElementById('exercise-volume-select');if(!select)return;
+    const previous=select.value;
+    const names=[...new Set(state.logs.filter(l=>Number(l.reps)>0).map(l=>l.exerciseName||l.displayName||l.name).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+    select.innerHTML='<option value="">Select an exercise</option>'+names.map(name=>'<option value="'+String(name).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')+'">'+String(name).replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</option>').join('');
+    if(names.includes(previous))select.value=previous;else if(names.length)select.value=names[0];
+  }
+  function renderExerciseVolumeChart() {
+    const select=document.getElementById('exercise-volume-select'),el=document.getElementById('exerciseVolumeChart');if(!select||!el)return;
+    const name=select.value;if(!name){el.innerHTML='<p class="muted">Log a reps-based exercise to see its volume.</p>';return;}
+    const daily={};
+    state.logs.filter(l=>(l.exerciseName||l.displayName||l.name)===name&&Number(l.reps)>0).forEach(l=>{
+      const volume=(Number(l.weightKg)||0)*(Number(l.reps)||0);
+      daily[l.date]=(daily[l.date]||0)+volume;
+    });
+    const values=Object.keys(daily).sort().map(date=>({date,value:daily[date]}));
+    if(!values.length){el.innerHTML='<p class="muted">No volume data for this exercise yet.</p>';return;}
+    drawLineChart('exerciseVolumeChart',[{name,values}],'kg × reps');
   }
 
   function getLogsForWorkoutSession(session) {
