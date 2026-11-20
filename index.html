@@ -529,12 +529,6 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
       <div id="home-plan-list" class="home-plan-list"></div>
     </section>
     <section class="card home-recent-card"><div class="section-head"><div><div class="eyebrow">RECENT TRAINING</div><h2>Last two workouts</h2></div></div><div id="home-recent-history"><p class="muted">Your completed sessions will appear here.</p></div></section>
-    <section class="card quick-start-card">
-      <div class="section-head"><div><div class="eyebrow">READY WHEN YOU ARE</div><h2>Start training</h2></div><span class="quick-start-icon">↗</span></div>
-      <p class="muted">Log your sets, track your holds and build on your previous performance.</p>
-      <button type="button" class="primary-cta" onclick="switchTab('session',document.querySelector('[data-tab=session]'));beginWorkout();document.getElementById('workout-exercise').scrollIntoView({behavior:'smooth',block:'center'});">Start workout <span>→</span></button>
-    </section>
-    <section class="card home-next-card"><div class="section-head"><div><div class="eyebrow">NEXT STEP</div><h2>Ready for your next session?</h2></div></div><p class="muted">Open your workout to log sets, compare your last performance and track each exercise.</p><button type="button" class="primary-cta" onclick="switchTab('session',document.querySelector('[data-tab=session]'));beginWorkout();">Open workout <span>→</span></button></section>
 
   </div>
 
@@ -949,10 +943,10 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
   if (!state.settings) state.settings = { restDuration: 90, reminderTime: '' };
 
   function saveState() {
+    if (state.activeWorkout) state.activeWorkout.pendingSets = sessionSetDrafts;
     const snapshot={...state};
-    // An unfinished session is deliberately never written to persistent storage.
-    delete snapshot.activeWorkout;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot)); }
+    catch (err) { console.warn('CalisTrack could not save the latest workout state.', err); }
   }
 
   // Hands-Free Audio Engine (Web Audio API)
@@ -1686,7 +1680,7 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
   }
 
 
-  const sessionSetDrafts = {};
+  const sessionSetDrafts = state.activeWorkout?.pendingSets || {};
   const sessionSetEdits = {};
   let sessionClockInterval = null;
   function getExerciseSessionLogs(exId) {
@@ -1705,12 +1699,14 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
     const ex=getExerciseById(exId),prev=getPreviousExerciseLogs(exId),last=prev[prev.length-1]||{};
     if(!sessionSetDrafts[exId])sessionSetDrafts[exId]=[];
     sessionSetDrafts[exId].push({weight:last.weightKg??0,reps:last.reps??10,seconds:last.seconds??0});
+    saveState();
     renderSessionPlan();
   }
   function updateSetDraft(exId,index,field,value) {
     if(!sessionSetDrafts[exId])sessionSetDrafts[exId]=[];
     if(!sessionSetDrafts[exId][index])sessionSetDrafts[exId][index]={weight:0,reps:10,seconds:0};
     sessionSetDrafts[exId][index][field]=value;
+    saveState();
   }
   function completeExerciseSet(exId,index) {
     const drafts=sessionSetDrafts[exId]||[],draft=drafts[index],ex=getExerciseById(exId);if(!draft||!ex||!state.activeWorkout)return;
@@ -1718,7 +1714,7 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
     if(isTimed?seconds<=0:reps<=0){alert(isTimed?'Enter a hold time before completing this set.':'Enter at least 1 rep before completing this set.');return;}
     const tierIdx=Array.isArray(ex.tiers)?(ex.currentTier||0):null,tierObj=tierIdx!==null?ex.tiers[tierIdx]:null;
     const entry={id:Date.now()+Math.random(),workoutId:Number(state.activeWorkout.startedAt),exerciseId:ex.id,exerciseName:ex.name,category:normalizeCategory(ex.category),tierIndex:tierIdx!==null?tierIdx+1:null,tierLabel:tierObj?tierObj.label:null,displayName:getActiveExerciseLabel(ex),reps,seconds,weightKg:weight,rpe:null,setType:'Normal',notes:'',date:state.activeWorkout.date,timestamp:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),setNumber:(state.activeWorkout.draftLogs.filter(l=>l.exerciseId===exId).length+1)};
-    state.activeWorkout.draftLogs.push(entry);drafts.splice(index,1);renderSessionPlan();updateDashboardStats();startRestTimer();
+    state.activeWorkout.draftLogs.push(entry);drafts.splice(index,1);saveState();renderSessionPlan();updateDashboardStats();startRestTimer();
   }
   function toggleCompletedSet(exId,logId) {
     const log=(state.activeWorkout?.draftLogs||[]).find(l=>String(l.id)===String(logId)&&l.exerciseId===exId);if(!log)return;
@@ -1726,17 +1722,17 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
       const edit=sessionSetEdits[logId],ex=getExerciseById(exId),timed=ex?.metric==='time',reps=Number(edit.reps),seconds=Number(edit.seconds),weight=Number(edit.weight)||0;
       if(timed?seconds<=0:reps<1){alert(timed?'Enter a valid hold time.':'Enter at least 1 rep.');return;}
       log.reps=timed?0:reps;log.seconds=timed?seconds:0;log.weightKg=weight;
-      delete sessionSetEdits[logId];renderSessionPlan();updateSessionSummary();return;
+      delete sessionSetEdits[logId];saveState();renderSessionPlan();updateSessionSummary();return;
     }
     sessionSetEdits[logId]={weight:Number(log.weightKg)||0,reps:Number(log.reps)||0,seconds:Number(log.seconds)||0};renderSessionPlan();
   }
-  function updateCompletedSetDraft(logId,field,value) { if(sessionSetEdits[logId])sessionSetEdits[logId][field]=value; }
+  function updateCompletedSetDraft(logId,field,value) { if(sessionSetEdits[logId]){sessionSetEdits[logId][field]=value;saveState();} }
   function toggleSetMenu(logId) { const menu=document.getElementById('set-menu-'+logId);if(!menu)return;document.querySelectorAll('.set-menu').forEach(el=>{if(el!==menu)el.classList.add('hidden');});menu.classList.toggle('hidden'); }
   function deleteCompletedSet(logId) {
     if(!confirm('Delete this set from the current workout?'))return;
     document.getElementById('set-menu-'+logId)?.classList.add('hidden');
     if(state.activeWorkout)state.activeWorkout.draftLogs=(state.activeWorkout.draftLogs||[]).filter(l=>String(l.id)!==String(logId));
-    delete sessionSetEdits[logId];renderSessionPlan();updateSessionSummary();
+    delete sessionSetEdits[logId];saveState();renderSessionPlan();updateSessionSummary();
   }
   function handleExerciseMenu(action,exId) {
     if(action==='add'){addExerciseSet(exId);return;}
@@ -1798,7 +1794,8 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
   }
   function startExerciseFromSession(exId) { beginWorkout();const select=document.getElementById('workout-exercise');if(select&&[...select.options].some(o=>o.value===exId)){select.value=exId;onExerciseChange();} }
   function beginWorkout() {
-    if(!state.activeWorkout) state.activeWorkout={date:getTodayDateStr(),startedAt:Date.now(),day:getSelectedProgram(),program:getSelectedProgram(),draftLogs:[]};
+    if(!state.activeWorkout) state.activeWorkout={date:getTodayDateStr(),startedAt:Date.now(),day:getSelectedProgram(),program:getSelectedProgram(),draftLogs:[],pendingSets:sessionSetDrafts};
+    saveState();
     updateDashboardStats();
     if(!sessionClockInterval)sessionClockInterval=setInterval(updateSessionSummary,1000);
     const logger=document.getElementById('workout-exercise');
@@ -1887,23 +1884,40 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
     }
   }
 
-  // Keep the app in its own history entry so Android/browser Back can be handled reliably.
+  // Re-arm the browser history guard on every Back press so tab navigation
+  // cannot accidentally consume the Home exit confirmation.
   let backNavigationInstalled = false;
+  let backPromptOpen = false;
+  let allowConfirmedExit = false;
   function installBackNavigation() {
     if (backNavigationInstalled) return;
     backNavigationInstalled = true;
-    const addHomeGuard = () => {
-      try { history.pushState({ calistrackHomeGuard: true }, '', location.href); } catch (_) {}
+    const addBackGuard = () => {
+      try { history.pushState({ calistrackBackGuard: true }, '', location.href); } catch (_) {}
     };
-    addHomeGuard();
+    addBackGuard();
     window.addEventListener('popstate', () => {
+      if (allowConfirmedExit) { allowConfirmedExit = false; return; }
+      addBackGuard();
       if (currentTabName !== 'workout') {
         switchTab('workout', document.querySelector('.nav button[data-tab="workout"]'));
-        addHomeGuard();
         return;
       }
-      if (!window.confirm('Do you want to exit CalisTrack?')) addHomeGuard();
+      if (backPromptOpen) return;
+      backPromptOpen = true;
+      const confirmed = window.confirm('Exit CalisTrack? Your unfinished workout will be saved and restored when you return.');
+      backPromptOpen = false;
+      if (confirmed) {
+        allowConfirmedExit = true;
+        history.back();
+      }
     });
+    // Persist active sets when the browser backgrounds or unloads the app.
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') saveState();
+    });
+    window.addEventListener('pagehide', saveState);
+    window.addEventListener('beforeunload', saveState);
   }
 
   function initUI() {
