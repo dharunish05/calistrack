@@ -710,9 +710,11 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
       <div id="skill-tier-legend" class="tier-legend"></div>
     </div>
     <div class="card">
-      <h2>Hold-time progression</h2>
-      <p class="muted">Track your longest dead hang, plank and other timed holds in seconds.</p>
-      <div id="holdTimeChart" class="skill-chart"></div>
+      <h2>Exercise progression</h2>
+      <p class="muted">Select an exercise to see how your reps or hold time improve across workouts.</p>
+      <label for="exercise-progress-select">Select exercise</label>
+      <select id="exercise-progress-select" onchange="renderExerciseProgressChart()"><option value="">Select an exercise</option></select>
+      <div id="exerciseProgressChart" class="skill-chart"></div>
     </div>
     <div class="card">
       <h3>Workout History</h3>
@@ -1676,9 +1678,27 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
     const sessions=(state.workoutSessions||[]).slice().sort((a,b)=>(a.date||'').localeCompare(b.date||'')||Number(a.finishedAt)-Number(b.finishedAt));
     const byProgram=PROGRAMS.map(program=>{const daily={};sessions.filter(s=>(s.program||s.day)===program).forEach(s=>daily[s.date]=(daily[s.date]||0)+(Number(s.volume)||0));return {name:program,values:Object.keys(daily).sort().map(date=>({date,value:daily[date]}))};});
     drawLineChart('skillProgressChart',byProgram,'kg');
-    const holdLogs=state.logs.filter(l=>Number(l.seconds)>0),names=[...new Set(holdLogs.map(l=>l.exerciseName||l.displayName||'Timed hold'))];
-    const holdSeries=names.map(name=>{const daily={};holdLogs.filter(l=>(l.exerciseName||l.displayName||'Timed hold')===name).forEach(l=>daily[l.date]=Math.max(daily[l.date]||0,Number(l.seconds)));return {name,values:Object.keys(daily).sort().map(date=>({date,value:daily[date]}))};});
-    drawLineChart('holdTimeChart',holdSeries,'sec');
+    renderExerciseProgressOptions();
+    renderExerciseProgressChart();
+  }
+  function renderExerciseProgressOptions() {
+    const select=document.getElementById('exercise-progress-select');if(!select)return;
+    const previous=select.value;
+    const names=[...new Set(state.logs.map(l=>l.exerciseName||l.displayName||l.name).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+    select.innerHTML='<option value="">Select an exercise</option>'+names.map(name=>'<option value="'+String(name).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')+'">'+String(name).replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</option>').join('');
+    if(names.includes(previous))select.value=previous;else if(names.length)select.value=names[0];
+  }
+  function renderExerciseProgressChart() {
+    const select=document.getElementById('exercise-progress-select'),el=document.getElementById('exerciseProgressChart');if(!select||!el)return;
+    const name=select.value;
+    if(!name){el.innerHTML='<p class="muted">Log an exercise to see its progression here.</p>';return;}
+    const logs=state.logs.filter(l=>(l.exerciseName||l.displayName||l.name)===name);
+    const timed=logs.some(l=>Number(l.seconds)>0);
+    const field=timed?'seconds':'reps',unit=timed?'sec':'reps',daily={};
+    logs.forEach(l=>{const value=Number(l[field])||0;if(value>0)daily[l.date]=Math.max(daily[l.date]||0,value);});
+    const values=Object.keys(daily).sort().map(date=>({date,value:daily[date]}));
+    if(!values.length){el.innerHTML='<p class="muted">No progression data for this exercise yet.</p>';return;}
+    drawLineChart('exerciseProgressChart',[{name,values}],unit);
   }
 
   function getLogsForWorkoutSession(session) {
