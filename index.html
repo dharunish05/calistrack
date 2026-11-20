@@ -874,6 +874,13 @@ body{background:radial-gradient(ellipse at 50% -15%,rgba(37,137,210,.2),transpar
   const areaChartInstances = {};
 
   if (!Array.isArray(state.workoutSessions)) state.workoutSessions = [];
+  const legacyProgramByWeekday=['Rest','Push A','Pull A','Leg A','Push B','Pull B','Leg B'];
+  state.workoutSessions.forEach(session=>{
+    if(!PROGRAMS.includes(session.program||session.day)){
+      const d=new Date((session.date||'')+'T12:00:00').getDay();
+      session.program=legacyProgramByWeekday[d]||'Workout';
+    }
+  });
   if (state.activeWorkout && !Array.isArray(state.activeWorkout.draftLogs)) state.activeWorkout.draftLogs = [];
   if (state.activeWorkout) {
     const legacyDrafts=state.logs.filter(l=>Number(l.workoutId)===Number(state.activeWorkout.startedAt));
@@ -1502,7 +1509,7 @@ body{background:radial-gradient(ellipse at 50% -15%,rgba(37,137,210,.2),transpar
     if(!detail)return;
     const groups={};logs.slice().sort((a,b)=>Number(a.id)-Number(b.id)).forEach(l=>{const key=l.exerciseId||l.exerciseName||l.name;(groups[key]||(groups[key]={name:l.displayName||l.exerciseName||l.name,sets:[]})).sets.push(l);});
     const volume=logs.reduce((n,l)=>n+(Number(l.weightKg)||0)*(Number(l.reps)||0),0),reps=logs.reduce((n,l)=>n+(Number(l.reps)||0),0),holds=logs.reduce((n,l)=>n+(Number(l.seconds)||0),0),d=new Date(date+'T12:00:00'),label=isNaN(d.getTime())?date:d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'});
-    detail.innerHTML='<div class="history-detail-head"><button type="button" class="small secondary" onclick="closeWorkoutDetail()">← Back to history</button><h3>'+label+'</h3><p class="muted">'+(session?.program||session?.day||'Workout')+' · '+logs.length+' sets · '+reps+' reps · '+holds+' sec holds · '+Math.round(volume).toLocaleString()+' kg volume</p></div>'+Object.values(groups).map(g=>'<section class="history-exercise"><strong>'+g.name+'</strong><div class="history-set-head"><span>Set</span><span>Weight</span><span>Reps</span></div>'+g.sets.map((l,i)=>'<div class="history-set-row"><span>'+(i+1)+'</span><span>'+(Number(l.weightKg)||0)+' kg</span><span>'+(Number(l.reps)||0)+'</span></div>').join('')+'</section>').join('')+(logs.length?'':'<p class="muted">No sets were logged in this session.</p>');
+    detail.innerHTML='<div class="history-detail-head"><button type="button" class="small secondary" onclick="closeWorkoutDetail()">← Back to history</button><h3>'+label+'</h3><p class="muted">'+(session?.program||session?.day||'Workout')+' · '+logs.length+' sets · '+reps+' reps · '+holds+' sec holds · '+Math.round(volume).toLocaleString()+' kg volume</p></div>'+Object.values(groups).map(g=>'<section class="history-exercise"><strong>'+g.name+'</strong><div class="history-set-head"><span>Set</span><span>Weight</span><span>'+(g.sets.some(x=>Number(x.seconds)>0)?'Hold':'Reps')+'</span></div>'+g.sets.map((l,i)=>'<div class="history-set-row"><span>'+(i+1)+'</span><span>'+(Number(l.weightKg)||0)+' kg</span><span>'+(Number(l.reps)||0)+'</span></div>').join('')+'</section>').join('')+(logs.length?'':'<p class="muted">No sets were logged in this session.</p>');
     list.classList.add('hidden');detail.classList.remove('hidden');detail.scrollIntoView({behavior:'smooth',block:'start'});
   }
   function closeWorkoutDetail(){document.getElementById('workout-history-detail')?.classList.add('hidden');document.getElementById('full-history')?.classList.remove('hidden');}
