@@ -444,6 +444,8 @@ body{background:radial-gradient(ellipse at 50% -15%,rgba(37,137,210,.2),transpar
 .nav button.active{color:#55b8ff}
 .chart-legend{color:#9bb4ca}
 .home-history-item{border-color:#23415c}
+
+  .compact-details>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;min-height:38px;color:var(--text);font-weight:750;font-size:1rem}.compact-details>summary::-webkit-details-marker{display:none}.compact-details>summary:after{content:'＋';color:var(--accent);font-size:1.15rem;font-weight:800;margin-left:auto}.compact-details[open]>summary:after{content:'−'}.compact-details>summary .eyebrow{display:block;margin-bottom:3px}.compact-content{padding-top:12px}.compact-details[open]>summary{padding-bottom:8px;border-bottom:1px solid var(--border)}
 </style>
 <style id="user-theme-overrides">
 :root{
@@ -528,14 +530,13 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
       </div>
       <div id="home-plan-list" class="home-plan-list"></div>
     </section>
-    <section class="card" id="custom-workout-builder">
-      <div class="section-head"><div><div class="eyebrow">FLEXIBLE TRAINING</div><h2>Start a one-time workout</h2></div><span class="count-pill" id="custom-workout-count">0 selected</span></div>
+    <section class="card" id="custom-workout-builder"><details class="compact-details"><summary><span><span class="eyebrow">FLEXIBLE TRAINING</span><strong>Start a one-time workout</strong></span><span class="count-pill" id="custom-workout-count">0 selected</span></summary><div class="compact-content">
       <p class="muted">Choose any exercises from your library for a workout outside your six-day split. This won't change your regular routines.</p>
       <input type="search" id="custom-workout-search" class="search-input" placeholder="Search exercises…" oninput="renderCustomWorkoutChoices()" />
       <div id="custom-workout-choices" style="max-height:280px;overflow:auto;"></div>
       <button type="button" class="dashboard-cta" onclick="startCustomWorkout()">Start custom workout →</button>
-    </section>
-    <section class="card home-recent-card"><div class="section-head"><div><div class="eyebrow">RECENT TRAINING</div><h2>Last two workouts</h2></div></div><div id="home-recent-history"><p class="muted">Your completed sessions will appear here.</p></div></section>
+    </div></details></section>
+    <section class="card home-recent-card"><details class="compact-details"><summary><span><span class="eyebrow">RECENT TRAINING</span><strong>Last two workouts</strong></span></summary><div class="compact-content" id="home-recent-history"><p class="muted">Your completed sessions will appear here.</p></div></details></section>
 
   </div>
 
@@ -682,12 +683,11 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
       <button type="button" onclick="addCustomExercise()">Add Exercise</button>
     </div>
 
-    <div class="card">
-      <div class="section-head"><div><div class="eyebrow">MOVEMENT DATABASE</div><h2>Exercise library</h2></div><span class="count-pill" id="exercise-count">0</span></div>
+    <div class="card"><details class="compact-details"><summary><span><span class="eyebrow">MOVEMENT DATABASE</span><strong>Exercise library</strong></span><span class="count-pill" id="exercise-count">0</span></summary><div class="compact-content">
       <input type="search" id="exercise-search" class="search-input" placeholder="Search exercises..." oninput="setExerciseSearch(this.value)" />
       <div class="day-pills" id="lib-filter-pills"></div>
       <div id="exercise-library-list"></div>
-    </div>
+    </div></details></div>
   </div>
 
   <!-- TAB 3: PRs, SKILL PROGRESSION & CHARTS -->
@@ -699,36 +699,30 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
         <div class="metric-tile"><span>Training days</span><strong id="progress-training-days">0</strong></div>
         <div class="metric-tile"><span>Exercises logged</span><strong id="progress-exercises">0</strong></div>
       </div>
-      <div class="section-head"><div><div class="eyebrow">PERSONAL BESTS</div><h2>Personal records</h2></div></div>
-      <div id="prs-list" class="pr-grid"></div>
+      <details class="compact-details"><summary><span><span class="eyebrow">PERSONAL BESTS</span><strong>Personal records</strong></span></summary><div class="compact-content"><div id="prs-list" class="pr-grid"></div></div></details>
     </div>
 
-    <div class="card">
-      <h2>Program training volume</h2>
+    <div class="card"><details class="compact-details"><summary><strong>Program training volume</strong></summary><div class="compact-content">
       <p class="muted">Select a program to view its training volume across completed sessions.</p>
       <label for="program-volume-select">Select program</label>
       <select id="program-volume-select" onchange="renderProgramVolumeChart()"><option value="">Select a program</option></select>
-      <div id="skillProgressChart" class="skill-chart"></div>
-      <div id="skill-tier-legend" class="tier-legend"></div>
-    </div>
-    <div class="card">
-      <h2>Exercise progression</h2>
+      <div id="skillProgressChart" class="skill-chart"></div><div id="skill-tier-legend" class="tier-legend"></div>
+    </div></details></div>
+    <div class="card"><details class="compact-details"><summary><strong>Exercise progression</strong></summary><div class="compact-content">
       <p class="muted">Select an exercise to see how your reps or hold time improve across workouts.</p>
       <label for="exercise-progress-select">Select exercise</label>
       <select id="exercise-progress-select" onchange="renderExerciseProgressChart()"><option value="">Select an exercise</option></select>
       <div id="exerciseProgressChart" class="skill-chart"></div>
-    </div>
-    <div class="card">
-      <h2>Exercise training volume</h2>
+    </div></details></div>
+    <div class="card"><details class="compact-details"><summary><strong>Exercise training volume</strong></summary><div class="compact-content">
       <p class="muted">Select a reps-based exercise to track total volume (weight × reps) across workouts.</p>
       <label for="exercise-volume-select">Select exercise</label>
       <select id="exercise-volume-select" onchange="renderExerciseVolumeChart()"><option value="">Select an exercise</option></select>
       <div id="exerciseVolumeChart" class="skill-chart"></div>
-    </div>
-    <div class="card">
-      <h3>Workout History</h3>
+    </div></details></div>
+    <div class="card"><details class="compact-details"><summary><strong>Workout History</strong></summary><div class="compact-content">
       <div id="full-history"></div><div id="workout-history-detail" class="hidden"></div>
-    </div>
+    </div></details></div>
   </div>
 
   <!-- TAB 4: SETTINGS & BACKUP -->
