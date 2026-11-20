@@ -518,6 +518,14 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
         <button class="text-action" type="button" onclick="switchTab('routines',document.querySelector('[data-tab=routines]'))">View plan <span>›</span></button>
       </div>
       <div class="home-plan-meta"><span class="plan-chip" id="home-plan-focus">Training day</span><span class="muted" id="home-plan-count">0 exercises</span></div>
+      <div class="home-program-picker">
+        <label for="home-program-select">Choose today's program</label>
+        <select id="home-program-select" onchange="selectWorkoutProgram(this.value)">
+          <option value="Push A">Push A</option><option value="Pull A">Pull A</option><option value="Leg A">Leg A</option>
+          <option value="Push B">Push B</option><option value="Pull B">Pull B</option><option value="Leg B">Leg B</option>
+        </select>
+        <p class="muted">You can choose any program, regardless of the weekday schedule.</p>
+      </div>
       <div id="home-plan-list" class="home-plan-list"></div>
     </section>
     <section class="card home-recent-card"><div class="section-head"><div><div class="eyebrow">RECENT TRAINING</div><h2>Last two workouts</h2></div></div><div id="home-recent-history"><p class="muted">Your completed sessions will appear here.</p></div></section>
@@ -896,6 +904,23 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
   if (!state.exerciseNotes) state.exerciseNotes = {};
 
   let selectedDay = getTodayKey();
+  if (!PROGRAMS.includes(state.selectedProgram)) state.selectedProgram = getTodayKey();
+  function getSelectedProgram() { return PROGRAMS.includes(state.selectedProgram) ? state.selectedProgram : getTodayKey(); }
+  function selectWorkoutProgram(program) {
+    if (!PROGRAMS.includes(program)) return;
+    if (state.activeWorkout && (state.activeWorkout.draftLogs || []).length) {
+      alert('Finish or discard your current workout before changing the program.');
+      renderHomePlan();
+      return;
+    }
+    state.selectedProgram = program;
+    if (state.activeWorkout) state.activeWorkout.program = program;
+    Object.keys(sessionSetDrafts || {}).forEach(k => delete sessionSetDrafts[k]);
+    saveState();
+    renderHomePlan();
+    renderSessionPlan();
+    updateDashboardStats();
+  }
   let selectedLibGroup = 'All';
   let exerciseSearchTerm = '';
   let currentReps = 10;
@@ -1609,24 +1634,6 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
         state = Object.assign({}, state, imported);
         state.exercises = (state.exercises || []).map(ex => ({ ...ex, category: normalizeCategory(ex.category) }));
         saveState();
-        // Handle Android/browser back: return to Home first, then confirm exit.
-  function installBackNavigation() {
-    try { history.pushState({ calistrackHomeGuard: true }, '', location.href); } catch (_) {}
-    window.addEventListener('popstate', () => {
-      if (currentTabName !== 'workout') {
-        switchTab('workout', document.querySelector('.nav button[data-tab="workout"]'));
-        try { history.pushState({ calistrackHomeGuard: true }, '', location.href); } catch (_) {}
-        return;
-      }
-      const shouldExit = window.confirm('Do you want to exit CalisTrack?');
-      if (!shouldExit) {
-        try { history.pushState({ calistrackHomeGuard: true }, '', location.href); } catch (_) {}
-      }
-    });
-  }
-
-  initUI();
-  installBackNavigation();
         alert('Backup restored.');
       } catch (err) {
         alert('Invalid JSON backup file.');
@@ -1664,10 +1671,11 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
   }
 
   function renderHomePlan() {
-    const todayKey=getTodayKey(), day=(state.schedule[todayKey]||{focus:'Rest day',items:[]});
+    const todayKey=getSelectedProgram(), day=(state.schedule[todayKey]||{focus:'Rest day',items:[]});
     const title=document.getElementById('home-plan-title'), focus=document.getElementById('home-plan-focus'), count=document.getElementById('home-plan-count'), list=document.getElementById('home-plan-list');
     if(!title||!list)return;
     title.textContent=todayKey;
+    const programSelect=document.getElementById('home-program-select'); if(programSelect) programSelect.value=todayKey;
     focus.textContent=day.focus||'Training day';
     count.textContent=(day.items||[]).length+' exercises';
     const loggedToday=new Set(state.logs.filter(l=>l.date===getTodayDateStr()).map(l=>l.exerciseId));
@@ -1763,7 +1771,7 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
     handleExerciseMenu(action,exId);
   }
   function renderSessionPlan() {
-    const program=state.activeWorkout?.program||getTodayKey(),plan=(state.schedule[program]||{items:[]}).items||[],host=document.getElementById('session-exercises-list');
+    const program=state.activeWorkout?.program||getSelectedProgram(),plan=(state.schedule[program]||{items:[]}).items||[],host=document.getElementById('session-exercises-list');
     if(!host)return;
     const title=document.getElementById('session-title'),subtitle=document.getElementById('session-subtitle'),count=document.getElementById('session-exercise-count');
     if(title)title.textContent=program;
@@ -1790,7 +1798,7 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
   }
   function startExerciseFromSession(exId) { beginWorkout();const select=document.getElementById('workout-exercise');if(select&&[...select.options].some(o=>o.value===exId)){select.value=exId;onExerciseChange();} }
   function beginWorkout() {
-    if(!state.activeWorkout) state.activeWorkout={date:getTodayDateStr(),startedAt:Date.now(),day:getTodayKey(),program:getTodayKey(),draftLogs:[]};
+    if(!state.activeWorkout) state.activeWorkout={date:getTodayDateStr(),startedAt:Date.now(),day:getSelectedProgram(),program:getSelectedProgram(),draftLogs:[]};
     updateDashboardStats();
     if(!sessionClockInterval)sessionClockInterval=setInterval(updateSessionSummary,1000);
     const logger=document.getElementById('workout-exercise');
@@ -1848,7 +1856,7 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
     const dateSet = new Set(trainingDates);
     if (!dateSet.has(dateString(cursor))) cursor.setDate(cursor.getDate()-1);
     while (dateSet.has(dateString(cursor))) { streak++; cursor.setDate(cursor.getDate()-1); }
-    const focus = (state.schedule[getTodayKey()] || {}).focus || 'Workout';
+    const focus = (state.schedule[getSelectedProgram()] || {}).focus || getSelectedProgram();
     const dateEl = document.getElementById('dashboard-date');
     const focusEl = document.getElementById('dashboard-focus');
     if (dateEl) dateEl.textContent = now.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'}).toUpperCase();
@@ -1879,6 +1887,25 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
     }
   }
 
+  // Keep the app in its own history entry so Android/browser Back can be handled reliably.
+  let backNavigationInstalled = false;
+  function installBackNavigation() {
+    if (backNavigationInstalled) return;
+    backNavigationInstalled = true;
+    const addHomeGuard = () => {
+      try { history.pushState({ calistrackHomeGuard: true }, '', location.href); } catch (_) {}
+    };
+    addHomeGuard();
+    window.addEventListener('popstate', () => {
+      if (currentTabName !== 'workout') {
+        switchTab('workout', document.querySelector('.nav button[data-tab="workout"]'));
+        addHomeGuard();
+        return;
+      }
+      if (!window.confirm('Do you want to exit CalisTrack?')) addHomeGuard();
+    });
+  }
+
   function initUI() {
     document.getElementById('rest-setting').value = state.settings.restDuration || 90;
     if (state.settings.reminderTime) {
@@ -1898,6 +1925,7 @@ select,input:not([type=checkbox]),textarea{background:#12151b;color:var(--text);
   }
 
   initUI();
+  installBackNavigation();
 </script>
 </body>
 </html>
